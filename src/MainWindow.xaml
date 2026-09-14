@@ -11,10 +11,19 @@
         WindowBackdropType="Mica"
         ExtendsContentIntoTitleBar="True"
         WindowCornerPreference="Round"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Closing="Window_Closing">
     
     <!-- Transparent Background for Dragging -->
     <Border Background="#20000000" CornerRadius="8" Margin="5" Padding="10,5">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Auto Start on Boot" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
+                <MenuItem Header="Switch Theme (Light/Dark)" Click="MenuTheme_Click" />
+                <Separator />
+                <MenuItem Header="Exit" Click="MenuExit_Click" />
+            </ContextMenu>
+        </Border.ContextMenu>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
