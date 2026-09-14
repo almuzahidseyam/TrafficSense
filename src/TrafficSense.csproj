@@ -7,9 +7,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <AssemblyTitle>NetMeter</AssemblyTitle>
+    <AssemblyTitle>TrafficSense</AssemblyTitle>
     <Company>Open Source</Company>
-    <Product>NetMeter</Product>
+    <Product>TrafficSense</Product>
     <Description>A Modern Network Traffic Monitor</Description>
   </PropertyGroup>
 
