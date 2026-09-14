@@ -1,10 +1,10 @@
-# NetMeter 🚀 
+# TrafficSense 🚀 
 
 **A Modern, Lightweight, and Premium Network Traffic Monitor for Windows.**
 
-NetMeter is a beautiful and accurate real-time network speed monitor for Windows. Built with C# and WPF, it features a modern UI with Fluent Design (Mica/Acrylic effects), completely tailored for a premium user experience. It perfectly supports both English and Bengali (বাংলা) languages.
+TrafficSense is a beautiful and accurate real-time network speed monitor for Windows. Built with C# and WPF, it features a modern UI with Fluent Design (Mica/Acrylic effects), completely tailored for a premium user experience. It perfectly supports both English and Bengali (বাংলা) languages.
 
-![NetMeter Preview](https://via.placeholder.com/800x400?text=NetMeter+Preview+Image)
+![TrafficSense Preview](https://via.placeholder.com/800x400?text=TrafficSense+Preview+Image)
 
 ## 🌟 Features
 
@@ -18,9 +18,9 @@ NetMeter is a beautiful and accurate real-time network speed monitor for Windows
 
 ## 📥 Download & Installation
 
-1. Go to the [Releases](https://github.com/almuzahidseyam/NetMeter/releases) page.
-2. Download the latest `NetMeter.zip`.
-3. Extract and run `NetMeter.exe`. No installation required!
+1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
+2. Download the latest `TrafficSense.zip`.
+3. Extract and run `TrafficSense.exe`. No installation required!
 
 ## 🛠️ Built With
 
@@ -35,11 +35,11 @@ If you want to compile the project yourself:
 1. Install [.NET 8 SDK](https://dotnet.microsoft.com/download).
 2. Clone the repository:
    ```bash
-   git clone https://github.com/almuzahidseyam/NetMeter.git
+   git clone https://github.com/almuzahidseyam/TrafficSense.git
    ```
 3. Navigate to the folder and build:
    ```bash
-   cd NetMeter
+   cd TrafficSense
    dotnet build -c Release
    ```
 4. Run the application:

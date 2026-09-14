@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Wpf.Ui.Controls;
 
-namespace NetMeter
+namespace TrafficSense
 {
     public partial class MainWindow : FluentWindow
     {

@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace NetMeter
+namespace TrafficSense
 {
     public partial class App : Application
     {
