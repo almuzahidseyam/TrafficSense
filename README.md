@@ -4,7 +4,7 @@
 
 TrafficSense is a beautiful and accurate real-time network speed monitor for Windows. Built with C# and WPF, it features a modern UI with Fluent Design (Mica/Acrylic effects), completely tailored for a premium user experience. It perfectly supports both English and Bengali (বাংলা) languages.
 
-![TrafficSense Preview](https://via.placeholder.com/800x400?text=TrafficSense+Preview+Image)
+> **Note:** A screenshot of the app will be added here soon!
 
 ## 🌟 Features
 
