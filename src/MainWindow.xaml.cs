@@ -10,7 +10,7 @@ namespace TrafficSense
 {
     public partial class MainWindow : FluentWindow
     {
-        private DispatcherTimer _timer;
+        private DispatcherTimer? _timer;
         private long _lastBytesReceived = 0;
         private long _lastBytesSent = 0;
         private bool _isInitialized = false;
