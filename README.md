@@ -18,9 +18,9 @@ NetMeter is a beautiful and accurate real-time network speed monitor for Windows
 
 ## 📥 Download & Installation
 
-1. Go to the [Releases](https://github.com/USERNAME/NetMeter/releases) page.
-2. Download the latest `NetMeter-Setup.exe`.
-3. Run the setup and enjoy! (Next -> Next -> Finish).
+1. Go to the [Releases](https://github.com/almuzahidseyam/NetMeter/releases) page.
+2. Download the latest `NetMeter.zip`.
+3. Extract and run `NetMeter.exe`. No installation required!
 
 ## 🛠️ Built With
 
@@ -35,7 +35,7 @@ If you want to compile the project yourself:
 1. Install [.NET 8 SDK](https://dotnet.microsoft.com/download).
 2. Clone the repository:
    ```bash
-   git clone https://github.com/USERNAME/NetMeter.git
+   git clone https://github.com/almuzahidseyam/NetMeter.git
    ```
 3. Navigate to the folder and build:
    ```bash
