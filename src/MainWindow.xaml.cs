@@ -8,7 +8,7 @@ using Wpf.Ui.Controls;
 
 namespace TrafficSense
 {
-    public partial class MainWindow : FluentWindow
+    public partial class MainWindow : Window
     {
         private DispatcherTimer? _timer;
         private long _lastBytesReceived = 0;
@@ -142,15 +142,16 @@ namespace TrafficSense
 
         private void ApplyTheme()
         {
+            var border = (System.Windows.Controls.Border)this.Content;
             if (_settings.Theme == "Light")
             {
-                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Light);
+                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(120, 255, 255, 255));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.Black;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.Black;
             }
             else
             {
-                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark);
+                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(120, 0, 0, 0));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.White;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.White;
             }
