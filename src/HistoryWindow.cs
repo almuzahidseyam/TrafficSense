@@ -65,6 +65,7 @@ internal sealed partial class HistoryWindow : Window
             _dailyUsage.ItemsSource = null;
             _dailyRows.Clear();
             _dailyUsage.Columns.Clear();
+            _dailyChart.Update(DailyUsageSeries.Empty);
         };
         Refresh();
     }

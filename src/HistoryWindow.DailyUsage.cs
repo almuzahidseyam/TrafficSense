@@ -11,6 +11,9 @@ namespace TrafficSense;
 
 internal sealed partial class HistoryWindow
 {
+    private readonly TextBlock _dailyChartTitle = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 4) };
+    private readonly TextBlock _dailyChartLegend = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 6) };
+    private readonly DailyUsageChart _dailyChart = new() { Height = 170, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _dailyLabel = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 4) };
     private readonly ObservableCollection<UsageDayRow> _dailyRows = new();
     private readonly DataGrid _dailyUsage = new()
@@ -54,6 +57,7 @@ internal sealed partial class HistoryWindow
         ScrollViewer.SetCanContentScroll(_dailyUsage, true);
         VirtualizingPanel.SetVirtualizationMode(_dailyUsage, VirtualizationMode.Recycling);
         _dailyUsage.ItemsSource = _dailyRows;
+        panel.Children.Add(_dailyChartTitle); panel.Children.Add(_dailyChartLegend); panel.Children.Add(_dailyChart);
         panel.Children.Add(_dailyLabel); panel.Children.Add(_dailyUsage);
     }
 
@@ -66,6 +70,16 @@ internal sealed partial class HistoryWindow
         for (int i = 0; i < keys.Length; i++)
             ((TextBlock)_dailyUsage.Columns[i].Header).Text = _language[keys[i]];
         var days = valid ? _usage.Days.Where(day => range == null || range.Value.Contains(day.Date)).Reverse().ToArray() : [];
+        _dailyChart.Update(DailyUsageSeries.Create(days));
+        _dailyChartTitle.Text = _language[TextKey.DailyChart];
+        _dailyChartLegend.Text = _language[TextKey.DailyChartLegend];
+        var series = _dailyChart.Series;
+        string chartSummary = series.Days.Count == 0 ? "" : _dailyChartTitle.Text + "\n" +
+            string.Format(CultureInfo.InvariantCulture, _language[TextKey.DailyChartRange], series.Start, series.End, series.Days.Count);
+        AutomationProperties.SetName(_dailyChart, chartSummary);
+        AutomationProperties.SetHelpText(_dailyChart, _dailyChartLegend.Text + "\n" + _language[TextKey.DailyChartHint]);
+        _dailyChart.ToolTip = chartSummary + "\n" + _language[TextKey.DailyChartHint];
+        _dailyChartTitle.Visibility = _dailyChartLegend.Visibility = _dailyChart.Visibility = days.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         var dates = days.Select(day => day.Date).ToHashSet();
         // Keep existing rows for stable selection/scrolling and update only changed
         // counters. At most 400 records are retained, with virtualized visual rows.

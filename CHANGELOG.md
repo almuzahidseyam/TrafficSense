@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.17.0] - 2026-10-12
+
+### Added
+
+- Small daily usage chart between selected-period totals and the daily table. It plots up to 30 calendar days ending at the selection's latest record, with chronological dates, paired download/upload bars and a shared byte scale. Full selected totals, daily rows and CSV remain unchanged.
+- Filled download and outlined upload bars distinguish series without relying on color; high contrast uses system colors. Missing records leave gaps, while recorded zero amounts have baseline marks. English/Bengali labels and an accessible image description accompany the exact-byte table.
+- Filtering, language changes and new samples update the chart; unchanged records reuse its snapshot. Empty or invalid periods clear and hide it. Rendering is bounded to 30 days, has no animation/timer, and handles maximum stored counters without overflow.
+
+### Upgrading from 1.16.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible.
+- Open **Usage and history**, choose **CSV period**, and scroll below selected-period totals to **Daily usage chart**. Its 30-day view ends at the latest record in that selection; the table below still lists every selected recorded day. Gaps indicate missing records rather than reconstructed usage.
+
 ## [1.16.0] - 2026-10-12
 
 ### Added
@@ -181,7 +194,10 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.17.0...HEAD
+[1.17.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.16.0...v1.17.0
+[1.16.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.15.0...v1.16.0
+[1.15.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.11.0...v1.12.0
