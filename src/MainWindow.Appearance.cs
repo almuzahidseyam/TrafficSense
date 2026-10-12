@@ -6,6 +6,7 @@ namespace TrafficSense;
 
 public partial class MainWindow
 {
+    private bool _appearancePending = true;
     private void InitializeAppearanceMenus()
     {
         foreach (int size in WidgetAppearance.FontSizes)
@@ -57,13 +58,15 @@ public partial class MainWindow
             item.IsChecked = (int)item.Tag == _settings.BackgroundOpacity;
     }
 
-    private void ApplyAppearance()
+    private void ApplyPendingAppearance()
     {
+        if (!_appearancePending) return;
         TxtDownload.FontSize = TxtUpload.FontSize = _settings.WidgetFontSize;
         IconDownload.FontSize = IconUpload.FontSize = _settings.WidgetFontSize + 2;
         // Only the background alpha changes; text, arrows, menus and dialogs
         // retain full opacity. SizeChanged keeps the enlarged widget on screen.
         ApplyTheme();
+        _appearancePending = false;
         UpdateAppearanceChecks();
     }
 
@@ -86,6 +89,8 @@ public partial class MainWindow
             ShowSettingsError(result.Error);
             return;
         }
-        ApplyAppearance();
+        _appearancePending = true;
+        UpdateAppearanceChecks();
+        QueueWidgetRender();
     }
 }

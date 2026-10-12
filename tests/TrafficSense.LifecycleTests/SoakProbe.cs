@@ -67,6 +67,8 @@ internal static class SoakProbe
         {
             try
             {
+                // The previous batch allowed a visible frame with its new size.
+                if (window!.IsVisible) window.Hide();
                 // Yield to rendering/input/timer work between small batches.
                 int end = Math.Min(completedIterations + 10, iterations);
                 while (completedIterations < end)
@@ -88,6 +90,9 @@ internal static class SoakProbe
                         // the separate lifecycle probe.
                         window.Show();
                         window.Hide();
+                        // Exercise both rapid unrendered toggles and a rendered
+                        // size change before the next background batch hides it.
+                        window.Show();
                         // Test native icon/menu ownership repeatedly as well as
                         // the one long-lived production tray controller.
                         using var temporaryTray = new TrayController(window);

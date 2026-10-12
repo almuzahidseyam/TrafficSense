@@ -61,7 +61,7 @@ namespace TrafficSense
             InitializeAppearanceMenus();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
-            ApplyAppearance();
+            ApplyPendingAppearance();
             
             this.Loaded += (s, e) => 
             {
@@ -73,20 +73,7 @@ namespace TrafficSense
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
             };
 
-            IsVisibleChanged += (_, _) =>
-            {
-                if (!IsVisible || _renderQueued) return;
-                _renderQueued = true;
-                // A second launch or tray command can show and hide again in
-                // one dispatcher turn. Do not mutate a view that will never
-                // render: transparent-window resources otherwise accumulate.
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
-                {
-                    _renderQueued = false;
-                    if (IsVisible)
-                        RenderNetworkSpeed();
-                }));
-            };
+            IsVisibleChanged += (_, _) => QueueWidgetRender();
 
             SourceInitialized += (_, _) =>
             {
@@ -107,6 +94,23 @@ namespace TrafficSense
                 if (_windowSource is { IsDisposed: false })
                     _windowSource.RemoveHook(WindowMessage);
             };
+        }
+
+        private void QueueWidgetRender()
+        {
+            if (!IsVisible || _renderQueued || _fatalShutdown) return;
+            _renderQueued = true;
+            // Coalesce show/hide and appearance changes into a visible frame.
+            // Resizing a hidden transparent HWND can retain drawing resources.
+            Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+            {
+                _renderQueued = false;
+                if (IsVisible && !_fatalShutdown)
+                {
+                    ApplyPendingAppearance();
+                    RenderNetworkSpeed();
+                }
+            }));
         }
 
         private void StopMonitoring()

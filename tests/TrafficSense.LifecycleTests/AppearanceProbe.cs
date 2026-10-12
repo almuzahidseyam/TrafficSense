@@ -85,6 +85,27 @@ internal static class AppearanceProbe
                 Drain(window);
                 CheckStyle(window, 16, 64);
                 CheckInsideWorkArea(window);
+                using var process = System.Diagnostics.Process.GetCurrentProcess();
+                int beforeGdi = GetGuiResources(process.Handle, 0);
+                Check(beforeGdi > 0, "Could not read native drawing resource counts.");
+                double hiddenSize = ((TextBlock)window.FindName("TxtDownload")).FontSize;
+                window.Hide();
+                for (int i = 0; i < 120; i++)
+                {
+                    Click(Option(window, "MenuFontSize", WidgetAppearance.FontSizes[i % WidgetAppearance.FontSizes.Count]));
+                    window.Show();
+                    window.Hide();
+                }
+                Drain(window);
+                Check(((TextBlock)window.FindName("TxtDownload")).FontSize == hiddenSize,
+                    "Unrendered hidden cycles changed the widget geometry.");
+                window.Show();
+                Drain(window);
+                GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+                int afterGdi = GetGuiResources(process.Handle, 0);
+                Console.WriteLine($"Appearance cycles GDI: {beforeGdi} -> {afterGdi}.");
+                Check(afterGdi - beforeGdi <= 8,
+                    "Rapid hidden appearance/show-hide cycles retained native drawing resources.");
                 Click(Option(window, "MenuFontSize", 18));
                 Capture(window);
                 passed = true;
@@ -203,4 +224,6 @@ internal static class AppearanceProbe
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool SetWindowPos(IntPtr window, IntPtr insertAfter, int x, int y, int width, int height, uint flags);
+    [DllImport("user32.dll")]
+    private static extern int GetGuiResources(IntPtr process, int flags);
 }
