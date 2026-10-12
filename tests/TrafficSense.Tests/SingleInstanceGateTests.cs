@@ -60,8 +60,14 @@ public sealed class SingleInstanceGateTests
         string name = UniqueName();
         using var abandoned = new Mutex(false, name + ".Mutex");
         OnAnotherThread(() => Assert.True(abandoned.WaitOne(0))); // Thread exits owning it.
-        using var recovered = new SingleInstanceGate(name);
-        Assert.True(recovered.IsPrimary);
+        // Thread.Join can observe the CLR's dead-thread state before native
+        // teardown has abandoned the Windows mutex. Wait for observable recovery
+        // without changing the production gate's nonblocking ownership check.
+        Assert.True(SpinWait.SpinUntil(() =>
+        {
+            using var recovered = new SingleInstanceGate(name);
+            return recovered.IsPrimary;
+        }, TimeSpan.FromSeconds(5)), "The abandoned instance gate did not recover.");
     }
 
     [Fact]
