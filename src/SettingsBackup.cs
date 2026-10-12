@@ -53,7 +53,14 @@ internal static class SettingsBackup
             throw new JsonException("Unsupported backup format or version.");
         var data = root.GetProperty("Settings");
         var defaults = JsonSerializer.SerializeToElement(new AppSettings());
-        RequireProperties(data, defaults.EnumerateObject().Select(property => property.Name));
+        // New preferences are optional in version 1 backups. Older complete
+        // backups remain importable; unknown/duplicate and missing legacy keys
+        // are still rejected rather than silently restoring defaults.
+        var expected = defaults.EnumerateObject().Select(property => property.Name).ToHashSet(StringComparer.Ordinal);
+        if (data.ValueKind != JsonValueKind.Object) throw new JsonException("Expected settings object.");
+        foreach (var property in data.EnumerateObject())
+            if (!expected.Remove(property.Name)) throw new JsonException("Unknown or duplicate preference.");
+        if (expected.Any(name => name != nameof(AppSettings.DisplayMetrics))) throw new JsonException("Incomplete backup.");
         var settings = data.Deserialize<AppSettings>() ?? throw new JsonException("Missing settings.");
         // Reject out-of-range values rather than silently normalizing a damaged backup.
         var normalized = JsonSerializer.SerializeToElement(SettingsStore.Normalize(settings));

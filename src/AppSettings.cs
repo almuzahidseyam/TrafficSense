@@ -9,6 +9,7 @@ public class AppSettings
     public int? ScreenTop { get; set; }
     public bool PositionLocked { get; set; }
     public bool SpeedInBits { get; set; }
+    public int DisplayMetrics { get; set; }
     public int RefreshMilliseconds { get; set; } = 1000;
     public bool GlobalShortcutEnabled { get; set; }
     public string Theme { get; set; } = "Dark";

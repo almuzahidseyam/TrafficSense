@@ -62,6 +62,7 @@ public partial class MainWindow
     {
         if (!_appearancePending) return;
         TxtDownload.FontSize = TxtUpload.FontSize = _settings.WidgetFontSize;
+        TxtMetrics.FontSize = _settings.WidgetFontSize;
         IconDownload.FontSize = IconUpload.FontSize = _settings.WidgetFontSize + 2;
         // Only the background alpha changes; text, arrows, menus and dialogs
         // retain full opacity. SizeChanged keeps the enlarged widget on screen.
