@@ -20,7 +20,11 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download the latest `TrafficSense.zip`.
-3. Extract and run `TrafficSense.exe`. No installation required!
+3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The portable package includes .NET 8; no separate .NET installation is required.
+
+Exit an older running version from its tray menu before opening the new EXE. Hiding it keeps it running, and a second launch will show that older instance. Settings remain in `%APPDATA%`, and the bundled native runtime is extracted to the Windows temporary folder on first launch.
+
+Releases also include `TrafficSense.zip.sha256`. To check a download, compare the result of `Get-FileHash ./TrafficSense.zip -Algorithm SHA256` with that file.
 
 ## 🛠️ Built With
 
@@ -57,6 +61,22 @@ If you want to compile the project yourself:
    dotnet run --project tests/TrafficSense.LifecycleTests/TrafficSense.LifecycleTests.csproj -c Release
    ```
    This probe uses an invisible window, an isolated instance name, and a temporary settings file. It verifies language switching, persistence/restart, save-failure rollback, tray controls, and process activation without changing user settings or startup registration. A temporary tray icon may appear during the probe.
+
+### Build the portable package
+
+On Windows with the .NET 8 SDK and PowerShell:
+
+```powershell
+./scripts/Build-Portable.ps1
+# If the SDK is installed at a custom location:
+./scripts/Build-Portable.ps1 -DotNet 'C:/path/to/dotnet.exe'
+```
+
+The script prints paths to `TrafficSense.zip`, its SHA-256 checksum, and the extracted executable in a fresh `.artifacts/portable/<build-id>` folder. It uses `build/Portable.pubxml` for a self-contained `win-x64` single-file publish with native libraries included and WPF trimming disabled. Runtime notices, the project license, WPF-UI license, and a quick-start guide are included in the ZIP.
+
+Before reporting success, it checks the ZIP's extracted files against the publish output, publishes the lifecycle probe with the same profile, and exercises its real widget/tray/language/restart behavior with installed-runtime lookup disabled. It verifies embedded CoreLib and WPF native libraries loaded from the bundle's extraction directory, rejecting an external CoreCLR if one is loaded (Windows single-file hosts can link CoreCLR internally). When no user widget is running, it also launches the distributed EXE from the extracted ZIP, confirms bundled/internal CoreCLR in the host trace, and checks secondary-instance activation while holding its instance gate so user settings are untouched. That entry-point check is skipped if a user widget already owns the gate; CI runs it on a fresh Windows runner.
+
+CI uploads the verified ZIP and checksum as `TrafficSense-win-x64-portable`. The release workflow runs the same checks and attaches both files when a `v*` tag is pushed. Ordinary builds and pull requests do not publish a release. Rebuild packages with an updated SDK/runtime for .NET security servicing; the bundled runtime does not automatically use an installed runtime update.
 
 ## Settings & Window Position
 

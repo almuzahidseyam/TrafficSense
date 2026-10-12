@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -15,6 +16,7 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.Length == 0) VerifyPackagedEntryPoint();
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
@@ -55,6 +57,7 @@ internal static class Program
             try
             {
                 Check(window.IsVisible && app.Windows.Count == 1, "Primary widget did not start.");
+                VerifyBundledRuntime();
                 timer = (DispatcherTimer)typeof(MainWindow).GetField("_timer", Private)!.GetValue(window)!;
                 var tray = typeof(App).GetField("_tray", Private)!.GetValue(app)!;
                 notify = (Forms.NotifyIcon)tray.GetType().GetField("_notifyIcon", Private)!.GetValue(tray)!;
@@ -161,7 +164,7 @@ internal static class Program
     {
         var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false, CreateNoWindow = true };
         if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase))
-            start.ArgumentList.Add(typeof(Program).Assembly.Location);
+            start.ArgumentList.Add(Path.Combine(AppContext.BaseDirectory, "TrafficSense.LifecycleTests.dll"));
         foreach (string arg in args) start.ArgumentList.Add(arg);
         using var child = Process.Start(start)!;
         if (!child.WaitForExit(10000))
@@ -170,6 +173,62 @@ internal static class Program
             throw new InvalidOperationException("Child process did not exit.");
         }
         Check(child.ExitCode == 0, "Child process failed.");
+    }
+
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("SingleFile", "IL3000",
+        Justification = "This probe deliberately verifies that CoreLib has no external assembly file in the single-file bundle.")]
+    private static void VerifyBundledRuntime()
+    {
+        if (Environment.GetEnvironmentVariable("TRAFFICSENSE_VERIFY_BUNDLE") != "1") return;
+        string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!) + Path.DirectorySeparatorChar;
+        using var process = Process.GetCurrentProcess();
+        Check(typeof(object).Assembly.Location.Length == 0, "CoreLib was loaded from an external runtime assembly instead of the bundle.");
+        // The Windows .NET single-file host can statically link CoreCLR, so no
+        // coreclr.dll module exists in that mode. Reject an external one if present.
+        foreach (var module in process.Modules.Cast<ProcessModule>().Where(item => item.ModuleName.Equals("coreclr.dll", StringComparison.OrdinalIgnoreCase)))
+            Check(module.FileName.StartsWith(root, StringComparison.OrdinalIgnoreCase), "CoreCLR was loaded outside the bundled runtime.");
+        foreach (string name in new[] { "PresentationNative_cor3.dll", "wpfgfx_cor3.dll" })
+        {
+            var module = process.Modules.Cast<ProcessModule>().SingleOrDefault(item => item.ModuleName.Equals(name, StringComparison.OrdinalIgnoreCase));
+            Check(module != null, $"{name} was not loaded. Modules: {string.Join(", ", process.Modules.Cast<ProcessModule>().Select(item => item.ModuleName))}");
+            Check(module!.FileName.StartsWith(root, StringComparison.OrdinalIgnoreCase), $"{name} was not loaded from the bundled runtime: {module.FileName}");
+        }
+        Console.WriteLine("PASS: embedded CoreLib and bundled WPF native libraries, with installed-runtime lookup disabled.");
+    }
+
+    private static void VerifyPackagedEntryPoint()
+    {
+        string? executable = Environment.GetEnvironmentVariable("TRAFFICSENSE_PACKAGE_EXE");
+        if (string.IsNullOrEmpty(executable)) return;
+        using var identity = WindowsIdentity.GetCurrent();
+        using var gate = new SingleInstanceGate(@"Local\TrafficSense." + identity.User!.Value);
+        if (!gate.IsPrimary)
+        {
+            Console.WriteLine("SKIP: packaged entry-point activation check; the user's existing widget is running. Isolated portable UI checks still run.");
+            return;
+        }
+        // Hold the real instance gate so the distributed EXE exercises its true
+        // entry point and runtime without loading/saving the user's settings.
+        using var activated = new ManualResetEventSlim();
+        gate.Listen(activated.Set);
+        string tracePath = Path.Combine(Path.GetDirectoryName(executable)!, "host-trace.log");
+        var start = new ProcessStartInfo(executable) { UseShellExecute = false, CreateNoWindow = true };
+        start.Environment["COREHOST_TRACE"] = "1";
+        start.Environment["COREHOST_TRACEFILE"] = tracePath;
+        using var child = Process.Start(start)!;
+        if (!child.WaitForExit(15000))
+        {
+            child.Kill();
+            throw new InvalidOperationException("Packaged entry point did not exit as a secondary instance.");
+        }
+        Check(child.ExitCode == 0 && activated.Wait(5000), "Packaged entry point failed to activate the primary instance.");
+        string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!);
+        string[] trace = File.ReadAllLines(tracePath);
+        Check(trace.Any(line => line.Contains("CoreCLR path = '', CoreCLR dir = ''", StringComparison.Ordinal) ||
+            (line.Contains("CoreCLR path", StringComparison.OrdinalIgnoreCase) && line.Contains(root, StringComparison.OrdinalIgnoreCase) &&
+             line.Contains("coreclr.dll", StringComparison.OrdinalIgnoreCase))),
+            "Packaged entry point did not load its own bundled CoreCLR.");
+        Console.WriteLine("PASS: distributed EXE started from the extracted ZIP, used bundled CoreCLR and signaled the primary instance without touching user settings.");
     }
 
     private static int VerifyRestart(string scope, string settingsPath)

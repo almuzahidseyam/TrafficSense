@@ -19,6 +19,16 @@ jobs:
         run: dotnet build src/TrafficSense.csproj -c Release
       - name: Run regression tests
         run: dotnet test tests/TrafficSense.Tests/TrafficSense.Tests.csproj -c Release
-      - name: Verify Windows tray and process lifecycle
-        timeout-minutes: 2
-        run: dotnet run --project tests/TrafficSense.LifecycleTests/TrafficSense.LifecycleTests.csproj -c Release
+      - name: Build and verify portable ZIP and Windows lifecycle
+        timeout-minutes: 10
+        shell: pwsh
+        run: ./scripts/Build-Portable.ps1
+      - name: Upload verified portable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: TrafficSense-win-x64-portable
+          path: |
+            .artifacts/portable/**/TrafficSense.zip
+            .artifacts/portable/**/TrafficSense.zip.sha256
+          include-hidden-files: true
+          if-no-files-found: error

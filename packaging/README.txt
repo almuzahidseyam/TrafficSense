@@ -1,0 +1,20 @@
+TrafficSense - Windows x64 portable edition
+
+1. Extract the entire ZIP to a folder you can keep.
+2. Exit any older TrafficSense instance from its tray menu (Hide is not Exit).
+3. Open TrafficSense.exe. No separate .NET installation is needed.
+
+Supports 64-bit Windows 10/11. This package includes the .NET 8 runtime.
+The first launch extracts native runtime files to your Windows temporary folder.
+Keep the license and notice files with the application when redistributing it.
+
+Right-click the widget or tray icon to select English / বাংলা, change the theme,
+choose a network adapter, show/hide the widget, or exit.
+
+Settings are stored in %APPDATA%\TrafficSense\settings.json, not beside the EXE.
+This is a portable application, not a portable user-settings directory.
+If Start with Windows was enabled before moving the app, enable it again from
+the new location. Only one instance runs per user in the current sign-in session.
+
+Source, updates and issue reports:
+https://github.com/almuzahidseyam/TrafficSense
