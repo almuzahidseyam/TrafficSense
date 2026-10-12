@@ -18,9 +18,15 @@ internal static class Program
     {
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
         if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
+        if (args.FirstOrDefault() == "--error-case") return ErrorHandlingProbe.RunCase(args[1], args[2]);
+        if (args.FirstOrDefault() == "--error-handling") { ErrorHandlingProbe.RunAll(); return 0; }
         if (args.Length == 0) VerifyPackagedEntryPoint();
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
-        if (args.Length == 0) RunChild("--network-recovery");
+        if (args.Length == 0)
+        {
+            RunChild("--network-recovery");
+            ErrorHandlingProbe.RunAll();
+        }
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         string path = Path.Combine(directory, "settings.json");

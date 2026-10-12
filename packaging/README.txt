@@ -13,6 +13,10 @@ choose a network adapter, show/hide the widget, or exit.
 
 Settings are stored in %APPDATA%\TrafficSense\settings.json, not beside the EXE.
 This is a portable application, not a portable user-settings directory.
+Error logs are stored in %LOCALAPPDATA%\TrafficSense\logs\errors.jsonl.
+Two older logs are retained; no logs are uploaded automatically. On an unexpected
+UI/startup failure, the app saves diagnostics when possible and closes. Start it
+again to resume monitoring. Review logs before including them in an issue report.
 If Start with Windows was enabled before moving the app, enable it again from
 the new location. Only one instance runs per user in the current sign-in session.
 

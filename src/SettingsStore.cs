@@ -5,7 +5,7 @@ namespace TrafficSense;
 
 public readonly record struct SettingsSaveResult(bool Success, string? Error = null);
 
-internal sealed class SettingsStore(string filePath)
+internal sealed class SettingsStore(string filePath, DiagnosticLog? diagnostics = null)
 {
     public AppSettings Load()
     {
@@ -17,6 +17,7 @@ internal sealed class SettingsStore(string filePath)
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException)
         {
             // A corrupt/unreadable settings file must not prevent the widget starting.
+            diagnostics?.Write("SettingsLoad", error);
         }
 
         return new AppSettings();

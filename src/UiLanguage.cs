@@ -6,7 +6,8 @@ internal enum TextKey
     AutoConnection, AutoDescription, UnavailableSuffix, MissingAdapter, ReconnectDescription,
     AutoPrefix, NoConnectedAdapter, WaitingForAdapter, ChooseAdapterHint, TrayHint,
     SettingsSaveFailed, StartupReadFailed, StartupChangeFailed, StartupNotApplied,
-    StartFailure, UiCrash, BackgroundCrash, ErrorTitle, DownloadSpeed, UploadSpeed
+    StartFailure, UiCrash, BackgroundCrash, ErrorTitle, DownloadSpeed, UploadSpeed,
+    FatalError, AppWillClose, LogSaved, LogUnavailable
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -56,6 +57,10 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.StartupChangeFailed] = ("Windows startup settings could not be changed.", "Windows-এ স্বয়ংক্রিয়ভাবে চালুর সেটিং বদলানো যায়নি।"),
             [TextKey.StartupNotApplied] = ("Windows did not apply the startup setting. Please try again.", "Windows সেটিংটি প্রয়োগ করেনি। আবার চেষ্টা করুন।"),
             [TextKey.StartFailure] = ("TrafficSense could not start.", "TrafficSense চালু করা যায়নি।"),
+            [TextKey.FatalError] = ("TrafficSense encountered an unexpected error.", "TrafficSense-এ অপ্রত্যাশিত ত্রুটি ঘটেছে।"),
+            [TextKey.AppWillClose] = ("The app will close. You can start it again.", "অ্যাপটি বন্ধ হবে। আবার চালু করতে পারবেন।"),
+            [TextKey.LogSaved] = ("Error details were saved here:", "ত্রুটির বিস্তারিত এখানে সংরক্ষিত হয়েছে:"),
+            [TextKey.LogUnavailable] = ("Error details could not be saved.", "ত্রুটির বিস্তারিত সংরক্ষণ করা যায়নি।"),
             [TextKey.UiCrash] = ("UI error:", "ইন্টারফেসে ত্রুটি:"),
             [TextKey.BackgroundCrash] = ("Background error:", "পেছনে চলা কাজে ত্রুটি:"),
             [TextKey.ErrorTitle] = ("TrafficSense Error", "TrafficSense ত্রুটি"),
