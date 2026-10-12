@@ -225,7 +225,9 @@ internal static class CsvProbe
     {
         var today = DateOnly.FromDateTime(now.Date);
         var ledger = new UsageLedger(Enumerable.Range(0, 400).Select(i => new UsageDay(today.AddDays(-i), long.MaxValue, long.MaxValue)));
-        var window = new HistoryWindow(language, ledger, () => now, new(), () => false);
+        // Keep the outer scrollbar present across translations/shorter totals;
+        // the rollover assertion below tests a stationary point in a stable plot.
+        var window = new HistoryWindow(language, ledger, () => now, new(), () => false) { MaxHeight = 360 };
         try
         {
             window.Show(); Drain(window);
@@ -252,11 +254,14 @@ internal static class CsvProbe
             Check(Details(chart).EndsWith("Total: 18446744073709551614 bytes"), "Large stationary hover did not translate.");
             Check(ReferenceEquals(chart.Series, initialSeries) && AutomationProperties.GetName(chart).StartsWith("Daily usage chart"), "Chart translation changed its records.");
             Check(ReferenceEquals(grid.SelectedItem, selected) && first.Details.EndsWith("Total: 18446744073709551614 bytes"), "Translation replaced daily rows or missed exact bytes.");
+            Hover(chart, today);
+            double rolloverWidth = chart.ActualWidth;
             ledger.Record(new(1, 2), now.AddDays(1)); now = now.AddDays(1); window.Refresh(); Drain(window);
             Check(chart.Series.Days.Count == 30 && chart.Series.End == today.AddDays(1) && chart.Series.Start == today.AddDays(-28) &&
                 chart.Series.Days[^1].Received == 1 && chart.Series.Days[^1].Sent == 2, "Chart rollover retained expired days or missed new samples.");
-            Check(Details(chart) == today.AddDays(1).ToString("yyyy-MM-dd") + "\nDownload: 1 bytes\nUpload: 2 bytes\nTotal: 3 bytes",
-                "Stationary hover did not follow the calendar slot on rollover.");
+            Check(Math.Abs(chart.ActualWidth - rolloverWidth) < .01 &&
+                Details(chart) == today.AddDays(1).ToString("yyyy-MM-dd") + "\nDownload: 1 bytes\nUpload: 2 bytes\nTotal: 3 bytes",
+                "Stationary hover did not follow the calendar slot on rollover: " + Details(chart));
             Check(grid.Items.Count == 400 && ((UsageDayRow)grid.Items[0]).Date == DateOnly.FromDateTime(now.Date).ToString("yyyy-MM-dd") &&
                 grid.Items.Cast<UsageDayRow>().Last().Day.Date == today.AddDays(-398) && ReferenceEquals(grid.SelectedItem, selected),
                 "Daily rollover/retention changed selection, duplicated rows or kept an expired record.");
