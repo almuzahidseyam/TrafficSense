@@ -59,6 +59,14 @@ If you want to compile the project yourself:
 - Startup registration is updated only when you change **Start with Windows**. Its checkbox reflects the registration for the current executable, independently of the settings file. After moving the app, enable it again from its new location.
 - The widget returns to a visible monitor work area when a monitor is removed, the resolution/DPI changes, or the taskbar work area changes. Existing saved window positions are migrated automatically.
 
+## Network Adapter & VPN Traffic
+
+- Right-click the widget → **Network adapter** to select **Auto (one connection)** or an adapter by name. Hover over the widget to see which connection is being monitored.
+- Auto monitors **one adapter at a time**, following the Windows route to a representative Internet IPv4 destination when available. Otherwise (including IPv6-only connections), it prefers a gateway-backed connection and then Ethernet/Wi-Fi, with lower priority for local Hyper-V/WSL/VM adapters. Equally preferred connections retain the current selection to avoid switching every second.
+- VPN traffic and the underlying Ethernet/Wi-Fi traffic are never summed. To measure only the VPN tunnel, select its adapter explicitly. An underlying connection also includes VPN overhead and traffic outside the tunnel; their readings can differ.
+- Manual selection is remembered across restarts. If that adapter disconnects or disappears, the widget shows zero and waits for it to reconnect. Choose Auto to allow automatic failover.
+- Connecting, disconnecting, or switching adapters starts a fresh speed baseline. Auto does not report a combined total across simultaneous connections. With split tunneling or destination-specific routes, select the adapter whose traffic you want to measure.
+
 ## 🤝 Contributing
 
 Contributions are always welcome! Feel free to open an issue or submit a pull request.

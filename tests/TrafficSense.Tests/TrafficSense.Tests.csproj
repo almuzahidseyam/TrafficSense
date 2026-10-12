@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../src/NetworkSpeedCalculator.cs" Link="NetworkSpeedCalculator.cs" />
+    <Compile Include="../../src/NetworkAdapterSelection.cs" Link="NetworkAdapterSelection.cs" />
     <Compile Include="../../src/SpeedFormatter.cs" Link="SpeedFormatter.cs" />
     <Compile Include="../../src/AppSettings.cs" Link="AppSettings.cs" />
     <Compile Include="../../src/SettingsStore.cs" Link="SettingsStore.cs" />

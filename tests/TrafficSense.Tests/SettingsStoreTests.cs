@@ -17,6 +17,7 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Equal("Dark", settings.Theme);
         Assert.Equal(-1, settings.WindowLeft);
         Assert.Null(settings.ScreenLeft);
+        Assert.Null(settings.SelectedAdapterId);
     }
 
     [Theory]
@@ -63,6 +64,25 @@ public sealed class SettingsStoreTests : IDisposable
         var loaded = store.Load();
         Assert.Equal(-1, loaded.WindowLeft);
         Assert.Equal(-1, loaded.WindowTop);
+    }
+
+    [Fact]
+    public void SelectedAdapterIsRememberedAndCanBeResetToAuto()
+    {
+        var store = new SettingsStore(FilePath);
+        Assert.True(store.Save(new AppSettings { SelectedAdapterId = "{vpn-adapter-id}" }).Success);
+        Assert.Equal("{vpn-adapter-id}", store.Load().SelectedAdapterId);
+        Assert.True(store.Save(new AppSettings { SelectedAdapterId = null }).Success);
+        Assert.Null(store.Load().SelectedAdapterId);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void EmptyAdapterSelectionUsesAuto(string value)
+    {
+        File.WriteAllText(FilePath, JsonSerializer.Serialize(new AppSettings { SelectedAdapterId = value }));
+        Assert.Null(new SettingsStore(FilePath).Load().SelectedAdapterId);
     }
 
     [Fact]

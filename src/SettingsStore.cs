@@ -50,6 +50,7 @@ internal sealed class SettingsStore(string filePath)
         WindowTop = double.IsFinite(settings.WindowTop) ? settings.WindowTop : -1,
         ScreenLeft = settings.ScreenLeft,
         ScreenTop = settings.ScreenTop,
-        Theme = settings.Theme == "Light" ? "Light" : "Dark"
+        Theme = settings.Theme == "Light" ? "Light" : "Dark",
+        SelectedAdapterId = string.IsNullOrWhiteSpace(settings.SelectedAdapterId) ? null : settings.SelectedAdapterId
     };
 }

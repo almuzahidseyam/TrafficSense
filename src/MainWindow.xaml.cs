@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
@@ -11,6 +12,7 @@ namespace TrafficSense
     {
         private DispatcherTimer? _timer;
         private readonly NetworkSpeedCalculator _speedCalculator = new();
+        private readonly NetworkAdapterSelection _adapterSelection = new();
         private readonly Stopwatch _samplingClock = Stopwatch.StartNew();
         private AppSettings _settings;
         private HwndSource? _windowSource;
@@ -75,7 +77,7 @@ namespace TrafficSense
 
         private void InitializeNetworkMonitor()
         {
-            _speedCalculator.Update(NetworkSnapshotReader.Read(), _samplingClock.Elapsed);
+            RefreshNetworkSpeed();
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += Timer_Tick;
@@ -84,10 +86,79 @@ namespace TrafficSense
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            var snapshots = NetworkSnapshotReader.Read();
+            RefreshNetworkSpeed();
+        }
+
+        private void RefreshNetworkSpeed()
+        {
+            var adapters = NetworkSnapshotReader.Read();
+            var adapter = _adapterSelection.Select(adapters, _settings.SelectedAdapterId);
+            NetworkAdapterSnapshot[] snapshots = adapter?.Snapshot is { } snapshot ? [snapshot] : [];
             var speed = _speedCalculator.Update(snapshots, _samplingClock.Elapsed);
             TxtDownload.Text = SpeedFormatter.Format(speed.DownloadBytesPerSecond);
             TxtUpload.Text = SpeedFormatter.Format(speed.UploadBytesPerSecond);
+            string status = adapter != null
+                ? $"{(_settings.SelectedAdapterId == null ? "Auto: " : "")}{adapter.Name}\n{adapter.Description}"
+                : _settings.SelectedAdapterId == null
+                    ? "No connected network adapter"
+                    : "Selected adapter disconnected or unavailable. Waiting for it to reconnect.";
+            ((Border)Content).ToolTip = status + "\nRight-click to choose a network adapter.";
+        }
+
+        private void MenuNetworkAdapter_Opened(object sender, RoutedEventArgs e)
+        {
+            if (!ReferenceEquals(e.OriginalSource, MenuNetworkAdapter))
+                return;
+
+            var adapters = NetworkSnapshotReader.Read();
+            MenuNetworkAdapter.Items.Clear();
+            AddAdapterMenuItem("Auto (one connection)", null,
+                "Monitors one connected adapter automatically. VPN and underlying traffic are never added together.");
+            MenuNetworkAdapter.Items.Add(new Separator());
+            foreach (var adapter in adapters.OrderBy(adapter => adapter.Name, StringComparer.CurrentCultureIgnoreCase))
+            {
+                AddAdapterMenuItem(adapter.Name + (adapter.CanMonitor ? "" : " (disconnected/unavailable)"),
+                    adapter.Id, adapter.Description);
+            }
+            if (_settings.SelectedAdapterId != null && adapters.All(adapter => adapter.Id != _settings.SelectedAdapterId))
+            {
+                var missing = AddAdapterMenuItem("Selected adapter (unavailable)", _settings.SelectedAdapterId,
+                    "This adapter will be monitored again when it reconnects. Choose Auto or another adapter to switch.");
+                missing.IsEnabled = false;
+            }
+        }
+
+        private MenuItem AddAdapterMenuItem(string name, string? id, string description)
+        {
+            var item = new MenuItem
+            {
+                // AccessText treats underscores in adapter names as mnemonics.
+                Header = name.Replace("_", "__"), Tag = id, ToolTip = description,
+                IsCheckable = true, IsChecked = _settings.SelectedAdapterId == id
+            };
+            item.Click += MenuAdapter_Click;
+            MenuNetworkAdapter.Items.Add(item);
+            return item;
+        }
+
+        private void MenuAdapter_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (MenuItem)sender;
+            string? previousId = _settings.SelectedAdapterId;
+            _settings.SelectedAdapterId = item.Tag as string;
+            var result = SettingsManager.Save(_settings);
+            if (!result.Success)
+            {
+                _settings.SelectedAdapterId = previousId;
+                ShowSettingsError(result.Error);
+            }
+            foreach (var option in MenuNetworkAdapter.Items.OfType<MenuItem>())
+                option.IsChecked = (option.Tag as string) == _settings.SelectedAdapterId;
+
+            // Even switching Auto/manual on the same ID starts a fresh interval.
+            _speedCalculator.Update([], _samplingClock.Elapsed);
+            RefreshNetworkSpeed();
+            e.Handled = true;
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
