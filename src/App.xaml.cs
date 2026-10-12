@@ -11,26 +11,37 @@ namespace TrafficSense
         private volatile bool _exiting;
         private readonly string? _instanceName;
         private readonly Func<MainWindow>? _createWindow;
+        private readonly DiagnosticLog? _diagnostics;
+        private readonly Action<string, string> _showFatal;
+        private int _fatalErrorStarted;
         private UiLanguage _localization = new();
 
-        public App() { }
+        public App()
+        {
+            _diagnostics = DiagnosticLog.Default;
+            _showFatal = ShowFatalDialog;
+        }
 
         // Allows lifecycle probes to coordinate under an isolated name without
         // activating or taking ownership from the user's running application.
-        internal App(string instanceName, Func<MainWindow>? createWindow = null)
+        internal App(string instanceName, Func<MainWindow>? createWindow = null,
+            DiagnosticLog? diagnostics = null, Action<string, string>? showFatal = null)
         {
             _instanceName = instanceName;
             _createWindow = createWindow;
+            _diagnostics = diagnostics;
+            _showFatal = showFatal ?? ShowFatalDialog;
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             try
             {
+                base.OnStartup(e);
                 using var identity = WindowsIdentity.GetCurrent();
                 // Local scopes coordination to the sign-in session; the SID
                 // also keeps different Windows users independent of one another.
@@ -58,34 +69,68 @@ namespace TrafficSense
             }
             catch (Exception error)
             {
-                MessageBox.Show($"{_localization[TextKey.StartFailure]}\n\n{error.Message}",
-                    _localization[TextKey.ErrorTitle], MessageBoxButton.OK, MessageBoxImage.Error);
-                Shutdown(1);
+                FailAndClose("Startup", error, TextKey.StartFailure);
             }
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             _exiting = true;
-            _tray?.Dispose();
-            _instance?.Dispose();
+            DisposeResource(_tray, "TrayCleanup");
+            DisposeResource(_instance, "InstanceCleanup");
             DispatcherUnhandledException -= App_DispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
             base.OnExit(e);
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show($"{_localization[TextKey.UiCrash]} {e.Exception.Message}\n\n{e.Exception.StackTrace}",
-                _localization[TextKey.ErrorTitle], MessageBoxButton.OK, MessageBoxImage.Error);
+            // Prevent WPF's default dialog, then stop rather than continue with
+            // unknown UI state. Expected recoverable errors are handled locally.
             e.Handled = true;
+            FailAndClose("DispatcherUnhandled", e.Exception, TextKey.FatalError);
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var ex = e.ExceptionObject as Exception;
-            MessageBox.Show($"{_localization[TextKey.BackgroundCrash]} {ex?.Message}\n\n{ex?.StackTrace}",
-                _localization[TextKey.ErrorTitle], MessageBoxButton.OK, MessageBoxImage.Error);
+            // The runtime is terminating. Persist synchronously, without showing
+            // a worker-thread dialog or waiting on a potentially broken UI thread.
+            _diagnostics?.Write("BackgroundUnhandled", e.ExceptionObject as Exception
+                ?? new Exception("Unhandled non-Exception object."), fatal: true);
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            _diagnostics?.Write("UnobservedTask", e.Exception);
+            e.SetObserved();
+        }
+
+        private static void ShowFatalDialog(string message, string title) =>
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+
+        private void DisposeResource(IDisposable? resource, string category)
+        {
+            try { resource?.Dispose(); }
+            catch (Exception error) { _diagnostics?.Write(category, error); }
+        }
+
+        private void FailAndClose(string category, Exception error, TextKey headline)
+        {
+            if (Interlocked.Exchange(ref _fatalErrorStarted, 1) != 0) return;
+            _exiting = true;
+            string? path = _diagnostics?.Write(category, error, fatal: true);
+            try
+            {
+                (MainWindow as MainWindow)?.PrepareForFatalShutdown();
+                DisposeResource(_tray, "TrayCleanup");
+                string message = _localization[headline] + "\n\n" + _localization[TextKey.AppWillClose]
+                    + "\n\n" + (path == null ? _localization[TextKey.LogUnavailable]
+                        : _localization[TextKey.LogSaved] + "\n" + path);
+                _showFatal(message, _localization[TextKey.ErrorTitle]);
+            }
+            catch (Exception reportingError) { _diagnostics?.Write("FatalReporting", reportingError, fatal: true); }
+            finally { Shutdown(1); }
         }
     }
 }

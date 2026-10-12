@@ -22,6 +22,8 @@ namespace TrafficSense
         private AppSettings _settings;
         private readonly Func<AppSettings, SettingsSaveResult> _saveSettings;
         private readonly Action<string>? _reportError;
+        private readonly DiagnosticLog? _diagnostics;
+        private bool _fatalShutdown;
         private NetworkAdapterInfo? _monitoredAdapter;
         private NetworkSpeed _latestSpeed;
         private StartupStatus _startupStatus = new(false);
@@ -31,18 +33,19 @@ namespace TrafficSense
         private bool _placementQueued;
         private bool _renderQueued;
 
-        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save) { }
+        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save, diagnostics: DiagnosticLog.Default) { }
 
         internal MainWindow(AppSettings settings, Func<AppSettings, SettingsSaveResult> saveSettings,
             Action<string>? reportError = null,
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
-            Func<TimeSpan>? sampleTimestamp = null)
+            Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
             _settings = settings;
             _saveSettings = saveSettings;
             _reportError = reportError;
+            _diagnostics = diagnostics;
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
@@ -87,19 +90,31 @@ namespace TrafficSense
             InitializeNetworkMonitor();
             Closed += (_, _) =>
             {
-                Interlocked.Exchange(ref _monitoringClosed, 1);
-                NetworkChange.NetworkAddressChanged -= NetworkChanged;
-                NetworkChange.NetworkAvailabilityChanged -= NetworkChanged;
+                StopMonitoring();
                 Localization.Changed -= Localization_Changed;
                 _placementReady = false;
                 if (_windowSource is { IsDisposed: false })
                     _windowSource.RemoveHook(WindowMessage);
-                if (_timer != null)
-                {
-                    _timer.Stop();
-                    _timer.Tick -= Timer_Tick;
-                }
             };
+        }
+
+        private void StopMonitoring()
+        {
+            if (Interlocked.Exchange(ref _monitoringClosed, 1) != 0) return;
+            NetworkChange.NetworkAddressChanged -= NetworkChanged;
+            NetworkChange.NetworkAvailabilityChanged -= NetworkChanged;
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Tick -= Timer_Tick;
+            }
+        }
+
+        internal void PrepareForFatalShutdown()
+        {
+            _fatalShutdown = true;
+            StopMonitoring();
+            IsEnabled = false;
         }
 
         private IntPtr WindowMessage(IntPtr window, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -176,6 +191,7 @@ namespace TrafficSense
 
         private void RenderNetworkSpeed()
         {
+            if (_fatalShutdown) return;
             TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond);
             TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond);
             ApplyNetworkTooltip();
@@ -272,6 +288,8 @@ namespace TrafficSense
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            // Retain the last successfully saved preferences after a fatal error.
+            if (_fatalShutdown) return;
             NativeWindowPlacement.Capture(this, _settings);
             var result = _saveSettings(_settings);
             if (!result.Success)
@@ -288,6 +306,8 @@ namespace TrafficSense
 
         private void ApplyAutoStartStatus(StartupStatus status)
         {
+            if (status.Failure == StartupError.ReadFailed)
+                _diagnostics?.Write("StartupRead", status.Error);
             _startupStatus = status;
             MenuAutoStart.IsChecked = status.Enabled ?? false;
             MenuAutoStart.IsEnabled = status.Enabled.HasValue;
@@ -308,6 +328,7 @@ namespace TrafficSense
 
         private void ShowSettingsError(string? details, TextKey headline = TextKey.SettingsSaveFailed)
         {
+            _diagnostics?.Write(headline.ToString(), details);
             string message = ErrorMessage(details, headline);
             if (_reportError != null) _reportError(message);
             else MessageBox.Show(this, message, Localization[TextKey.ErrorTitle],

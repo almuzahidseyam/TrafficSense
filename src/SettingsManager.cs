@@ -5,7 +5,7 @@ namespace TrafficSense;
 public static class SettingsManager
 {
     private static readonly SettingsStore Store = new(Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TrafficSense", "settings.json"));
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TrafficSense", "settings.json"), DiagnosticLog.Default);
     private static readonly StartupService Startup = new(new WindowsStartupRegistration());
 
     public static AppSettings Load() => Store.Load();

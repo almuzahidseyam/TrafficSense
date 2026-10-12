@@ -107,6 +107,22 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 - Hidden monitoring continues reading counters and calculating speeds, while text/layout rendering waits until the widget is shown again. Showing it renders the latest sample without resetting the monitoring baseline.
 - After a normal exit or crash, another launch can take ownership. Older versions without single-instance support should be closed before running this version.
 
+## Error Logs & Recovery
+
+- Error details are stored locally in `%LOCALAPPDATA%\TrafficSense\logs\errors.jsonl`. Records include UTC time, process ID, app/runtime version, error category and exception details. Logs are not uploaded automatically; review them before sharing, since Windows diagnostics can include local paths.
+- The logger rotates two older files (`errors.1.jsonl`, `errors.2.jsonl`), keeping three files of up to 256 KiB each. Individual messages are truncated to 16,000 characters. Logging is best effort: a locked/full/unwritable location or a busy logger during termination must not cause another error.
+- Unexpected UI or startup failures show one short English/Bangla message with the saved log path, or explain that the log could not be saved. Monitoring and tray controls stop before the fatal UI message; the app then exits with an error status. Start it again to resume monitoring. Fatal shutdown retains the last saved settings rather than writing potentially invalid in-memory state.
+- An unhandled worker-thread exception is logged synchronously without waiting for the UI or showing a background dialog; the .NET runtime terminates the process. Unobserved task exceptions are recorded without a popup; asynchronous operations should still be awaited and handle their own expected failures.
+- Recoverable settings/startup errors keep the existing rollback behavior and are logged. Corrupt/unreadable settings are recorded and load defaults. An ordinary disconnected adapter is not treated as a crash and does not generate repeated error dialogs.
+
+The Windows lifecycle probe runs isolated startup/UI/close failures, an actual terminating worker, blocked-log and failed-reporting cases, plus recoverable settings/task reporting. It uses temporary logs/settings and never crashes the user's running widget. Run these checks alone with:
+
+```powershell
+dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --error-handling
+```
+
+Unit checks cover valid diagnostic records, concurrent writers, bounded rotation, Unicode/oversized details, locked paths and corrupt-settings fallback. The normal lifecycle and portable verification run the error probes automatically. Hard process kills, power loss, stack overflow and other failures that bypass managed handlers may leave no log.
+
 ## Language / ভাষা
 
 - Right-click the widget or tray icon → **Language / ভাষা** → **English** or **বাংলা**. Both language names remain visible in either UI language.
