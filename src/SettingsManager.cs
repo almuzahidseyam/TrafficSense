@@ -57,7 +57,7 @@ namespace TrafficSense
                         string appName = "TrafficSense";
                         if (enable)
                         {
-                            string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+                            string? exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
                             if (!string.IsNullOrEmpty(exePath))
                             {
                                 key.SetValue(appName, $"\"{exePath}\"");

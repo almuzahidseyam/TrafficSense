@@ -1,19 +1,16 @@
 using System;
-using System.Linq;
-using System.Net.NetworkInformation;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Wpf.Ui.Controls;
 
 namespace TrafficSense
 {
     public partial class MainWindow : Window
     {
         private DispatcherTimer? _timer;
-        private long _lastBytesReceived = 0;
-        private long _lastBytesSent = 0;
-        private bool _isInitialized = false;
+        private readonly NetworkSpeedCalculator _speedCalculator = new();
+        private readonly Stopwatch _samplingClock = Stopwatch.StartNew();
         private AppSettings _settings;
 
         public MainWindow()
@@ -23,12 +20,14 @@ namespace TrafficSense
             
             this.Loaded += (s, e) => 
             {
-                if (_settings.WindowLeft == -1 || _settings.WindowTop == -1)
+                if (_settings.WindowLeft == -1 || _settings.WindowTop == -1 ||
+                    !double.IsFinite(_settings.WindowLeft) || !double.IsFinite(_settings.WindowTop))
                 {
                     // Default to bottom right
                     var desktopWorkingArea = SystemParameters.WorkArea;
-                    this.Left = desktopWorkingArea.Right - this.Width - 20;
-                    this.Top = desktopWorkingArea.Bottom - this.Height - 20;
+                    // Width/Height are NaN when SizeToContent determines the size.
+                    this.Left = Math.Max(desktopWorkingArea.Left, desktopWorkingArea.Right - this.ActualWidth - 20);
+                    this.Top = Math.Max(desktopWorkingArea.Top, desktopWorkingArea.Bottom - this.ActualHeight - 20);
                 }
                 else
                 {
@@ -41,10 +40,19 @@ namespace TrafficSense
             };
 
             InitializeNetworkMonitor();
+            Closed += (_, _) =>
+            {
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                    _timer.Tick -= Timer_Tick;
+                }
+            };
         }
 
         private void InitializeNetworkMonitor()
         {
+            _speedCalculator.Update(NetworkSnapshotReader.Read(), _samplingClock.Elapsed);
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += Timer_Tick;
@@ -53,62 +61,10 @@ namespace TrafficSense
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            long currentBytesReceived = 0;
-            long currentBytesSent = 0;
-
-            // Only get interfaces that have a gateway (usually actual internet connections)
-            var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && 
-                              nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                              nic.GetIPProperties().GatewayAddresses.Count > 0);
-
-            // If no interface with gateway found, fallback to all active non-loopback interfaces
-            if (!interfaces.Any())
-            {
-                interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                    .Where(nic => nic.OperationalStatus == OperationalStatus.Up && 
-                                  nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                  !nic.Description.ToLower().Contains("wsl") && 
-                                  !nic.Description.ToLower().Contains("hyper-v") &&
-                                  !nic.Description.ToLower().Contains("virtual"));
-            }
-
-            foreach (var nic in interfaces)
-            {
-                var stats = nic.GetIPv4Statistics();
-                currentBytesReceived += stats.BytesReceived;
-                currentBytesSent += stats.BytesSent;
-            }
-
-            if (_isInitialized)
-            {
-                long downloadSpeed = currentBytesReceived - _lastBytesReceived;
-                long uploadSpeed = currentBytesSent - _lastBytesSent;
-
-                TxtDownload.Text = FormatSpeed(downloadSpeed);
-                TxtUpload.Text = FormatSpeed(uploadSpeed);
-            }
-            else
-            {
-                _isInitialized = true;
-            }
-
-            _lastBytesReceived = currentBytesReceived;
-            _lastBytesSent = currentBytesSent;
-        }
-
-        private string FormatSpeed(long bytesPerSecond)
-        {
-            if (bytesPerSecond < 0) bytesPerSecond = 0;
-            
-            if (bytesPerSecond > 1024 * 1024 * 1024)
-                return $"{(bytesPerSecond / (1024.0 * 1024.0 * 1024.0)):F2} GB/s";
-            if (bytesPerSecond > 1024 * 1024)
-                return $"{(bytesPerSecond / (1024.0 * 1024.0)):F2} MB/s";
-            if (bytesPerSecond > 1024)
-                return $"{(bytesPerSecond / 1024.0):F2} KB/s";
-            
-            return $"{bytesPerSecond} B/s";
+            var snapshots = NetworkSnapshotReader.Read();
+            var speed = _speedCalculator.Update(snapshots, _samplingClock.Elapsed);
+            TxtDownload.Text = SpeedFormatter.Format(speed.DownloadBytesPerSecond);
+            TxtUpload.Text = SpeedFormatter.Format(speed.UploadBytesPerSecond);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

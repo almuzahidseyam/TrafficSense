@@ -40,11 +40,16 @@ If you want to compile the project yourself:
 3. Navigate to the folder and build:
    ```bash
    cd TrafficSense
-   dotnet build -c Release
+   dotnet build src/TrafficSense.csproj -c Release
    ```
 4. Run the application:
    ```bash
-   dotnet run
+   dotnet run --project src/TrafficSense.csproj
+   ```
+
+5. Run the automated network speed regression tests:
+   ```bash
+   dotnet test tests/TrafficSense.Tests/TrafficSense.Tests.csproj -c Release
    ```
 
 ## 🤝 Contributing
