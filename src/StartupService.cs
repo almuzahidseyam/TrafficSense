@@ -9,7 +9,9 @@ internal interface IStartupRegistration
     void SetEnabled(bool enabled);
 }
 
-internal readonly record struct StartupStatus(bool? Enabled, string? Error = null);
+internal enum StartupError { ReadFailed, ChangeFailed, NotApplied }
+
+internal readonly record struct StartupStatus(bool? Enabled, string? Error = null, StartupError? Failure = null);
 
 internal sealed class StartupService(IStartupRegistration registration)
 {
@@ -18,7 +20,7 @@ internal sealed class StartupService(IStartupRegistration registration)
         try { return new(registration.IsEnabled); }
         catch (Exception error) when (IsRegistrationError(error))
         {
-            return new(null, $"Windows startup settings could not be read. {error.Message}");
+            return new(null, error.Message, StartupError.ReadFailed);
         }
     }
 
@@ -30,11 +32,11 @@ internal sealed class StartupService(IStartupRegistration registration)
             var status = Read();
             return status.Enabled == enabled || status.Error != null
                 ? status
-                : status with { Error = "Windows did not apply the startup setting. Please try again." };
+                : status with { Error = "", Failure = StartupError.NotApplied };
         }
         catch (Exception error) when (IsRegistrationError(error))
         {
-            return Read() with { Error = $"Windows startup settings could not be changed. {error.Message}" };
+            return Read() with { Error = error.Message, Failure = StartupError.ChangeFailed };
         }
     }
 

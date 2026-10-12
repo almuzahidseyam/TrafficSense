@@ -11,6 +11,10 @@ internal sealed class TrayController : IDisposable
     private readonly Forms.NotifyIcon _notifyIcon;
     private readonly Forms.ContextMenuStrip _menu;
     private readonly Forms.ToolStripMenuItem _showWidget;
+    private readonly Forms.ToolStripMenuItem _languageMenu;
+    private readonly Forms.ToolStripMenuItem _english;
+    private readonly Forms.ToolStripMenuItem _bangla;
+    private readonly Forms.ToolStripMenuItem _exit;
     private readonly Icon _icon;
     private bool _disposed;
 
@@ -19,20 +23,40 @@ internal sealed class TrayController : IDisposable
         _window = window;
         _icon = CreateIcon();
         _menu = new Forms.ContextMenuStrip();
-        _showWidget = new Forms.ToolStripMenuItem("Show widget", null, ToggleWidget);
+        _showWidget = new Forms.ToolStripMenuItem("", null, ToggleWidget) { Tag = "show" };
         _menu.Items.Add(_showWidget);
+        _languageMenu = new Forms.ToolStripMenuItem { Tag = "language" };
+        _english = new Forms.ToolStripMenuItem("English", null, (_, _) => _window.ChangeLanguage("en"));
+        _bangla = new Forms.ToolStripMenuItem("বাংলা", null, (_, _) => _window.ChangeLanguage("bn"));
+        _languageMenu.DropDownItems.AddRange([_english, _bangla]);
+        _menu.Items.Add(_languageMenu);
         _menu.Items.Add(new Forms.ToolStripSeparator());
-        _menu.Items.Add(new Forms.ToolStripMenuItem("Exit", null, Exit));
+        _exit = new Forms.ToolStripMenuItem("", null, Exit) { Tag = "exit" };
+        _menu.Items.Add(_exit);
         _notifyIcon = new Forms.NotifyIcon
         {
-            Text = "TrafficSense — double-click to show widget",
+            Text = "TrafficSense",
             Icon = _icon,
-            ContextMenuStrip = _menu,
-            Visible = true
+            ContextMenuStrip = _menu
         };
         _notifyIcon.DoubleClick += ShowWidget;
         _window.IsVisibleChanged += WindowVisibilityChanged;
+        _window.Localization.Changed += LanguageChanged;
         _showWidget.Checked = _window.IsVisible;
+        ApplyLanguage();
+        _notifyIcon.Visible = true;
+    }
+
+    private void LanguageChanged(object? sender, EventArgs e) => ApplyLanguage();
+
+    private void ApplyLanguage()
+    {
+        _showWidget.Text = _window.Localization[TextKey.ShowWidget];
+        _languageMenu.Text = _window.Localization[TextKey.Language];
+        _exit.Text = _window.Localization[TextKey.Exit];
+        _english.Checked = _window.Localization.Code == "en";
+        _bangla.Checked = _window.Localization.Code == "bn";
+        _notifyIcon.Text = _window.Localization[TextKey.TrayHint];
     }
 
     private void ShowWidget(object? sender, EventArgs e) => _window.ShowWidget();
@@ -53,6 +77,7 @@ internal sealed class TrayController : IDisposable
         if (_disposed) return;
         _disposed = true;
         _window.IsVisibleChanged -= WindowVisibilityChanged;
+        _window.Localization.Changed -= LanguageChanged;
         _notifyIcon.DoubleClick -= ShowWidget;
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();

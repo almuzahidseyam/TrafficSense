@@ -14,15 +14,19 @@
     
     <Border Background="#60000000" CornerRadius="4" Margin="2" Padding="8,4">
         <Border.ContextMenu>
-            <ContextMenu>
+            <ContextMenu FontFamily="Segoe UI, Nirmala UI, Kalpurush">
                 <MenuItem Header="Network adapter" x:Name="MenuNetworkAdapter" SubmenuOpened="MenuNetworkAdapter_Opened">
                     <MenuItem Header="Auto (one connection)" />
                 </MenuItem>
                 <MenuItem Header="Start with Windows" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
-                <MenuItem Header="Switch Theme (Light/Dark)" Click="MenuTheme_Click" />
+                <MenuItem Header="Switch Theme (Light/Dark)" x:Name="MenuTheme" Click="MenuTheme_Click" />
+                <MenuItem Header="Language" x:Name="MenuLanguage">
+                    <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />
+                    <MenuItem Header="বাংলা" x:Name="MenuBangla" Tag="bn" IsCheckable="True" Click="MenuLanguage_Click" />
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="Hide widget" Click="MenuHide_Click" />
-                <MenuItem Header="Exit" Click="MenuExit_Click" />
+                <MenuItem Header="Hide widget" x:Name="MenuHide" Click="MenuHide_Click" />
+                <MenuItem Header="Exit" x:Name="MenuExit" Click="MenuExit_Click" />
             </ContextMenu>
         </Border.ContextMenu>
         <Grid>

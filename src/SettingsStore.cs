@@ -35,7 +35,7 @@ internal sealed class SettingsStore(string filePath)
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException)
         {
-            return new(false, $"Your settings could not be saved. {error.Message}");
+            return new(false, error.Message);
         }
         finally
         {
@@ -51,6 +51,7 @@ internal sealed class SettingsStore(string filePath)
         ScreenLeft = settings.ScreenLeft,
         ScreenTop = settings.ScreenTop,
         Theme = settings.Theme == "Light" ? "Light" : "Dark",
+        Language = UiLanguage.Normalize(settings.Language),
         SelectedAdapterId = string.IsNullOrWhiteSpace(settings.SelectedAdapterId) ? null : settings.SelectedAdapterId
     };
 }
