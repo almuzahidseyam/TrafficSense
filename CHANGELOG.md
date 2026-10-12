@@ -4,6 +4,17 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.18.1] - 2026-10-12
+
+### Fixed
+
+- Stabilized retained-memory verification after popup stress. An occasional run kept roughly 91 MiB of managed heap committed despite only about 7 MiB of live objects, failing the private-memory budget while identical runs passed. The probe now reclaims unused GC regions at both measurement boundaries, retaining ordinary-collection snapshots alongside reclaimed snapshots for diagnosis. Managed/private/native budgets are unchanged.
+- This is a verification correction; the widget's daily hover details behave as in 1.18.0. Production monitoring does not force garbage collections.
+
+### Upgrading from 1.18.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible. The daily chart's English/Bengali date and exact-byte hover details are included.
+
 ## [1.18.0] - 2026-10-12
 
 ### Added
@@ -207,7 +218,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.1...HEAD
+[1.18.1]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.15.0...v1.16.0

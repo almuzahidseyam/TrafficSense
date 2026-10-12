@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.18.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.18.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.18.1](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.18.1)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -94,7 +94,7 @@ Use `-DotNet 'C:/path/to/dotnet.exe'` for a custom SDK location. The script publ
 
 After a 20-second warmup, it measures the real one-second monitor for half the requested duration with the widget shown and half hidden. Reports include process CPU (both one-core and whole-machine percentages), working set, private memory, managed allocations, process/GDI/USER handles, actual sampling ticks and UI heartbeat delays. Working set includes shared runtime pages and is not the same as private memory. The measurements include probe overhead and depend on Windows, hardware, network traffic and whether other windows cover the widget.
 
-The stress phase repeatedly samples live adapters, rebuilds menus, switches language/theme, shows/hides the window, and creates/disposes temporary tray controllers. Stress iterations are accelerated operations, **not equivalent to hours of elapsed time**. After cleanup/GC, the probe checks retained managed/private memory and native resources against generous regression budgets; CPU is recorded rather than gated by a hardware-specific threshold. A bounded parent-process timeout catches a stalled UI. CI runs a shorter 60-second/1,500-iteration check and uploads its JSON report, including on a resource-check failure. Passing a finite run does not guarantee leak-free behavior over days or every Windows/driver combination.
+The stress phase repeatedly samples live adapters, rebuilds menus, switches language/theme, shows/hides the window, and creates/disposes temporary tray controllers. Stress iterations are accelerated operations, **not equivalent to hours of elapsed time**. After cleanup/GC, the probe checks retained managed/private memory and native resources against generous regression budgets; CPU is recorded rather than gated by a hardware-specific threshold. At both retention boundaries it records ordinary-collection snapshots, then requests unused managed heap regions be decommitted with [.NET's aggressive collection mode](https://learn.microsoft.com/en-us/dotnet/api/system.gccollectionmode?view=net-8.0). The same unchanged budgets use the reclaimed snapshots, while ordinary snapshots and ongoing samples preserve actual memory/cache costs. This collection runs only in the probe, never in the production widget. A bounded parent-process timeout catches a stalled UI. CI runs a shorter 60-second/1,500-iteration check and uploads its JSON report, including on a resource-check failure. Passing a finite run does not guarantee leak-free behavior over days or every Windows/driver combination.
 
 ## Settings & Window Position
 

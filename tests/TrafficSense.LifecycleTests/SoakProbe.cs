@@ -58,6 +58,7 @@ internal static class SoakProbe
         bool hidden = false, stressStarted = false;
         double lastTick = 0, maxDelay = 0;
         Sample? retainedBefore = null, retainedAfter = null;
+        Sample? normalCollectionBefore = null, normalCollectionAfter = null;
         double warmupEnd = 0, measurementEnd = 0;
         TimeSpan stressDuration = default;
         int completedIterations = 0;
@@ -74,6 +75,8 @@ internal static class SoakProbe
             app.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
             {
                 Collect();
+                normalCollectionAfter = Capture(process, watch.Elapsed.TotalSeconds, "normal-collection-after", ticks);
+                ReclaimUnusedHeap();
                 retainedAfter = Capture(process, watch.Elapsed.TotalSeconds, "retained-after", ticks);
                 sampler!.Stop();
                 window!.Close();
@@ -173,6 +176,8 @@ internal static class SoakProbe
                 if (retainedBefore == null)
                 {
                     Collect();
+                    normalCollectionBefore = Capture(process, now, "normal-collection-before", ticks);
+                    ReclaimUnusedHeap();
                     retainedBefore = Capture(process, now, "retained-before", ticks);
                     samples.Add(Capture(process, now, "visible", ticks));
                     visibleTicks = hiddenTicks = 0;
@@ -224,6 +229,7 @@ internal static class SoakProbe
                 MaximumHeartbeatDelaySeconds = maxDelay,
                 Visible = Summarize(samples, "visible"), Hidden = Summarize(samples, "hidden"),
                 RetainedBefore = retainedBefore, RetainedAfter = retainedAfter, Samples = samples, Errors = errors,
+                NormalCollectionBefore = normalCollectionBefore, NormalCollectionAfter = normalCollectionAfter,
                 Passed = errors.Count == 0
             };
             Directory.CreateDirectory(Path.GetDirectoryName(reportPath)!);
@@ -254,6 +260,14 @@ internal static class SoakProbe
         GC.Collect();
         GC.WaitForPendingFinalizers();
         GC.Collect();
+    }
+
+    private static void ReclaimUnusedHeap()
+    {
+        // Compare retained memory after decommitting unused GC regions at BOTH
+        // boundaries. Keep ordinary-collection snapshots to expose peak/cache
+        // costs; live object and native handle budgets remain unchanged.
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, blocking: true, compacting: true);
     }
 
     private static Sample Capture(Process process, double seconds, string phase, int ticks)
