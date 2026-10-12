@@ -14,7 +14,7 @@ public partial class MainWindow
         if (_aboutWindow == null)
         {
             _aboutWindow = new AboutWindow(Localization, _diagnostics ?? DiagnosticLog.Default,
-                _reportError, _launchLogFolder);
+                _reportError, _launchLogFolder, _updates, _openReleasePage);
             _aboutWindow.Closed += (_, _) => _aboutWindow = null;
         }
         // Keep this window independent of WPF owner visibility: opening About

@@ -112,6 +112,7 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 ## Error Logs & Recovery
 
 - Choose **About TrafficSense** from the widget or tray menu to see the running app's version and copy the error log folder address. **Open log folder** creates the folder if needed and opens it in File Explorer. Opening About keeps a hidden widget hidden; repeated clicks reuse the same window, which closes when the app exits. About follows English/Bengali language changes immediately.
+
 - Error details are stored locally in `%LOCALAPPDATA%\TrafficSense\logs\errors.jsonl`. Records include UTC time, process ID, app/runtime version, error category and exception details. Logs are not uploaded automatically; review them before sharing, since Windows diagnostics can include local paths.
 - The logger rotates two older files (`errors.1.jsonl`, `errors.2.jsonl`), keeping three files of up to 256 KiB each. Individual messages are truncated to 16,000 characters. Logging is best effort: a locked/full/unwritable location or a busy logger during termination must not cause another error.
 - Unexpected UI or startup failures show one short English/Bangla message with the saved log path, or explain that the log could not be saved. Monitoring and tray controls stop before the fatal UI message; the app then exits with an error status. Start it again to resume monitoring. Fatal shutdown retains the last saved settings rather than writing potentially invalid in-memory state.
@@ -125,6 +126,14 @@ dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --error-han
 ```
 
 Unit checks cover valid diagnostic records, concurrent writers, bounded rotation, Unicode/oversized details, locked paths and corrupt-settings fallback. The normal lifecycle and portable verification run the error probes automatically. Hard process kills, power loss, stack overflow and other failures that bypass managed handlers may leave no log.
+
+## Check for updates (unreleased)
+
+In development builds, choose **About TrafficSense → Check for updates**. The app contacts GitHub only when you click, compares the latest published stable release with the running version, and offers **View release and download** when a newer version is available. The button opens this project's release page in your default browser; it does not download or install software automatically. A copyable page address remains available if the browser cannot open.
+
+Checks run without blocking the widget, allow only one request at a time, time out after ten seconds, and cancel when About closes. Offline/server errors and GitHub request limits show a localized status with a retry button. Opening About or starting TrafficSense makes no update request. The request uses [GitHub's public release API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) without an authentication token or sending settings/logs. These checks are separate from network speed monitoring.
+
+The Windows lifecycle/portable probe includes deterministic update scenarios without contacting GitHub or opening a browser. Run them alone with `dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --updates`. For an optional real request to GitHub, use `--update-live`; this is excluded from automated CI to avoid network-dependent failures.
 
 ## Language / ভাষা
 

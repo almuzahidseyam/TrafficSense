@@ -8,7 +8,9 @@ internal enum TextKey
     SettingsSaveFailed, StartupReadFailed, StartupChangeFailed, StartupNotApplied,
     StartFailure, UiCrash, BackgroundCrash, ErrorTitle, DownloadSpeed, UploadSpeed,
     FatalError, AppWillClose, LogSaved, LogUnavailable,
-    About, Version, LogFolder, OpenLogFolder, LogFolderOpenFailed, Close
+    About, Version, LogFolder, OpenLogFolder, LogFolderOpenFailed, Close,
+    CheckUpdates, UpdateHint, UpdateChecking, UpdateAvailable, UpdateCurrent, UpdateNoRelease,
+    UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -47,6 +49,19 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.LogFolderOpenFailed] = ("The log folder could not be opened. You can copy its address and try opening it in File Explorer.",
                 "লগ ফোল্ডার খোলা যায়নি। ঠিকানাটি কপি করে File Explorer-এ খোলার চেষ্টা করতে পারেন।"),
             [TextKey.Close] = ("Close", "ফিরে যান"),
+            [TextKey.CheckUpdates] = ("Check for updates", "আপডেট খুঁজুন"),
+            [TextKey.UpdateHint] = ("Check GitHub for a newer version.", "GitHub-এ নতুন সংস্করণ খুঁজুন।"),
+            [TextKey.UpdateChecking] = ("Checking for updates…", "নতুন আপডেট খোঁজা হচ্ছে…"),
+            [TextKey.UpdateAvailable] = ("Version {0} is available.", "নতুন সংস্করণ {0} পাওয়া গেছে।"),
+            [TextKey.UpdateCurrent] = ("You are up to date.", "আপনার সংস্করণ হালনাগাদ আছে।"),
+            [TextKey.UpdateNoRelease] = ("No published release was found.", "কোনো প্রকাশিত রিলিজ পাওয়া যায়নি।"),
+            [TextKey.UpdateRateLimited] = ("GitHub is limiting update checks. Please try again later.",
+                "GitHub আপডেট খোঁজার অনুরোধ সীমিত করেছে। কিছুক্ষণ পরে চেষ্টা করুন।"),
+            [TextKey.UpdateCheckFailed] = ("Could not check for updates. Check your connection and try again.",
+                "আপডেট খোঁজা যায়নি। সংযোগ যাচাই করে আবার চেষ্টা করুন।"),
+            [TextKey.OpenRelease] = ("View release and download", "রিলিজ দেখে ডাউনলোড করুন"),
+            [TextKey.OpenReleaseFailed] = ("The release page could not be opened. Copy the address below into your browser.",
+                "রিলিজ পৃষ্ঠা খোলা যায়নি। নিচের ঠিকানাটি কপি করে ব্রাউজারে খুলুন।"),
             [TextKey.AutoConnection] = ("Auto (one connection)", "স্বয়ংক্রিয় (একটি সংযোগ)"),
             [TextKey.AutoDescription] = ("Monitors one connected adapter automatically. VPN and underlying traffic are never added together.",
                 "স্বয়ংক্রিয়ভাবে একটি সংযোগের গতি মাপে। VPN ও মূল সংযোগের ডেটা একসঙ্গে যোগ হয় না।"),
