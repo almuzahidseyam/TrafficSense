@@ -112,6 +112,7 @@ internal sealed partial class HistoryWindow
             _language[TextKey.Upload] + ": " + FormatBytes(totals.Sent) + "\n" +
             _language[TextKey.TotalUsage] + ": " + FormatBytes(totals.Total) : "";
         AutomationProperties.SetName(_selectedUsage, _selectedUsage.Text);
+        RefreshDailyUsage(valid, range);
     }
 
     private void QueueHistoryPlacement()

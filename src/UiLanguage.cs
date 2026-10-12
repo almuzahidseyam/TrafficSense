@@ -18,7 +18,7 @@ internal enum TextKey
     SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed,
     CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed,
     CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays,
-    SelectedUsage, TotalUsage
+    SelectedUsage, TotalUsage, DailyUsage, DailyUsageHint, UsageDate, ExactBytes
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -80,6 +80,11 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.CsvSelectedDays] = ("{0} recorded day(s) selected.", "নির্বাচিত সময়ে {0} দিনের সংরক্ষিত হিসাব আছে।"),
             [TextKey.SelectedUsage] = ("Selected period usage", "নির্বাচিত সময়ের ডেটা ব্যবহার"),
             [TextKey.TotalUsage] = ("Total", "সর্বমোট"),
+            [TextKey.DailyUsage] = ("Daily usage (newest first)", "দিনভিত্তিক হিসাব (সাম্প্রতিক দিন আগে)"),
+            [TextKey.DailyUsageHint] = ("Recorded days in the selected period, newest first. Use arrow keys to navigate; hover a cell for exact bytes. Unrecorded days are omitted.",
+                "নির্বাচিত সময়ের সংরক্ষিত দিন, সাম্প্রতিক দিন আগে। তীর চিহ্নের কী দিয়ে বাছাই করুন; ঘরে মাউস রাখলে সঠিক বাইট দেখাবে। রেকর্ড না থাকা দিন বাদ যায়।"),
+            [TextKey.UsageDate] = ("Date", "তারিখ"),
+            [TextKey.ExactBytes] = ("{0} bytes", "{0} বাইট"),
             [TextKey.CsvExportEmpty] = ("No measured usage to export yet.", "সংরক্ষণ করার মতো মাপা ডেটা এখনো নেই।"),
             [TextKey.CsvExportFailed] = ("Could not export usage. Existing files and usage totals were kept.",
                 "ডেটা ব্যবহারের হিসাব সংরক্ষণ করা যায়নি। আগের ফাইল ও হিসাব অক্ষত আছে।"),

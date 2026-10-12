@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.16.0] - 2026-10-12
+
+### Added
+
+- Read-only daily usage table below selected-period totals, with date, download, upload and combined amounts. All retained days, a selected month and inclusive custom ranges show the same records as CSV, with the newest day first.
+- English/Bengali headers and accessible exact-byte row descriptions; hovering a cell reveals exact counts even when displayed units are rounded. Invalid or empty selections clear and hide the table while keeping the existing explanation.
+- Live row updates preserve selection and scrolling; language changes update existing rows. A virtualized table grows from 100 to 200 logical pixels as records are added, bounding visual work for all 400 retained days; expired records are removed on rollover. Native controls/system colors and wrapping keep the table usable at minimum width and on smaller screens.
+
+### Upgrading from 1.15.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible.
+- Open **Usage and history**, choose **CSV period**, and scroll to **Daily usage** beneath the totals. Only recorded days are shown; CSV still exports ascending ISO dates and exact bytes. The table is for viewing and does not edit usage or clear pending persistence.
+
 ## [1.15.0] - 2026-10-12
 
 ### Added

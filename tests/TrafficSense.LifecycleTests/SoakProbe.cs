@@ -34,11 +34,17 @@ internal static class SoakProbe
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Soak", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         var store = new SettingsStore(Path.Combine(directory, "settings.json"));
+        // Exercise the largest retained daily list without reading or writing user usage.
+        var usageStore = new UsageStore(Path.Combine(directory, "usage.json"));
+        var today = DateOnly.FromDateTime(DateTimeOffset.Now.Date);
+        if (!usageStore.Save(new UsageLedger(Enumerable.Range(0, UsageLedger.MaximumDays)
+                .Select(i => new UsageDay(today.AddDays(-i), 1024 * 1024, 512 * 1024)))))
+            throw new IOException("Could not seed isolated usage for the stability probe.");
         var errors = new List<string>();
         var samples = new List<Sample>();
         var watch = Stopwatch.StartNew();
         var app = new App(@"Local\TrafficSense.Soak." + Guid.NewGuid().ToString("N"),
-            () => new MainWindow(new AppSettings { WindowLeft = 30, WindowTop = 150 }, store.Save, errors.Add)
+            () => new MainWindow(new AppSettings { WindowLeft = 30, WindowTop = 150 }, store.Save, errors.Add, usageStore: usageStore)
                 { ShowActivated = false, Topmost = false });
         app.InitializeComponent();
         var historyStyle = new Style(typeof(HistoryWindow));
