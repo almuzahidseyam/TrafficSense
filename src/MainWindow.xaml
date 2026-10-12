@@ -33,6 +33,10 @@
                     <MenuItem Header="বাংলা" x:Name="MenuBangla" Tag="bn" IsCheckable="True" Click="MenuLanguage_Click" />
                 </MenuItem>
                 <Separator />
+                <MenuItem Header="Settings backup" x:Name="MenuSettingsBackup">
+                    <MenuItem Header="Back up settings…" x:Name="MenuBackup" Click="MenuBackup_Click" />
+                    <MenuItem Header="Restore settings…" x:Name="MenuRestore" Click="MenuRestore_Click" />
+                </MenuItem>
                 <MenuItem Header="About TrafficSense" x:Name="MenuAbout" Click="MenuAbout_Click" />
                 <MenuItem Header="Usage and history" x:Name="MenuHistory" Click="MenuHistory_Click" />
                 <MenuItem Header="Hide widget" x:Name="MenuHide" Click="MenuHide_Click" />

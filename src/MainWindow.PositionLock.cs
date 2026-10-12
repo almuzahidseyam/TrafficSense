@@ -14,7 +14,7 @@ public partial class MainWindow
         NativeWindowPlacement.Restore(this, new AppSettings());
         NativeWindowPlacement.Capture(this, _settings);
         var result = _saveSettings(_settings);
-        if (result.Success) return true;
+        if (result.Success) { _restorePlacementPending = false; return true; }
         (_settings.WindowLeft, _settings.WindowTop, _settings.ScreenLeft, _settings.ScreenTop) = previous;
         NativeWindowPlacement.Restore(this, _settings);
         ShowSettingsError(result.Error);
@@ -35,7 +35,7 @@ public partial class MainWindow
             _settings.ScreenLeft, _settings.ScreenTop);
         _settings.PositionLocked = locked;
         // Remember the position being locked immediately, including after a drag.
-        if (locked && _placementReady) NativeWindowPlacement.Capture(this, _settings);
+        if (locked && _placementReady && !_restorePlacementPending) NativeWindowPlacement.Capture(this, _settings);
         var result = _saveSettings(_settings);
         if (!result.Success)
         {

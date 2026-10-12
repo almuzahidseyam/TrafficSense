@@ -23,6 +23,7 @@ internal static class Program
         if (args.FirstOrDefault() == "--appearance-restart") return AppearanceProbe.VerifyRestart(args[1]);
         if (args.FirstOrDefault() == "--position-lock") return PositionLockProbe.Run();
         if (args.FirstOrDefault() == "--features") return FeatureProbe.Run();
+        if (args.FirstOrDefault() == "--backup") return BackupProbe.Run();
         if (args.FirstOrDefault() == "--position-lock-restart") return PositionLockProbe.VerifyRestart(args[1], bool.Parse(args[2]));
         if (args.FirstOrDefault() == "--update-live") return UpdateProbe.CheckLive();
         if (args.FirstOrDefault() is "--about" or "--about-fatal") return AboutProbe.Run(args[0] == "--about-fatal");
@@ -39,6 +40,7 @@ internal static class Program
             RunChild("--appearance");
             RunChild("--position-lock");
             RunChild("--features");
+            RunChild("--backup");
             ErrorHandlingProbe.RunAll();
         }
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));

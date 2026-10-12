@@ -27,6 +27,7 @@
     <Compile Include="../../src/UiLanguage.cs" Link="UiLanguage.cs" />
     <Compile Include="../../src/UpdateChecker.cs" Link="UpdateChecker.cs" />
     <Compile Include="../../src/SettingsStore.cs" Link="SettingsStore.cs" />
+    <Compile Include="../../src/SettingsBackup.cs" Link="SettingsBackup.cs" />
     <Compile Include="../../src/DiagnosticLog.cs" Link="DiagnosticLog.cs" />
     <Compile Include="../../src/StartupCommand.cs" Link="StartupCommand.cs" />
     <Compile Include="../../src/StartupService.cs" Link="StartupService.cs" />

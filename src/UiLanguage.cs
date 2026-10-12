@@ -14,7 +14,8 @@ internal enum TextKey
     TextSize, BackgroundTransparency, DefaultAppearance, LockPosition, ResetPosition,
     SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds,
     History, Today, ThisMonth, UsageHint, Download, Upload, GraphLegend,
-    GlobalShortcut, ShortcutHelp, ShortcutUnavailable
+    GlobalShortcut, ShortcutHelp, ShortcutUnavailable,
+    SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -40,6 +41,13 @@ internal sealed class UiLanguage(string? code = "en")
         new Dictionary<TextKey, (string, string)>
         {
             [TextKey.NetworkAdapter] = ("Network adapter", "নেটওয়ার্ক অ্যাডাপ্টার"),
+            [TextKey.SettingsBackup] = ("Settings backup", "সেটিংস ব্যাকআপ"),
+            [TextKey.BackupSettings] = ("Back up settings…", "সেটিংস সংরক্ষণ করুন…"),
+            [TextKey.RestoreSettings] = ("Restore settings…", "সেটিংস ফিরিয়ে আনুন…"),
+            [TextKey.BackupHint] = ("Restore replaces widget preferences immediately. Startup registration, usage and logs are excluded. Missing adapters use Auto; positions fit the current monitors.",
+                "ফিরিয়ে আনলে উইজেটের সেটিংস সঙ্গে সঙ্গে বদলাবে। Windows-এ স্বয়ংক্রিয় চালু হওয়া, ডেটা ব্যবহার ও লগ অন্তর্ভুক্ত নয়। অ্যাডাপ্টার না থাকলে স্বয়ংক্রিয় নির্বাচন হবে; অবস্থান বর্তমান মনিটরে মানিয়ে নেবে।"),
+            [TextKey.BackupFailed] = ("Could not save the settings backup.", "সেটিংস ব্যাকআপ সংরক্ষণ করা যায়নি।"),
+            [TextKey.RestoreFailed] = ("Could not restore this backup. Current settings were kept.", "এই ব্যাকআপ ফিরিয়ে আনা যায়নি। বর্তমান সেটিংস অক্ষত আছে।"),
             [TextKey.StartWithWindows] = ("Start with Windows", "Windows চালু হলে চালু করুন"),
             [TextKey.SwitchTheme] = ("Switch Theme (Light/Dark)", "থিম বদলান (হালকা/গাঢ়)"),
             [TextKey.TextSize] = ("Text size", "লেখার আকার"),

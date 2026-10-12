@@ -128,6 +128,7 @@ namespace TrafficSense
                 if (IsVisible && !_fatalShutdown)
                 {
                     ApplyPendingAppearance();
+                    ApplyRestoredPosition();
                     RenderNetworkSpeed();
                 }
             }));
@@ -333,7 +334,7 @@ namespace TrafficSense
         {
             // Retain the last successfully saved preferences after a fatal error.
             if (_fatalShutdown) return;
-            NativeWindowPlacement.Capture(this, _settings);
+            if (!_restorePlacementPending) NativeWindowPlacement.Capture(this, _settings);
             var result = _saveSettings(_settings);
             if (!result.Success)
                 ShowSettingsError(result.Error);
