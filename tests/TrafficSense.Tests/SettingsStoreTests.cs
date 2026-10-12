@@ -18,6 +18,7 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Equal(-1, settings.WindowLeft);
         Assert.Null(settings.ScreenLeft);
         Assert.Null(settings.SelectedAdapterId);
+        Assert.Equal("en", settings.Language);
     }
 
     [Theory]
@@ -51,6 +52,7 @@ public sealed class SettingsStoreTests : IDisposable
         var settings = store.Load();
         Assert.Equal(100, settings.WindowLeft);
         Assert.Equal(200, settings.WindowTop);
+        Assert.Equal("en", settings.Language);
         Assert.True(store.Save(settings).Success);
         using var document = JsonDocument.Parse(File.ReadAllText(FilePath));
         Assert.False(document.RootElement.TryGetProperty("AutoStart", out _));
@@ -98,6 +100,33 @@ public sealed class SettingsStoreTests : IDisposable
         }
         Assert.Equal("Light", store.Load().Theme);
         Assert.Empty(Directory.GetFiles(_directory, "*.tmp"));
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("bn")]
+    public void LanguageRoundTripsWithoutLosingOtherPreferences(string language)
+    {
+        var store = new SettingsStore(FilePath);
+        Assert.True(store.Save(new AppSettings
+        {
+            Language = language, SelectedAdapterId = "vpn-id", Theme = "Light", ScreenLeft = -400
+        }).Success);
+        var loaded = store.Load();
+        Assert.Equal(language, loaded.Language);
+        Assert.Equal("vpn-id", loaded.SelectedAdapterId);
+        Assert.Equal("Light", loaded.Theme);
+        Assert.Equal(-400, loaded.ScreenLeft);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("fr")]
+    public void InvalidSavedLanguageFallsBackToEnglish(string? language)
+    {
+        File.WriteAllText(FilePath, JsonSerializer.Serialize(new { Language = language }));
+        Assert.Equal("en", new SettingsStore(FilePath).Load().Language);
     }
 
     public void Dispose()

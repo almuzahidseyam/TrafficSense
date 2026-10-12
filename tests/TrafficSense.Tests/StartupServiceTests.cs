@@ -22,6 +22,7 @@ public class StartupServiceTests
         var status = new StartupService(registration).SetEnabled(true);
         Assert.False(status.Enabled);
         Assert.NotNull(status.Error);
+        Assert.Equal(StartupError.ChangeFailed, status.Failure);
     }
 
     [Fact]
@@ -30,6 +31,7 @@ public class StartupServiceTests
         var status = new StartupService(new FakeRegistration { ReadError = new IOException() }).Read();
         Assert.Null(status.Enabled);
         Assert.NotNull(status.Error);
+        Assert.Equal(StartupError.ReadFailed, status.Failure);
     }
 
     [Fact]
@@ -38,6 +40,7 @@ public class StartupServiceTests
         var status = new StartupService(new FakeRegistration { IgnoreWrites = true }).SetEnabled(true);
         Assert.False(status.Enabled);
         Assert.NotNull(status.Error);
+        Assert.Equal(StartupError.NotApplied, status.Failure);
     }
 
     [Fact]

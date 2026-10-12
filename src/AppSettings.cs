@@ -8,5 +8,6 @@ public class AppSettings
     public int? ScreenLeft { get; set; }
     public int? ScreenTop { get; set; }
     public string Theme { get; set; } = "Dark";
+    public string Language { get; set; } = "en";
     public string? SelectedAdapterId { get; set; }
 }

@@ -15,14 +15,28 @@ namespace TrafficSense
         private readonly NetworkAdapterSelection _adapterSelection = new();
         private readonly Stopwatch _samplingClock = Stopwatch.StartNew();
         private AppSettings _settings;
+        private readonly Func<AppSettings, SettingsSaveResult> _saveSettings;
+        private readonly Action<string>? _reportError;
+        private NetworkAdapterInfo? _monitoredAdapter;
+        private StartupStatus _startupStatus = new(false);
+        internal UiLanguage Localization { get; }
         private HwndSource? _windowSource;
         private bool _placementReady;
         private bool _placementQueued;
 
-        public MainWindow()
+        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save) { }
+
+        internal MainWindow(AppSettings settings, Func<AppSettings, SettingsSaveResult> saveSettings,
+            Action<string>? reportError = null)
         {
+            _settings = settings;
+            _saveSettings = saveSettings;
+            _reportError = reportError;
+            _settings.Language = UiLanguage.Normalize(_settings.Language);
+            Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
-            _settings = SettingsManager.Load();
+            Localization.Changed += Localization_Changed;
+            ApplyLanguage();
             
             this.Loaded += (s, e) => 
             {
@@ -45,6 +59,7 @@ namespace TrafficSense
             InitializeNetworkMonitor();
             Closed += (_, _) =>
             {
+                Localization.Changed -= Localization_Changed;
                 _placementReady = false;
                 if (_windowSource is { IsDisposed: false })
                     _windowSource.RemoveHook(WindowMessage);
@@ -100,12 +115,18 @@ namespace TrafficSense
             var speed = _speedCalculator.Update(snapshots, _samplingClock.Elapsed);
             TxtDownload.Text = SpeedFormatter.Format(speed.DownloadBytesPerSecond);
             TxtUpload.Text = SpeedFormatter.Format(speed.UploadBytesPerSecond);
-            string status = adapter != null
-                ? $"{(_settings.SelectedAdapterId == null ? "Auto: " : "")}{adapter.Name}\n{adapter.Description}"
+            _monitoredAdapter = adapter;
+            ApplyNetworkTooltip();
+        }
+
+        private void ApplyNetworkTooltip()
+        {
+            string status = _monitoredAdapter != null
+                ? $"{(_settings.SelectedAdapterId == null ? Localization[TextKey.AutoPrefix] : "")}{_monitoredAdapter.Name}\n{_monitoredAdapter.Description}"
                 : _settings.SelectedAdapterId == null
-                    ? "No connected network adapter"
-                    : "Selected adapter disconnected or unavailable. Waiting for it to reconnect.";
-            ((Border)Content).ToolTip = status + "\nRight-click to choose a network adapter.";
+                    ? Localization[TextKey.NoConnectedAdapter]
+                    : Localization[TextKey.WaitingForAdapter];
+            ((Border)Content).ToolTip = status + "\n" + Localization[TextKey.ChooseAdapterHint];
         }
 
         private void MenuNetworkAdapter_Opened(object sender, RoutedEventArgs e)
@@ -113,20 +134,24 @@ namespace TrafficSense
             if (!ReferenceEquals(e.OriginalSource, MenuNetworkAdapter))
                 return;
 
+            BuildAdapterMenu();
+        }
+
+        private void BuildAdapterMenu()
+        {
             var adapters = NetworkSnapshotReader.Read();
             MenuNetworkAdapter.Items.Clear();
-            AddAdapterMenuItem("Auto (one connection)", null,
-                "Monitors one connected adapter automatically. VPN and underlying traffic are never added together.");
+            AddAdapterMenuItem(Localization[TextKey.AutoConnection], null, Localization[TextKey.AutoDescription]);
             MenuNetworkAdapter.Items.Add(new Separator());
             foreach (var adapter in adapters.OrderBy(adapter => adapter.Name, StringComparer.CurrentCultureIgnoreCase))
             {
-                AddAdapterMenuItem(adapter.Name + (adapter.CanMonitor ? "" : " (disconnected/unavailable)"),
+                AddAdapterMenuItem(adapter.Name + (adapter.CanMonitor ? "" : Localization[TextKey.UnavailableSuffix]),
                     adapter.Id, adapter.Description);
             }
             if (_settings.SelectedAdapterId != null && adapters.All(adapter => adapter.Id != _settings.SelectedAdapterId))
             {
-                var missing = AddAdapterMenuItem("Selected adapter (unavailable)", _settings.SelectedAdapterId,
-                    "This adapter will be monitored again when it reconnects. Choose Auto or another adapter to switch.");
+                var missing = AddAdapterMenuItem(Localization[TextKey.MissingAdapter], _settings.SelectedAdapterId,
+                    Localization[TextKey.ReconnectDescription]);
                 missing.IsEnabled = false;
             }
         }
@@ -149,7 +174,7 @@ namespace TrafficSense
             var item = (MenuItem)sender;
             string? previousId = _settings.SelectedAdapterId;
             _settings.SelectedAdapterId = item.Tag as string;
-            var result = SettingsManager.Save(_settings);
+            var result = _saveSettings(_settings);
             if (!result.Success)
             {
                 _settings.SelectedAdapterId = previousId;
@@ -186,7 +211,7 @@ namespace TrafficSense
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             NativeWindowPlacement.Capture(this, _settings);
-            var result = SettingsManager.Save(_settings);
+            var result = _saveSettings(_settings);
             if (!result.Success)
                 ShowSettingsError(result.Error);
         }
@@ -196,25 +221,42 @@ namespace TrafficSense
             var status = SettingsManager.SetAutoStart(MenuAutoStart.IsChecked);
             ApplyAutoStartStatus(status);
             if (status.Error != null)
-                ShowSettingsError(status.Error);
+                ShowSettingsError(status.Error, StartupErrorKey(status.Failure));
         }
 
         private void ApplyAutoStartStatus(StartupStatus status)
         {
+            _startupStatus = status;
             MenuAutoStart.IsChecked = status.Enabled ?? false;
             MenuAutoStart.IsEnabled = status.Enabled.HasValue;
-            MenuAutoStart.ToolTip = status.Error;
+            MenuAutoStart.ToolTip = status.Error == null ? null
+                : ErrorMessage(status.Error, StartupErrorKey(status.Failure));
         }
 
-        private void ShowSettingsError(string? message) =>
-            MessageBox.Show(this, message ?? "Your settings could not be saved.",
-                "TrafficSense", MessageBoxButton.OK, MessageBoxImage.Warning);
+        private static TextKey StartupErrorKey(StartupError? failure) => failure switch
+        {
+            StartupError.ReadFailed => TextKey.StartupReadFailed,
+            StartupError.ChangeFailed => TextKey.StartupChangeFailed,
+            StartupError.NotApplied => TextKey.StartupNotApplied,
+            _ => TextKey.SettingsSaveFailed
+        };
+
+        private string ErrorMessage(string? details, TextKey headline) => Localization[headline]
+            + (string.IsNullOrWhiteSpace(details) ? "" : "\n\n" + details);
+
+        private void ShowSettingsError(string? details, TextKey headline = TextKey.SettingsSaveFailed)
+        {
+            string message = ErrorMessage(details, headline);
+            if (_reportError != null) _reportError(message);
+            else MessageBox.Show(this, message, Localization[TextKey.ErrorTitle],
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
 
         private void MenuTheme_Click(object sender, RoutedEventArgs e)
         {
             string previousTheme = _settings.Theme;
             _settings.Theme = previousTheme == "Dark" ? "Light" : "Dark";
-            var result = SettingsManager.Save(_settings);
+            var result = _saveSettings(_settings);
             if (!result.Success)
             {
                 _settings.Theme = previousTheme;

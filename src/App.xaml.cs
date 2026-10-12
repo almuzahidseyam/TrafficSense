@@ -10,12 +10,18 @@ namespace TrafficSense
         private TrayController? _tray;
         private volatile bool _exiting;
         private readonly string? _instanceName;
+        private readonly Func<MainWindow>? _createWindow;
+        private UiLanguage _localization = new();
 
         public App() { }
 
         // Allows lifecycle probes to coordinate under an isolated name without
         // activating or taking ownership from the user's running application.
-        internal App(string instanceName) => _instanceName = instanceName;
+        internal App(string instanceName, Func<MainWindow>? createWindow = null)
+        {
+            _instanceName = instanceName;
+            _createWindow = createWindow;
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -36,7 +42,8 @@ namespace TrafficSense
                     return;
                 }
 
-                var window = new MainWindow();
+                var window = _createWindow?.Invoke() ?? new MainWindow();
+                _localization = window.Localization;
                 MainWindow = window;
                 _tray = new TrayController(window);
                 window.Show();
@@ -51,8 +58,8 @@ namespace TrafficSense
             }
             catch (Exception error)
             {
-                MessageBox.Show($"TrafficSense could not start.\n\n{error.Message}",
-                    "TrafficSense", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{_localization[TextKey.StartFailure]}\n\n{error.Message}",
+                    _localization[TextKey.ErrorTitle], MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(1);
             }
         }
@@ -69,14 +76,16 @@ namespace TrafficSense
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show($"UI Crash: {e.Exception.Message}\n\n{e.Exception.StackTrace}", "TrafficSense Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"{_localization[TextKey.UiCrash]} {e.Exception.Message}\n\n{e.Exception.StackTrace}",
+                _localization[TextKey.ErrorTitle], MessageBoxButton.OK, MessageBoxImage.Error);
             e.Handled = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-            MessageBox.Show($"Background Crash: {ex?.Message}\n\n{ex?.StackTrace}", "TrafficSense Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"{_localization[TextKey.BackgroundCrash]} {ex?.Message}\n\n{ex?.StackTrace}",
+                _localization[TextKey.ErrorTitle], MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

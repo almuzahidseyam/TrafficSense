@@ -2,18 +2,18 @@
 
 **A Modern, Lightweight, and Premium Network Traffic Monitor for Windows.**
 
-TrafficSense is a beautiful and accurate real-time network speed monitor for Windows. Built with C# and WPF, it features a modern UI with Fluent Design (Mica/Acrylic effects), completely tailored for a premium user experience. It perfectly supports both English and Bengali (বাংলা) languages.
+TrafficSense is a lightweight real-time network speed monitor for Windows. Built with C# and WPF, it provides a compact draggable widget, light/dark themes, system tray controls, and English/Bengali menus and app messages.
 
 > **Note:** A screenshot of the app will be added here soon!
 
 ## 🌟 Features
 
 - **Real-Time Speed:** Accurate upload and download speed tracking.
-- **Premium UI:** Clean, modern, and lightweight design using Windows 11 Fluent design principles (Mica/Acrylic).
-- **Language Support:** Built-in support for English and Bengali (বাংলা).
+- **Compact Widget:** Transparent, always-on-top widget with light/dark themes.
+- **Language Support:** Switch between English and Bengali (বাংলা) without restarting.
 - **Lightweight:** Uses minimal RAM and CPU.
-- **Easy Installation:** Simple `.exe` installer (No complicated setups!).
-- **Customizable:** Change colors, themes (Light/Dark), and widget position.
+- **Portable:** Extract the ZIP and run the executable.
+- **Customizable:** Choose the language, theme (Light/Dark), network adapter, and widget position.
 - **Open Source:** 100% free and open-source.
 
 ## 📥 Download & Installation
@@ -56,7 +56,7 @@ If you want to compile the project yourself:
    ```bash
    dotnet run --project tests/TrafficSense.LifecycleTests/TrafficSense.LifecycleTests.csproj -c Release
    ```
-   This probe uses an invisible window and an isolated instance name. It does not save user settings or change startup registration. A temporary tray icon may appear during the probe.
+   This probe uses an invisible window, an isolated instance name, and a temporary settings file. It verifies language switching, persistence/restart, save-failure rollback, tray controls, and process activation without changing user settings or startup registration. A temporary tray icon may appear during the probe.
 
 ## Settings & Window Position
 
@@ -71,6 +71,14 @@ If you want to compile the project yourself:
 - The system tray icon uses green download and blue upload arrows. Right-click it to toggle **Show widget** or choose **Exit**. Double-click the icon to show the widget.
 - The widget's own right-click menu also has **Hide widget**. Hiding keeps monitoring active and preserves the current position; use Exit to save settings and close the app.
 - After a normal exit or crash, another launch can take ownership. Older versions without single-instance support should be closed before running this version.
+
+## Language / ভাষা
+
+- Right-click the widget or tray icon → **Language / ভাষা** → **English** or **বাংলা**. Both language names remain visible in either UI language.
+- Changes apply immediately to widget/tray menus, tooltips, adapter status, and app error summaries, including while the widget is hidden. Monitoring, adapter selection, and widget position are preserved.
+- The language is remembered in the settings file (`en` or `bn`). Existing settings without a language, or unsupported values, default to English. A failed save keeps the previous language and menu checkmarks.
+- Adapter names/descriptions, Windows diagnostic details, and standard speed units (`B/s`, `KB/s`, `MB/s`, `GB/s`) retain their original form. Numeric formatting continues to follow the existing Windows culture.
+- বাংলা বেছে নিতে widget বা tray icon-এ ডান-ক্লিক করে **Language → বাংলা** নির্বাচন করুন। আবার ইংরেজিতে ফিরতে **ভাষা → English** নির্বাচন করুন।
 
 ## Network Adapter & VPN Traffic
 
