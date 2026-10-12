@@ -35,7 +35,7 @@ jobs:
       - name: Check visible and hidden monitoring resource stability
         timeout-minutes: 5
         shell: pwsh
-        run: ./scripts/Test-Stability.ps1 -Seconds 60 -StressIterations 500
+        run: ./scripts/Test-Stability.ps1 -Seconds 60 -StressIterations 1500
       - name: Upload stability measurements
         if: always()
         uses: actions/upload-artifact@v4

@@ -24,6 +24,7 @@ namespace TrafficSense
         private HwndSource? _windowSource;
         private bool _placementReady;
         private bool _placementQueued;
+        private bool _renderQueued;
 
         public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save) { }
 
@@ -52,8 +53,17 @@ namespace TrafficSense
 
             IsVisibleChanged += (_, _) =>
             {
-                if (IsVisible)
-                    RenderNetworkSpeed();
+                if (!IsVisible || _renderQueued) return;
+                _renderQueued = true;
+                // A second launch or tray command can show and hide again in
+                // one dispatcher turn. Do not mutate a view that will never
+                // render: transparent-window resources otherwise accumulate.
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+                {
+                    _renderQueued = false;
+                    if (IsVisible)
+                        RenderNetworkSpeed();
+                }));
             };
 
             SourceInitialized += (_, _) =>
