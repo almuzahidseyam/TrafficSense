@@ -21,6 +21,7 @@
                 <MenuItem Header="Start with Windows" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
                 <MenuItem Header="Switch Theme (Light/Dark)" Click="MenuTheme_Click" />
                 <Separator />
+                <MenuItem Header="Hide widget" Click="MenuHide_Click" />
                 <MenuItem Header="Exit" Click="MenuExit_Click" />
             </ContextMenu>
         </Border.ContextMenu>

@@ -23,5 +23,6 @@
     <Compile Include="../../src/StartupCommand.cs" Link="StartupCommand.cs" />
     <Compile Include="../../src/StartupService.cs" Link="StartupService.cs" />
     <Compile Include="../../src/WidgetPlacement.cs" Link="WidgetPlacement.cs" />
+    <Compile Include="../../src/SingleInstanceGate.cs" Link="SingleInstanceGate.cs" />
   </ItemGroup>
 </Project>
