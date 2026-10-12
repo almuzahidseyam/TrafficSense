@@ -18,11 +18,11 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **1.3.0 is being prepared**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions; it is not yet a published release.
+Version **[1.3.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.3.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download the latest `TrafficSense.zip`.
-3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The prepared 1.3.0 portable package includes .NET 8; older releases may require a separate .NET 8 Desktop Runtime installation.
+3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The 1.3.0 portable package includes .NET 8; older releases may require a separate .NET 8 Desktop Runtime installation.
 
 Exit an older running version from its tray menu before opening the new EXE. Hiding it keeps it running, and a second launch will show that older instance. Settings remain in `%APPDATA%`, and the bundled native runtime is extracted to the Windows temporary folder on first launch.
 

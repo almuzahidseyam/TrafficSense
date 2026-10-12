@@ -1,10 +1,10 @@
 # Changelog
 
-Changes are grouped by release. Version 1.3.0 is prepared but has not been published.
+Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
-## [1.3.0] - Pending release
+## [1.3.0] - 2026-10-12
 
 ### Added
 
@@ -42,6 +42,6 @@ Changes are grouped by release. Version 1.3.0 is prepared but has not been publi
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.2.0...HEAD
-[1.3.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.2.0
