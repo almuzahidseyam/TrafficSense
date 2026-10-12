@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.21.0] - 2026-10-13
+
+### Added
+
+- One-click **Copy selected day's usage** button below the daily table. It copies the ISO date and exact download, upload and combined bytes in the current English/Bengali language, using Unicode text and Windows line breaks. Pending traffic is refreshed before copying; zero records and older selected days outside the chart are supported without rounding or overflow.
+- Native keyboard-accessible controls and translated inline success/error feedback, exposed as a polite accessibility live region. No selected day, invalid dates and empty periods disable copying. Changing the selected record, its counters or the language clears stale feedback. Clipboard contention/unavailability is logged and allows retry without a modal dialog or lost usage.
+- Isolated Windows probes verify captured clipboard text, latest unsaved samples, exact maximum totals, zeros, both languages, guards/cleanup, failures/retries, accessible feedback and minimum-size layout without reading or replacing the user's clipboard.
+
+### Upgrading from 1.20.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible.
+- Open **Usage and history**, select a chart day or table row, then click **Copy selected day's usage**. Stored totals and CSV export scope remain unchanged.
+
 ## [1.20.0] - 2026-10-12
 
 ### Added
@@ -244,7 +257,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.20.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.21.0...HEAD
+[1.21.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.1...v1.19.0
 [1.18.1]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.0...v1.18.1

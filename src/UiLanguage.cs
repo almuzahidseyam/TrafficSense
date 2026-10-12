@@ -20,7 +20,8 @@ internal enum TextKey
     CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays,
     SelectedUsage, TotalUsage, DailyUsage, DailyUsageHint, UsageDate, ExactBytes,
     DailyChart, DailyChartLegend, DailyChartRange, DailyChartHint, DailyChartNoRecord,
-    DailyChartSelection, DailyChartSelectionOutside
+    DailyChartSelection, DailyChartSelectionOutside,
+    CopyDay, CopyDaySelect, CopyDayHint, CopyDayDone, CopyDayFailed
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -93,6 +94,12 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.DailyChartHint] = ("Up to 30 calendar days ending at the latest record in the selected period, oldest to newest. Hover a day's column for its date and exact download, upload and total bytes. Click a recorded day to select and reveal it in the daily table. Missing records leave gaps. Full selected totals and all recorded days remain in the summary and table.",
                 "নির্বাচিত সময়ের সর্বশেষ রেকর্ড পর্যন্ত সর্বোচ্চ ৩০ দিন, পুরোনো থেকে নতুন। দিনের কলামে মাউস রাখলে তারিখ, ডাউনলোড, আপলোড ও মোট বাইট দেখাবে। রেকর্ড থাকা দিনে ক্লিক করলে তালিকায় সেই দিন নির্বাচন করে দেখাবে। রেকর্ড না থাকা দিন ফাঁকা থাকে। সারাংশ ও তালিকায় নির্বাচিত সময়ের পুরো হিসাব আছে।"),
             [TextKey.DailyChartNoRecord] = ("No stored usage for this day.", "এই দিনের সংরক্ষিত হিসাব নেই।"),
+            [TextKey.CopyDay] = ("Copy selected day's usage", "নির্বাচিত দিনের হিসাব কপি করুন"),
+            [TextKey.CopyDaySelect] = ("Select a recorded day in the chart or daily table first.", "আগে চার্ট বা তালিকা থেকে হিসাব থাকা দিন নির্বাচন করুন।"),
+            [TextKey.CopyDayHint] = ("Copy the selected date and exact download, upload and total bytes in the current language.",
+                "নির্বাচিত তারিখ, ডাউনলোড, আপলোড ও মোট বাইট বর্তমান ভাষায় কপি করুন।"),
+            [TextKey.CopyDayDone] = ("Copied usage for {0}.", "{0} দিনের হিসাব কপি হয়েছে।"),
+            [TextKey.CopyDayFailed] = ("Could not copy to the clipboard. Try again.", "ক্লিপবোর্ডে কপি করা যায়নি। আবার চেষ্টা করুন।"),
             [TextKey.DailyChartSelection] = ("Selected day: {0}", "নির্বাচিত দিন: {0}"),
             [TextKey.DailyChartSelectionOutside] = ("Selected day: {0} (outside the chart's 30-day window)", "নির্বাচিত দিন: {0} (চার্টের ৩০ দিনের বাইরে)"),
             [TextKey.DailyChartRange] = ("{0:yyyy-MM-dd} to {1:yyyy-MM-dd}; {2} recorded day(s).", "{0:yyyy-MM-dd} থেকে {1:yyyy-MM-dd}; {2} দিনের সংরক্ষিত হিসাব।"),

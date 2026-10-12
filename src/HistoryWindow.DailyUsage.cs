@@ -84,6 +84,7 @@ internal sealed partial class HistoryWindow
         AutomationProperties.SetName(_dailyChart, summary);
         AutomationProperties.SetHelpText(_dailyChart, _dailyChartLegend.Text + "\n" + _language[TextKey.DailyChartHint]);
         _dailyChart.ConfigureDetails(_language, summary + "\n" + _language[TextKey.DailyChartHint]);
+        RefreshCopyUsage();
     }
 
     private void SelectDailyUsage(DateOnly date)
