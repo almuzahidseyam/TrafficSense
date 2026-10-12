@@ -4,9 +4,16 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-12
+
 ### Added
 
 - Manual update checks in About, with English/Bengali status messages and a release page/download button when a newer stable version is available. Checks handle offline connections, timeouts and GitHub rate limits without blocking the widget, and are cancelled when About closes. Release links stay within this project's GitHub repository; nothing is installed automatically.
+
+### Upgrading from 1.3.0
+
+- Exit the current widget from its tray menu, extract the new ZIP and run `TrafficSense.exe`. Existing settings are preserved. The Windows x64 portable package includes .NET 8.
+- Open **About TrafficSense → Check for updates** to check future releases. If a newer version is available, **View release and download** opens its GitHub page in your browser.
 
 ## [1.3.0] - 2026-10-12
 
@@ -46,6 +53,7 @@ Changes are grouped by release. Release dates use the publication date.
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.2.0

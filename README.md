@@ -18,11 +18,11 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.3.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.3.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.4.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.4.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download the latest `TrafficSense.zip`.
-3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The 1.3.0 portable package includes .NET 8; older releases may require a separate .NET 8 Desktop Runtime installation.
+3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The portable package includes .NET 8; releases before 1.3.0 may require a separate .NET 8 Desktop Runtime installation.
 
 Exit an older running version from its tray menu before opening the new EXE. Hiding it keeps it running, and a second launch will show that older instance. Settings remain in `%APPDATA%`, and the bundled native runtime is extracted to the Windows temporary folder on first launch.
 
@@ -127,9 +127,9 @@ dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --error-han
 
 Unit checks cover valid diagnostic records, concurrent writers, bounded rotation, Unicode/oversized details, locked paths and corrupt-settings fallback. The normal lifecycle and portable verification run the error probes automatically. Hard process kills, power loss, stack overflow and other failures that bypass managed handlers may leave no log.
 
-## Check for updates (unreleased)
+## Check for updates
 
-In development builds, choose **About TrafficSense → Check for updates**. The app contacts GitHub only when you click, compares the latest published stable release with the running version, and offers **View release and download** when a newer version is available. The button opens this project's release page in your default browser; it does not download or install software automatically. A copyable page address remains available if the browser cannot open.
+Choose **About TrafficSense → Check for updates**. The app contacts GitHub only when you click, compares the latest published stable release with the running version, and offers **View release and download** when a newer version is available. The button opens this project's release page in your default browser; it does not download or install software automatically. A copyable page address remains available if the browser cannot open.
 
 Checks run without blocking the widget, allow only one request at a time, time out after ten seconds, and cancel when About closes. Offline/server errors and GitHub request limits show a localized status with a retry button. Opening About or starting TrafficSense makes no update request. The request uses [GitHub's public release API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) without an authentication token or sending settings/logs. These checks are separate from network speed monitoring.
 
@@ -170,7 +170,7 @@ The application version is set in `src/TrafficSense.csproj`; the same value is u
 Before publishing, add or update the matching section in [CHANGELOG.md](CHANGELOG.md), then run:
 
 ```powershell
-./scripts/Prepare-Release.ps1 -Tag v1.3.0
+./scripts/Prepare-Release.ps1 -Tag v1.4.0
 ```
 
 This validates that the proposed tag matches the app version and extracts the corresponding notes into `.artifacts/release-notes.md`. It does not create a tag or GitHub release. CI validates the notes on ordinary builds. The portable ZIP includes the changelog and generated `RELEASE-NOTES.md`; packaging checks both the executable metadata and the bundled app's version against the project version.
