@@ -7,7 +7,8 @@ internal enum TextKey
     AutoPrefix, NoConnectedAdapter, WaitingForAdapter, ChooseAdapterHint, TrayHint,
     SettingsSaveFailed, StartupReadFailed, StartupChangeFailed, StartupNotApplied,
     StartFailure, UiCrash, BackgroundCrash, ErrorTitle, DownloadSpeed, UploadSpeed,
-    FatalError, AppWillClose, LogSaved, LogUnavailable
+    FatalError, AppWillClose, LogSaved, LogUnavailable,
+    About, Version, LogFolder, OpenLogFolder, LogFolderOpenFailed, Close
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -39,6 +40,13 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.HideWidget] = ("Hide widget", "উইজেট লুকান"),
             [TextKey.ShowWidget] = ("Show widget", "উইজেট দেখান"),
             [TextKey.Exit] = ("Exit", "বন্ধ করুন"),
+            [TextKey.About] = ("About TrafficSense", "TrafficSense সম্পর্কে"),
+            [TextKey.Version] = ("Version", "সংস্করণ"),
+            [TextKey.LogFolder] = ("Error log folder", "ত্রুটির লগ ফোল্ডার"),
+            [TextKey.OpenLogFolder] = ("Open log folder", "লগ ফোল্ডার খুলুন"),
+            [TextKey.LogFolderOpenFailed] = ("The log folder could not be opened. You can copy its address and try opening it in File Explorer.",
+                "লগ ফোল্ডার খোলা যায়নি। ঠিকানাটি কপি করে File Explorer-এ খোলার চেষ্টা করতে পারেন।"),
+            [TextKey.Close] = ("Close", "ফিরে যান"),
             [TextKey.AutoConnection] = ("Auto (one connection)", "স্বয়ংক্রিয় (একটি সংযোগ)"),
             [TextKey.AutoDescription] = ("Monitors one connected adapter automatically. VPN and underlying traffic are never added together.",
                 "স্বয়ংক্রিয়ভাবে একটি সংযোগের গতি মাপে। VPN ও মূল সংযোগের ডেটা একসঙ্গে যোগ হয় না।"),

@@ -15,6 +15,7 @@ internal sealed class TrayController : IDisposable
     private readonly Forms.ToolStripMenuItem _english;
     private readonly Forms.ToolStripMenuItem _bangla;
     private readonly Forms.ToolStripMenuItem _exit;
+    private readonly Forms.ToolStripMenuItem _about;
     private readonly Icon _icon;
     private bool _disposed;
 
@@ -30,6 +31,8 @@ internal sealed class TrayController : IDisposable
         _bangla = new Forms.ToolStripMenuItem("বাংলা", null, (_, _) => _window.ChangeLanguage("bn"));
         _languageMenu.DropDownItems.AddRange([_english, _bangla]);
         _menu.Items.Add(_languageMenu);
+        _about = new Forms.ToolStripMenuItem("", null, (_, _) => _window.ShowAbout()) { Tag = "about" };
+        _menu.Items.Add(_about);
         _menu.Items.Add(new Forms.ToolStripSeparator());
         _exit = new Forms.ToolStripMenuItem("", null, Exit) { Tag = "exit" };
         _menu.Items.Add(_exit);
@@ -54,6 +57,7 @@ internal sealed class TrayController : IDisposable
         _showWidget.Text = _window.Localization[TextKey.ShowWidget];
         _languageMenu.Text = _window.Localization[TextKey.Language];
         _exit.Text = _window.Localization[TextKey.Exit];
+        _about.Text = _window.Localization[TextKey.About];
         _english.Checked = _window.Localization.Code == "en";
         _bangla.Checked = _window.Localization.Code == "bn";
         _notifyIcon.Text = _window.Localization[TextKey.TrayHint];
