@@ -22,9 +22,9 @@ internal sealed partial class HistoryWindow : Window
     private readonly TextBlock _today = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _month = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _hint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
-    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 7, Style = null,
+    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 8, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
-    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 6, Style = null,
+    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 7, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
 
     internal HistoryWindow(UiLanguage language, UsageLedger usage, Func<DateTimeOffset> localTime, SpeedHistory history, Func<bool> bits,

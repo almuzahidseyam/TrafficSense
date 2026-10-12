@@ -21,7 +21,8 @@ internal enum TextKey
     SelectedUsage, TotalUsage, DailyUsage, DailyUsageHint, UsageDate, ExactBytes,
     DailyChart, DailyChartLegend, DailyChartRange, DailyChartHint, DailyChartNoRecord,
     DailyChartSelection, DailyChartSelectionOutside,
-    CopyDay, CopyDaySelect, CopyDayHint, CopyDayDone, CopyDayFailed
+    CopyDay, CopyDaySelect, CopyDayHint, CopyDayDone, CopyDayFailed,
+    CopyFormat, CopyPlainText, CopyCsv, CopyCsvHint, Sampling, SampleUnavailable, SampleDelayed, MeasurementHint
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -46,6 +47,16 @@ internal sealed class UiLanguage(string? code = "en")
     private static readonly IReadOnlyDictionary<TextKey, (string English, string Bangla)> Messages =
         new Dictionary<TextKey, (string, string)>
         {
+            [TextKey.CopyFormat] = ("Copy format", "কপি করার ফরম্যাট"),
+            [TextKey.CopyPlainText] = ("Plain text", "সাধারণ লেখা"),
+            [TextKey.CopyCsv] = ("CSV", "CSV (কমা দিয়ে আলাদা)"),
+            [TextKey.CopyCsvHint] = ("Copy an ISO date and exact byte totals as CSV, including the English column headers. Paste into a spreadsheet or text editor.",
+                "ইংরেজি কলামের নামসহ ISO তারিখ ও সঠিক বাইট CSV হিসেবে কপি করুন। স্প্রেডশিট বা টেক্সট এডিটরে পেস্ট করতে পারবেন।"),
+            [TextKey.Sampling] = ("Establishing a fresh sample…", "নতুন নমুনা নেওয়া হচ্ছে…"),
+            [TextKey.SampleUnavailable] = ("No current network sample", "বর্তমান নেটওয়ার্ক নমুনা পাওয়া যায়নি"),
+            [TextKey.SampleDelayed] = ("Sample delayed; waiting for a fresh interval", "নমুনা দেরি হয়েছে; নতুন ব্যবধানের জন্য অপেক্ষা করছে"),
+            [TextKey.MeasurementHint] = ("Average interface throughput over the actual elapsed sample interval. Includes local traffic and protocol overhead reported by Windows; Auto measures one routed connection to avoid VPN double counting. This is not an ISP speed test.",
+                "নমুনার প্রকৃত সময়ের ব্যবধানে অ্যাডাপ্টারের গড় গতি। Windows-এর হিসাবে স্থানীয় ট্রাফিক ও প্রটোকলের অতিরিক্ত বাইট অন্তর্ভুক্ত। VPN দ্বিগুণ গণনা ঠেকাতে স্বয়ংক্রিয়ভাবে একটি সংযোগ মাপে। এটি ISP speed test নয়।"),
             [TextKey.NetworkAdapter] = ("Network adapter", "নেটওয়ার্ক অ্যাডাপ্টার"),
             [TextKey.SettingsBackup] = ("Settings backup", "সেটিংস ব্যাকআপ"),
             [TextKey.BackupSettings] = ("Back up settings…", "সেটিংস সংরক্ষণ করুন…"),

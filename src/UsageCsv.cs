@@ -9,6 +9,9 @@ internal readonly record struct UsageExportResult(bool Success, string? Error = 
 internal static class UsageCsv
 {
     internal const string Header = "Date,DownloadBytes,UploadBytes,TotalBytes";
+    internal static string FormatDay(UsageDay day) => string.Create(CultureInfo.InvariantCulture,
+        $"{day.Date:yyyy-MM-dd},{day.Received},{day.Sent},{(decimal)day.Received + day.Sent}");
+    internal static string CopyDay(UsageDay day) => Header + "\r\n" + FormatDay(day) + "\r\n";
 
     internal static UsageExportResult Export(string path, UsageLedger ledger, UsageDateRange? range = null)
     {
@@ -27,8 +30,7 @@ internal static class UsageCsv
                 {
                     // Only fixed headers, ISO dates and nonnegative numbers are
                     // written. Decimal preserves the exact sum of two Int64 totals.
-                    writer.WriteLine(string.Create(CultureInfo.InvariantCulture,
-                        $"{day.Date:yyyy-MM-dd},{day.Received},{day.Sent},{(decimal)day.Received + day.Sent}"));
+                    writer.WriteLine(FormatDay(day));
                 }
             }
             File.Move(temporary, path, overwrite: true);

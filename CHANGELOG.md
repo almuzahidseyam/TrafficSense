@@ -4,6 +4,20 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.22.0] - 2026-10-13
+
+### Added
+
+- Select plain text or CSV when copying a daily record. CSV shares the export schema, exact integers, ISO date and CRLF line breaks in both languages; changing format clears stale confirmation.
+- Serialized background counter sampling independent of the WPF dispatcher, a 250 ms refresh option, counter-read timestamps, IPv6 route fallback, IP/link details and explicit sample-quality descriptions in the widget tooltip.
+- Exact byte buffering by local sample day, once-only delivery, bounded retention and exit draining. Configuration/reconnect/exit invalidate in-flight reads; errors reset stale counters and diagnostics are rate limited.
+- Counter timing, duplicate/invalid data, blocked-read concurrency, midnight accounting, failure/recovery and clipboard-format regression coverage; published measurement contract and comparison roadmap.
+
+### Upgrading from 1.21.0
+
+- Exit the old widget before installing or extracting. Settings and usage remain compatible. Copy format is per history window and defaults to plain text.
+- The displayed rate remains a Windows interface interval average. Traffic during disconnected, suspended, closed-app or unobservable intervals cannot be reconstructed. See ROADMAP.md for the measurement contract.
+
 ## [1.21.0] - 2026-10-13
 
 ### Added

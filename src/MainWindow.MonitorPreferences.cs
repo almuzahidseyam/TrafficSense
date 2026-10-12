@@ -51,6 +51,7 @@ public partial class MainWindow
             return false;
         }
         if (_timer != null) _timer.Interval = TimeSpan.FromMilliseconds(interval);
+        _sampler?.Configure(_settings.SelectedAdapterId, interval);
         ApplyMonitorLanguage();
         QueueWidgetRender();
         return true;

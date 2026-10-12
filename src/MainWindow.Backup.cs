@@ -46,6 +46,7 @@ public partial class MainWindow
         _settings = candidate;
         _shortcut.SetEnabled(candidate.GlobalShortcutEnabled);
         if (_timer != null) _timer.Interval = TimeSpan.FromMilliseconds(candidate.RefreshMilliseconds);
+        _sampler?.Configure(candidate.SelectedAdapterId, candidate.RefreshMilliseconds, adapterChanged);
         _appearancePending = true;
         _restorePlacementPending = true;
         if (adapterChanged) { _speedCalculator.Reset(); _latestSpeed = default; _monitoredAdapter = null; }

@@ -8,6 +8,8 @@ internal sealed record NetworkAdapterInfo(
 {
     public bool CanMonitor => IsUp && HasAddress && Snapshot.HasValue;
     public bool IsPreferredRoute { get; init; }
+    public string Addresses { get; init; } = "";
+    public long LinkBitsPerSecond { get; init; }
 }
 
 internal sealed class NetworkAdapterSelection

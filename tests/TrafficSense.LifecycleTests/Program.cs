@@ -134,9 +134,14 @@ internal static class Program
                 show.PerformClick();
                 Check(!window.IsVisible && !show.Checked && timer.IsEnabled, "Hide stopped monitoring or left the widget visible.");
                 download.Text = "hidden sample sentinel";
-                TimeSpan? hiddenBaseline = (TimeSpan?)baselineField.GetValue(calculator);
+                var background = (NetworkSamplingService)typeof(MainWindow).GetField("_sampler", Private)!.GetValue(window)!;
+                TimeSpan hiddenBaseline = background.LatestTimestamp;
+                // Deliberately keep the dispatcher busy. The production worker
+                // must publish a new counter read without dispatcher pumping.
+                Check(SpinWait.SpinUntil(() => background.LatestTimestamp > hiddenBaseline, TimeSpan.FromSeconds(4)),
+                    "Background sampling stopped while the UI thread was busy.");
                 typeof(MainWindow).GetMethod("RefreshNetworkSpeed", Private)!.Invoke(window, null);
-                Check(download.Text == "hidden sample sentinel" && !Equals(hiddenBaseline, baselineField.GetValue(calculator)),
+                Check(download.Text == "hidden sample sentinel" && background.LatestTimestamp > hiddenBaseline,
                     "Hidden sampling stopped or updated the hidden text/layout.");
                 trayBangla.PerformClick();
                 Check(!window.IsVisible && timer.IsEnabled && bangla.IsChecked && show.Text == "উইজেট দেখান",

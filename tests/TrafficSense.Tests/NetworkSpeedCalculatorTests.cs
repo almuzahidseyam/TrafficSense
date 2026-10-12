@@ -4,6 +4,26 @@ namespace TrafficSense.Tests;
 
 public class NetworkSpeedCalculatorTests
 {
+    [Fact]
+    public void AdapterReadTimeAvoidsEnumerationLatencyBias()
+    {
+        var calculator = new NetworkSpeedCalculator();
+        calculator.Update([new("wifi", 1000, 500) { CapturedAt = TimeSpan.Zero }], TimeSpan.FromSeconds(1));
+        var speed = calculator.Update([new("wifi", 3000, 1000) { CapturedAt = TimeSpan.FromSeconds(1) }], TimeSpan.FromSeconds(3));
+        Assert.Equal(new NetworkSpeed(2000, 500), speed);
+        Assert.Equal(new NetworkTraffic(2000, 500), calculator.LastTraffic);
+    }
+
+    [Fact]
+    public void InvalidAndDuplicateInterfacesAreRejectedWithoutCrashOrDoubleCounting()
+    {
+        var calculator = new NetworkSpeedCalculator();
+        calculator.Update([new("wifi", 1000, 500)], TimeSpan.Zero);
+        var speed = calculator.Update([new("wifi", 3000, 1000), new("wifi", 3000, 1000), new("", 10, 10), new("bad", -1, 10)], TimeSpan.FromSeconds(1));
+        Assert.Equal(default, speed);
+        Assert.Equal(SampleQuality.Unavailable, calculator.Quality);
+        Assert.Equal(default, calculator.LastTraffic);
+    }
     [Theory]
     [InlineData(6)]
     [InlineData(600)]

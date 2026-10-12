@@ -11,9 +11,20 @@ public partial class MainWindow
     private HistoryWindow? _historyWindow;
     private readonly SpeedHistory _speedHistory = new();
 
+    private void MergeSampledUsage(SamplingDelivery delivery)
+    {
+        foreach (var day in delivery.Usage)
+            _usage.Record(new(day.Received, day.Sent), new DateTimeOffset(day.Date.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero));
+    }
+
     private void RecordTraffic(TimeSpan timestamp)
     {
         _usage.Record(_speedCalculator.LastTraffic, _localTime());
+        RecordHistory(timestamp);
+    }
+
+    private void RecordHistory(TimeSpan timestamp)
+    {
         _speedHistory.Add(timestamp, _latestSpeed);
         _historyWindow?.Refresh();
         if (_usageSaveClock.Elapsed >= TimeSpan.FromSeconds(60)) FlushUsage();

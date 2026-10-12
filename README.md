@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.21.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.21.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.22.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.22.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -101,7 +101,7 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 - Right-click the widget → **Settings backup / সেটিংস ব্যাকআপ** → **Back up settings… / সেটিংস সংরক্ষণ করুন…** to save a JSON backup, or **Restore settings… / সেটিংস ফিরিয়ে আনুন…** to replace widget preferences immediately. Backups contain language, theme, font size, transparency, position/lock, speed units, refresh interval, adapter selection and optional global shortcut. They exclude **Start with Windows**, usage history and error logs. Keep the JSON file to restore after reinstalling Windows or on another PC.
 - Restore adapts positions to current monitors and selects Auto if the saved adapter is missing. Corrupt, incomplete, unsupported or oversized backups are rejected; failed saves and global shortcut conflicts keep current settings intact. If Ctrl+Alt+T conflicts, free it or disable it before making the backup. Hidden restores keep the widget hidden and preserve restored settings on exit.
 - Choose **Reset position / অবস্থান ফিরিয়ে আনুন** from the widget or tray to return to the primary monitor's bottom-right work area. This preserves the lock, visibility and other settings. Failed saves restore the previous position.
-- **Speed unit / গতির একক** selects bytes per second (binary KB/s/MB/s/GB/s, preserving the original display) or decimal bits per second (Kbps/Mbps/Gbps). **Refresh interval / গতি আপডেটের ব্যবধান** offers 0.5, 1 (default) or 2 seconds. Both are saved; speed always uses actual elapsed time. Failed saves restore the previous unit, interval and checkmarks.
+- **Speed unit / গতির একক** selects bytes per second (binary KB/s/MB/s/GB/s, preserving the original display) or decimal bits per second (Kbps/Mbps/Gbps). **Refresh interval / গতি আপডেটের ব্যবধান** offers 0.25, 0.5, 1 (default) or 2 seconds. Counter sampling runs independently of the UI; 0.25 s uses more CPU and can show driver counter bursts. Both are saved; speed always uses actual elapsed time. Failed saves restore the previous unit, interval and checkmarks.
 - Choose **Lock position / অবস্থান লক করুন** from the widget or tray's right-click menu to prevent accidental dragging. Clear the checkmark to move it again. Both menus stay synchronized, including while the widget is hidden. Locking saves the current position immediately; the lock survives restart. Existing settings default to unlocked, and a failed save leaves the previous state and saved position intact.
 - Position lock affects manual dragging only. Monitor removal, resolution/DPI/work-area changes and enlarging the widget can still move it into a visible work area.
 - Choose **Text size / লেখার আকার** or **Background transparency / পটভূমির স্বচ্ছতা** from the widget's right-click menu. Text sizes are 12, 14 (default), 16, 18, 20 and 24. Transparency offers Default, 0%, 25%, 50%, 75% and 90%; it changes the background only, keeping text, arrows and menus fully visible. Default restores the previous background appearance.
@@ -235,3 +235,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 **Made with ❤️ for the community!**
+
+Choose **Copy format / কপি করার ফরম্যাট** above the daily copy button: **Plain text** uses the current language; **CSV** includes the fixed English header and exact byte values shared with file export. The format defaults to plain text each time history opens.
