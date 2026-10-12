@@ -31,7 +31,8 @@ public partial class MainWindow
         if (_fatalShutdown || Volatile.Read(ref _monitoringClosed) != 0) return;
         if (_historyWindow == null)
         {
-            _historyWindow = new HistoryWindow(Localization, _usage, _localTime, _speedHistory, () => _settings.SpeedInBits);
+            _historyWindow = new HistoryWindow(Localization, _usage, _localTime, _speedHistory, () => _settings.SpeedInBits,
+                diagnostics: _diagnostics, reportError: _reportError);
             _historyWindow.Closed += (_, _) => _historyWindow = null;
         }
         if (_historyWindow.WindowState == WindowState.Minimized) _historyWindow.WindowState = WindowState.Normal;

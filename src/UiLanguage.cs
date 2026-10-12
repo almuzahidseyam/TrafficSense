@@ -15,7 +15,8 @@ internal enum TextKey
     SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds,
     History, Today, ThisMonth, UsageHint, Download, Upload, GraphLegend,
     GlobalShortcut, ShortcutHelp, ShortcutUnavailable,
-    SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed
+    SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed,
+    CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -61,6 +62,12 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.BytesPerSecond] = ("Bytes/s (KB/s, MB/s)", "বাইট/সেকেন্ড (KB/s, MB/s)"),
             [TextKey.Seconds] = ("{0} seconds", "{0} সেকেন্ড"),
             [TextKey.History] = ("Usage and history", "ডেটা ব্যবহার ও ইতিহাস"),
+            [TextKey.CsvExport] = ("Export CSV…", "CSV সংরক্ষণ করুন…"),
+            [TextKey.CsvExportHint] = ("Export all retained daily totals (up to 400 days), including the latest sampled traffic. Values are exact bytes; dates use the local calendar.",
+                "সর্বশেষ মাপা ডেটাসহ সংরক্ষিত সব দিনের হিসাব (সর্বোচ্চ ৪০০ দিন) নিন। পরিমাণ বাইটে; তারিখ স্থানীয় দিন অনুযায়ী।"),
+            [TextKey.CsvExportEmpty] = ("No measured usage to export yet.", "সংরক্ষণ করার মতো মাপা ডেটা এখনো নেই।"),
+            [TextKey.CsvExportFailed] = ("Could not export usage. Existing files and usage totals were kept.",
+                "ডেটা ব্যবহারের হিসাব সংরক্ষণ করা যায়নি। আগের ফাইল ও হিসাব অক্ষত আছে।"),
             [TextKey.Today] = ("Today", "আজ"),
             [TextKey.Download] = ("Download", "ডাউনলোড"),
             [TextKey.Upload] = ("Upload", "আপলোড"),

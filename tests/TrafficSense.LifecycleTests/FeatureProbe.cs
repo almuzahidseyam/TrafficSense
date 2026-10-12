@@ -78,6 +78,9 @@ internal static class FeatureProbe
                 Check(ReferenceEquals(history, typeof(MainWindow).GetField("_historyWindow", Private)!.GetValue(window)), "Repeated history opened duplicates.");
                 var graph = (SpeedGraph)typeof(HistoryWindow).GetField("_graph", Private)!.GetValue(history)!;
                 Check(graph.ActualWidth > 100 && AutomationProperties.GetName(graph).Contains("Mbps"), "Graph did not size or describe its units.");
+                string csv = Path.Combine(root, "live-usage.csv");
+                Check(history.ExportUsage(csv) && File.ReadAllLines(csv)[1] == "2026-10-12,1312500,656250,1968750" && usage.Dirty,
+                    "History CSV did not export the live ledger without consuming pending persistence.");
                 window.ChangeLanguage("bn");
                 Check(history.Title == "ডেটা ব্যবহার ও ইতিহাস" && AutomationProperties.GetName(graph).Contains("ডাউনলোড"), "History did not translate.");
                 Render(history);
