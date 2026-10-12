@@ -48,7 +48,12 @@ namespace TrafficSense
                 _placementReady = true;
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
                 ApplyTheme();
-                RenderNetworkSpeed();
+            };
+
+            IsVisibleChanged += (_, _) =>
+            {
+                if (IsVisible)
+                    RenderNetworkSpeed();
             };
 
             SourceInitialized += (_, _) =>
