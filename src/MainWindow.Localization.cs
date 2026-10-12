@@ -20,6 +20,11 @@ public partial class MainWindow
         MenuAbout.Header = Localization[TextKey.About];
         MenuHistory.Header = Localization[TextKey.History];
         MenuExit.Header = Localization[TextKey.Exit];
+        MenuSettingsBackup.Header = Localization[TextKey.SettingsBackup];
+        MenuSettingsBackup.ToolTip = Localization[TextKey.BackupHint];
+        MenuBackup.Header = Localization[TextKey.BackupSettings];
+        MenuRestore.Header = Localization[TextKey.RestoreSettings];
+        MenuRestore.ToolTip = Localization[TextKey.BackupHint];
         TxtDownload.ToolTip = Localization[TextKey.DownloadSpeed];
         TxtUpload.ToolTip = Localization[TextKey.UploadSpeed];
         UpdateLanguageChecks();

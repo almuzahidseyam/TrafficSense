@@ -45,7 +45,7 @@ internal sealed class SettingsStore(string filePath, DiagnosticLog? diagnostics 
         }
     }
 
-    private static AppSettings Normalize(AppSettings settings) => new()
+    internal static AppSettings Normalize(AppSettings settings) => new()
     {
         WindowLeft = double.IsFinite(settings.WindowLeft) ? settings.WindowLeft : -1,
         WindowTop = double.IsFinite(settings.WindowTop) ? settings.WindowTop : -1,

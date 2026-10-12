@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-10-12
+
+### Added
+
+- English/Bengali **Settings backup** menu on the widget: export a JSON backup and restore language, theme, font size, background transparency, position/lock, speed units, refresh interval, network adapter and optional global shortcut without restarting.
+- Versioned, size-bounded backup validation rejects malformed, incomplete, unsupported or invalid files before changing preferences. Exports replace files atomically. Save failures and shortcut conflicts keep current preferences and shortcut registration intact.
+- Restore fits positions to current monitors and uses Auto when a saved adapter ID is missing. Hidden restores preserve visibility, defer appearance/position rendering until shown, and retain restored coordinates if the app exits while hidden.
+
+### Upgrading from 1.11.0
+
+- Exit the old widget, then run Setup or extract the new portable ZIP. Existing settings and usage remain compatible.
+- Right-click the widget → **Settings backup → Back up settings… / Restore settings…**. Restore replaces widget preferences immediately. **Start with Windows**, usage history and error logs are excluded from the backup. A global shortcut conflict cancels the entire restore; free Ctrl+Alt+T or disable it before creating the backup.
+
 ## [1.11.0] - 2026-10-12
 
 ### Added
@@ -115,7 +128,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.5.0...v1.11.0
 [1.5.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.3.0...v1.4.0
