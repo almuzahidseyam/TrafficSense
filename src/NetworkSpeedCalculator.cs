@@ -6,8 +6,17 @@ internal readonly record struct NetworkSpeed(double DownloadBytesPerSecond, doub
 
 internal sealed class NetworkSpeedCalculator
 {
+    // Allow ordinary delayed ticks, but do not present a sleep/stall interval
+    // as current throughput. Power notifications also reset shorter sleeps.
+    private static readonly TimeSpan MaximumSampleInterval = TimeSpan.FromSeconds(5);
     private Dictionary<string, NetworkAdapterSnapshot> _previous = new();
     private TimeSpan? _previousTimestamp;
+
+    public void Reset()
+    {
+        _previous.Clear();
+        _previousTimestamp = null;
+    }
 
     public NetworkSpeed Update(IEnumerable<NetworkAdapterSnapshot> snapshots, TimeSpan timestamp)
     {
@@ -21,7 +30,8 @@ internal sealed class NetworkSpeedCalculator
             ? (timestamp - _previousTimestamp.Value).TotalSeconds
             : 0;
 
-        if (seconds > 0)
+        bool validInterval = seconds > 0 && seconds <= MaximumSampleInterval.TotalSeconds;
+        if (validInterval)
         {
             foreach (var sample in current.Values)
             {
@@ -42,6 +52,6 @@ internal sealed class NetworkSpeedCalculator
         _previous = current;
         _previousTimestamp = timestamp;
 
-        return seconds > 0 ? new NetworkSpeed(received / seconds, sent / seconds) : default;
+        return validInterval ? new NetworkSpeed(received / seconds, sent / seconds) : default;
     }
 }

@@ -122,6 +122,16 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 - VPN traffic and the underlying Ethernet/Wi-Fi traffic are never summed. To measure only the VPN tunnel, select its adapter explicitly. An underlying connection also includes VPN overhead and traffic outside the tunnel; their readings can differ.
 - Manual selection is remembered across restarts. If that adapter disconnects or disappears, the widget shows zero and waits for it to reconnect. Choose Auto to allow automatic failover.
 - Connecting, disconnecting, or switching adapters starts a fresh speed baseline. Auto does not report a combined total across simultaneous connections. With split tunneling or destination-specific routes, select the adapter whose traffic you want to measure.
+- Sleep/resume clears the previous speed and counter baseline. Address/availability notifications also reset the baseline at the next sample, so a quick reconnect between timer ticks does not count traffic across the interruption. The first sample establishes the new baseline at zero; the following one-second interval reports current speed.
+- A sampling gap longer than five seconds also starts a fresh interval, covering missed power notifications and long UI stalls. Shorter delayed ticks still use their actual elapsed time. These transitions preserve the selected adapter, language, position, and hidden state.
+
+The lifecycle probe includes an isolated recovery check using controlled adapter counters and timestamps. It sends suspend/resume messages only to its test window and calls the production network notification handler from a worker thread; it never sleeps the computer or disconnects a real adapter. It covers manual reconnect, Auto VPN route changes, hidden recovery, repeated notifications and callbacks after Exit. Run it alone with:
+
+```powershell
+dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --network-recovery
+```
+
+The normal lifecycle and portable checks run it automatically. These simulations verify application behavior; physical sleep, Modern Standby and driver-specific reconnect behavior still need a device test.
 
 ## 🤝 Contributing
 

@@ -17,8 +17,10 @@ internal static class Program
     private static int Main(string[] args)
     {
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
+        if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.Length == 0) VerifyPackagedEntryPoint();
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
+        if (args.Length == 0) RunChild("--network-recovery");
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         string path = Path.Combine(directory, "settings.json");
@@ -171,16 +173,24 @@ internal static class Program
 
     private static void RunChild(params string[] args)
     {
-        var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false, CreateNoWindow = true };
+        var start = new ProcessStartInfo(Environment.ProcessPath!)
+        {
+            UseShellExecute = false, CreateNoWindow = true,
+            RedirectStandardOutput = true, RedirectStandardError = true
+        };
         if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase))
             start.ArgumentList.Add(Path.Combine(AppContext.BaseDirectory, "TrafficSense.LifecycleTests.dll"));
         foreach (string arg in args) start.ArgumentList.Add(arg);
         using var child = Process.Start(start)!;
+        var output = child.StandardOutput.ReadToEndAsync();
+        var errors = child.StandardError.ReadToEndAsync();
         if (!child.WaitForExit(10000))
         {
             child.Kill();
             throw new InvalidOperationException("Child process did not exit.");
         }
+        Console.Write(output.GetAwaiter().GetResult());
+        Console.Error.Write(errors.GetAwaiter().GetResult());
         Check(child.ExitCode == 0, "Child process failed.");
     }
 
