@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-10-12
+
+### Added
+
+- Hover details for the daily usage chart: anywhere in a day's plot column shows its ISO date and exact download, upload and combined bytes. Small bars are easy to inspect; missing days show a localized no-record message, while measured zeros show zero counts.
+- Native English/Bengali tooltips use system colors and wrapping. Details update with language, traffic, filtering, resizing and calendar rollover while the pointer stays still. Leaving the chart dismisses the popup; invalid/empty selections and closing history clear it. The keyboard-accessible daily table remains an exact-byte alternative.
+- Calendar hit testing covers slot boundaries, missing days, resizing and extreme dates. Isolated Windows probes verify real popup opening/cleanup, translations, live updates and maximum counters; resource stress also opens and disposes chart tooltips repeatedly.
+
+### Upgrading from 1.17.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible.
+- Open **Usage and history**, scroll to **Daily usage chart**, and rest the mouse inside a day's column. The popup shows exact byte counts for the same record as the daily table and CSV. Gaps do not reconstruct missing usage.
+
 ## [1.17.0] - 2026-10-12
 
 ### Added
@@ -194,7 +207,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.17.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.0...HEAD
+[1.18.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.14.0...v1.15.0

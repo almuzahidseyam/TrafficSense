@@ -119,6 +119,7 @@ internal static class SoakProbe
                             MonitorPreferences.Intervals[appearanceIndex % MonitorPreferences.Intervals.Count]);
                         window.ShowHistory();
                         var history = app.Windows.OfType<HistoryWindow>().Single();
+                        ExerciseChartDetails(history);
                         var period = (ComboBox)typeof(HistoryWindow).GetField("_period", Private)!.GetValue(history)!;
                         period.SelectedIndex = appearanceIndex % 3;
                         if (period.SelectedIndex == 2)
@@ -147,6 +148,7 @@ internal static class SoakProbe
         {
             window = (MainWindow)app.MainWindow;
             window.ShowHistory();
+            ExerciseChartDetails(app.Windows.OfType<HistoryWindow>().Single());
             app.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             { foreach (var history in app.Windows.OfType<HistoryWindow>().ToArray()) history.Close(); }));
             Program.VerifyBundledRuntime();
@@ -236,6 +238,15 @@ internal static class SoakProbe
             File.Delete(Path.Combine(directory, "usage.json"));
             Directory.Delete(directory);
         }
+    }
+
+    private static void ExerciseChartDetails(HistoryWindow history)
+    {
+        history.UpdateLayout();
+        var chart = (DailyUsageChart)typeof(HistoryWindow).GetField("_dailyChart", Private)!.GetValue(history)!;
+        chart.SetHoverPosition(new Point(chart.ActualWidth / 2, 40));
+        var tip = (ToolTip)chart.ToolTip;
+        tip.Opacity = 0; tip.IsOpen = true;
     }
 
     private static void Collect()

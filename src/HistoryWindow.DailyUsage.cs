@@ -78,7 +78,7 @@ internal sealed partial class HistoryWindow
             string.Format(CultureInfo.InvariantCulture, _language[TextKey.DailyChartRange], series.Start, series.End, series.Days.Count);
         AutomationProperties.SetName(_dailyChart, chartSummary);
         AutomationProperties.SetHelpText(_dailyChart, _dailyChartLegend.Text + "\n" + _language[TextKey.DailyChartHint]);
-        _dailyChart.ToolTip = chartSummary + "\n" + _language[TextKey.DailyChartHint];
+        _dailyChart.ConfigureDetails(_language, chartSummary + "\n" + _language[TextKey.DailyChartHint]);
         _dailyChartTitle.Visibility = _dailyChartLegend.Visibility = _dailyChart.Visibility = days.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         var dates = days.Select(day => day.Date).ToHashSet();
         // Keep existing rows for stable selection/scrolling and update only changed

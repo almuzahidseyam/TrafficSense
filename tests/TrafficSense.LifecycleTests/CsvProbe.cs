@@ -77,10 +77,19 @@ internal static class CsvProbe
                     Check(daily.Items.Count == 1 && dayRow.Date == "2026-10-12" && dayRow.Download == "120 B" && dayRow.Upload == "60 B" && dayRow.Total == "180 B" &&
                         dayRow.Details.EndsWith("সর্বমোট: 180 বাইট") && ((TextBlock)daily.Columns[0].Header).Text == "তারিখ" &&
                         AutomationProperties.GetName(daily).Contains("দিনভিত্তিক"), "Bengali daily list/header/exact-byte accessibility failed.");
+                    CheckDayDetails(chart, dayRow);
+                    var detailTip = (ToolTip)chart.ToolTip;
+                    detailTip.Opacity = 0; detailTip.IsOpen = true; Drain(history);
+                    Check(detailTip.IsOpen && Details(chart).EndsWith("সর্বমোট: 180 বাইট"), "Native chart tooltip did not open with Bengali exact bytes.");
+                    RenderDetails(chart, "tooltip-bn");
                     File.WriteAllText(destination, "previous export");
                     using (var locked = new FileStream(destination, FileMode.Open, FileAccess.Read, FileShare.None)) Click(export);
                     Check(errors.Count == 1 && errors[0].StartsWith(language[TextKey.CsvExportFailed]) && File.ReadAllText(destination) == "previous export", "Bengali write failure did not preserve previous file.");
                     language.Select("en");
+                    Check(Details(chart) == "2026-10-12\nDownload: 120 bytes\nUpload: 60 bytes\nTotal: 180 bytes",
+                        "Open chart tooltip did not translate without moving the pointer.");
+                    RenderDetails(chart, "tooltip-en");
+                    detailTip.IsOpen = false;
                     Check(export.Content.ToString() == "Export CSV…", "English export label failed.");
                     using (var locked = new FileStream(destination, FileMode.Open, FileAccess.Read, FileShare.None)) Click(export);
                     Check(errors.Count == 2 && errors[1].StartsWith(language[TextKey.CsvExportFailed]), "English export failure did not report safely.");
@@ -106,6 +115,7 @@ internal static class CsvProbe
                     Check(daily.Items.Count == 1 && ((UsageDayRow)daily.Items[0]).Date == "2026-09-30", "Daily list did not filter month.");
                     Check(chart.Series.Days.Count == 1 && chart.Series.Start == new DateOnly(2026, 9, 30) && chart.Series.PeakBytes == 1000,
                         "Month chart included other dates or used the wrong scale.");
+                    CheckDayDetails(chart, (UsageDayRow)daily.Items[0]);
                     Render(history, "month");
                     Select(period, TextKey.CsvDateRange); first.Text = "2026-10-11"; last.Text = "2026-10-12";
                     Click(export);
@@ -116,6 +126,9 @@ internal static class CsvProbe
                     Render(history, "range");
                     Check(chart.Series.Days.Select(day => day.Date).SequenceEqual(new[] { new DateOnly(2026, 10, 11), new DateOnly(2026, 10, 12) }) &&
                         chart.Series.Days.Sum(day => (decimal)day.Received + day.Sent) == 225, "Range chart disagrees with daily rows/CSV or chronological order.");
+                    CheckDayDetails(chart, (UsageDayRow)daily.Items[1]);
+                    CheckDayDetails(chart, (UsageDayRow)daily.Items[0]);
+                    detailTip.IsOpen = true;
                     string before = File.ReadAllText(destination); int choicesBefore = chooses;
                     foreach (string invalid in new[] { "bad", "2026-02-29", "2026-10-13", "" })
                     {
@@ -127,6 +140,7 @@ internal static class CsvProbe
                         Check(daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Invalid dates left stale daily rows.");
                         Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed && AutomationProperties.GetName(chart) == "",
                             "Invalid dates left stale chart records or accessible values.");
+                        Check(Details(chart) == "" && !detailTip.IsOpen, "Invalid period retained tooltip content or popup.");
                     }
                     Render(history, "invalid");
                     first.Text = "2020-01-01"; last.Text = "2020-12-31"; Click(export);
@@ -134,6 +148,7 @@ internal static class CsvProbe
                     Check(selectedUsage.Visibility == Visibility.Visible && selectedUsage.Text.EndsWith("ডাউনলোড: 0 B\nআপলোড: 0 B\nসর্বমোট: 0 B"), "Empty period retained previous totals.");
                     Check(daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Empty period retained previous daily rows.");
                     Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed, "Empty period retained previous chart.");
+                    Check(Details(chart) == "", "Empty period retained tooltip details.");
                     first.Text = last.Text = "2026-10-12";
                     language.Select("en"); history.Refresh();
                     Check((TextKey)((ComboBoxItem)period.SelectedItem).Tag == TextKey.CsvDateRange && first.Text == "2026-10-12" && last.Text == first.Text && export.IsEnabled,
@@ -144,9 +159,11 @@ internal static class CsvProbe
                     Check(chart.Series.Days.Single().Received == 140 && peer.GetName().StartsWith("Daily usage chart") && peer.GetHelpText().Contains("Missing records"),
                         "English chart translation/live sample failed.");
                     var retainedRow = (UsageDayRow)daily.Items[0]; daily.SelectedItem = retainedRow;
+                    CheckDayDetails(chart, retainedRow);
                     ledger.Record(new(10, 5), now); history.Refresh();
                     Check(selectedUsage.Text.EndsWith("Download: 150 B\nUpload: 75 B\nTotal: 225 B"), "Live refresh did not update selected totals.");
                     Check(chart.Series.Days.Single().Received == 150 && chart.Series.Days.Single().Sent == 75, "Live chart values stayed stale.");
+                    Check(Details(chart) == retainedRow.Details && Details(chart).EndsWith("Total: 225 bytes"), "Stationary hover did not update with new traffic.");
                     var unchangedSeries = chart.Series; history.Refresh();
                     Check(ReferenceEquals(chart.Series, unchangedSeries), "Unchanged refresh replaced the chart snapshot.");
                     Check(ReferenceEquals(daily.SelectedItem, retainedRow) && ReferenceEquals(daily.Items[0], retainedRow) && retainedRow.Download == "150 B" &&
@@ -158,6 +175,14 @@ internal static class CsvProbe
                     Check(daily.Items.Cast<UsageDayRow>().Select(row => row.Date).SequenceEqual(new[] { "2026-10-13", "2026-10-12", "2026-10-11", "2026-09-30" }), "All-days list missed or duplicated records.");
                     Check(chart.Series.Days.Count == 4 && chart.Series.CalendarDays == 14 && chart.Series.Days.Select(day => day.Date).SequenceEqual(
                         daily.Items.Cast<UsageDayRow>().Select(row => row.Day.Date).Reverse()), "All-days chart invented missing records or disagrees with the table.");
+                    Hover(chart, new(2026, 10, 1));
+                    Check(Details(chart) == "2026-10-01\nNo stored usage for this day.", "Missing-day hover invented zero usage or selected a neighboring record.");
+                    chart.SetHoverPosition(new(3, 40));
+                    Check(Details(chart).StartsWith("Daily usage chart") && !Details(chart).Contains("Total: 225 bytes"), "Outside-plot hover retained stale day values.");
+                    Hover(chart, new(2026, 10, 12));
+                    chart.RaiseEvent(new System.Windows.Input.MouseEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0)
+                        { RoutedEvent = System.Windows.Input.Mouse.MouseLeaveEvent });
+                    Check(!detailTip.IsOpen && Details(chart).StartsWith("Daily usage chart"), "Leaving chart retained daily details or popup.");
                     Render(history, "gaps");
                     Check(selectedUsage.Text.Contains("Download: " + HistoryWindow.FormatBytes(1220)) && selectedUsage.Text.EndsWith("Total: " + HistoryWindow.FormatBytes(1830)),
                         "All-days totals did not include every retained record.");
@@ -167,6 +192,7 @@ internal static class CsvProbe
                     Check(!main.IsVisible && history.IsVisible && ledger.Today(new(2026, 10, 12)).Received == 150,
                         "CSV actions changed widget visibility or usage.");
                     Check(Directory.GetFiles(root, "*.tmp").Length == 0, "Export left temporary files.");
+                    detailTip.IsOpen = true;
                 }
                 finally
                 {
@@ -174,6 +200,8 @@ internal static class CsvProbe
                     var closedGrid = Field<DataGrid>(history, "_dailyUsage");
                     Check(closedGrid.ItemsSource == null && closedGrid.Columns.Count == 0, "Closing history retained daily view/cell bindings.");
                     Check(Field<DailyUsageChart>(history, "_dailyChart").Series.Days.Count == 0, "Closed history retained chart records.");
+                    Check(Details(Field<DailyUsageChart>(history, "_dailyChart")) == "", "Closed history retained tooltip details.");
+                    Check(!((ToolTip)Field<DailyUsageChart>(history, "_dailyChart").ToolTip).IsOpen, "Closed history retained its tooltip popup.");
                 }
                 VerifyLargeDailyList(language, now);
                 VerifyZeroChart(language, now);
@@ -184,7 +212,7 @@ internal static class CsvProbe
         try
         {
             Check(app.Run() == 0 && passed, "CSV lifecycle failed.");
-            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, inclusive filtering/ordering/gaps, exact-byte details, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
+            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, exact-byte hover/native-popup translation/live update/cleanup, inclusive filtering/ordering/gaps, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
             return 0;
         }
         finally
@@ -205,6 +233,8 @@ internal static class CsvProbe
             var chart = Field<DailyUsageChart>(window, "_dailyChart");
             Check(chart.Series.Days.Count == 30 && chart.Series.CalendarDays == 30 && chart.Series.Start == today.AddDays(-29) &&
                 chart.Series.End == today && chart.Series.PeakBytes == long.MaxValue, "Large chart exceeded 30 calendar days or overflowed its scale.");
+            Hover(chart, today);
+            Check(Details(chart).EndsWith("সর্বমোট: 18446744073709551614 বাইট"), "Maximum hover totals overflowed.");
             var outer = (ScrollViewer)window.Content;
             outer.ScrollToBottom(); Drain(window);
             var first = (UsageDayRow)grid.Items[0];
@@ -219,15 +249,20 @@ internal static class CsvProbe
             Check(ReferenceEquals(chart.Series, initialSeries), "Unchanged large chart snapshot was replaced.");
             Check(ReferenceEquals(grid.SelectedItem, selected) && Math.Abs(scroll.VerticalOffset - offset) < 0.01, "Unchanged refresh lost daily selection or scroll.");
             language.Select("en"); Drain(window);
+            Check(Details(chart).EndsWith("Total: 18446744073709551614 bytes"), "Large stationary hover did not translate.");
             Check(ReferenceEquals(chart.Series, initialSeries) && AutomationProperties.GetName(chart).StartsWith("Daily usage chart"), "Chart translation changed its records.");
             Check(ReferenceEquals(grid.SelectedItem, selected) && first.Details.EndsWith("Total: 18446744073709551614 bytes"), "Translation replaced daily rows or missed exact bytes.");
             ledger.Record(new(1, 2), now.AddDays(1)); now = now.AddDays(1); window.Refresh(); Drain(window);
             Check(chart.Series.Days.Count == 30 && chart.Series.End == today.AddDays(1) && chart.Series.Start == today.AddDays(-28) &&
                 chart.Series.Days[^1].Received == 1 && chart.Series.Days[^1].Sent == 2, "Chart rollover retained expired days or missed new samples.");
+            Check(Details(chart) == today.AddDays(1).ToString("yyyy-MM-dd") + "\nDownload: 1 bytes\nUpload: 2 bytes\nTotal: 3 bytes",
+                "Stationary hover did not follow the calendar slot on rollover.");
             Check(grid.Items.Count == 400 && ((UsageDayRow)grid.Items[0]).Date == DateOnly.FromDateTime(now.Date).ToString("yyyy-MM-dd") &&
                 grid.Items.Cast<UsageDayRow>().Last().Day.Date == today.AddDays(-398) && ReferenceEquals(grid.SelectedItem, selected),
                 "Daily rollover/retention changed selection, duplicated rows or kept an expired record.");
             window.Width = window.MinWidth; language.Select("bn"); Drain(window);
+            Hover(chart, today);
+            RenderDetails(chart, "tooltip-large-bn");
             outer.ScrollToBottom(); Drain(window);
             Check(scroll.ExtentWidth <= scroll.ViewportWidth + 1, "Minimum-width daily columns overflow horizontally.");
             Render(window, "daily-large");
@@ -248,10 +283,55 @@ internal static class CsvProbe
             var chart = Field<DailyUsageChart>(window, "_dailyChart");
             Check(chart.Series.PeakBytes == 0 && chart.Series.Days.Count == 2 && chart.Series.CalendarDays == 3 &&
                 chart.Visibility == Visibility.Visible && chart.ActualWidth >= 100, "Zero chart collapsed, invented a missing day or lost its scale.");
+            Hover(chart, today.AddDays(-2));
+            Check(Details(chart).EndsWith("ডাউনলোড: 0 বাইট\nআপলোড: 0 বাইট\nসর্বমোট: 0 বাইট"), "Recorded zero was confused with a missing day.");
+            Hover(chart, today.AddDays(-1));
+            Check(Details(chart).EndsWith("এই দিনের সংরক্ষিত হিসাব নেই।"), "Bengali gap tooltip is missing.");
             Render(window, "zero-gaps");
             Check(!ledger.Dirty, "Viewing zero records changed stored usage.");
         }
         finally { window.Close(); }
+    }
+
+    private static void RenderDetails(DailyUsageChart chart, string name)
+    {
+        string? directory = Environment.GetEnvironmentVariable("TRAFFICSENSE_CSV_SCREENSHOTS");
+        if (string.IsNullOrWhiteSpace(directory)) return;
+        var tip = (ToolTip)chart.ToolTip;
+        bool wasOpen = tip.IsOpen;
+        tip.Opacity = 0; tip.IsOpen = true; Drain(Window.GetWindow(chart));
+        var text = (TextBlock)tip.Content;
+        Check(text.ActualWidth > 0 && text.ActualWidth <= 300 && text.ActualHeight > 0, "Tooltip is empty or exceeds its wrapping width.");
+        var dpi = VisualTreeHelper.GetDpi(text);
+        var size = new Size(text.ActualWidth + 16, text.ActualHeight + 16);
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(size.Width * dpi.DpiScaleX), (int)Math.Ceiling(size.Height * dpi.DpiScaleY),
+            dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+        var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            drawing.DrawRectangle(tip.Background, new Pen(SystemColors.ActiveBorderBrush, 1), new Rect(size));
+            drawing.DrawRectangle(new VisualBrush(text), null, new Rect(new Point(8, 8), text.RenderSize));
+        }
+        bitmap.Render(visual); Directory.CreateDirectory(directory);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(Path.Combine(directory, name + ".png")); encoder.Save(stream);
+        tip.IsOpen = wasOpen;
+    }
+    private static string Details(DailyUsageChart chart) => ((TextBlock)((ToolTip)chart.ToolTip).Content).Text;
+    private static void Hover(DailyUsageChart chart, DateOnly date)
+    {
+        Drain(Window.GetWindow(chart));
+        var position = new Point(4 + (date.DayNumber - chart.Series.Start.DayNumber + .5) * (chart.ActualWidth - 8) / chart.Series.CalendarDays, 26);
+        Check(VisualTreeHelper.HitTest(chart, position)?.VisualHit == chart, "Day columns above small bars do not receive mouse input.");
+        chart.SetHoverPosition(position);
+    }
+    private static void CheckDayDetails(DailyUsageChart chart, UsageDayRow row)
+    {
+        Hover(chart, row.Day.Date);
+        Check(Details(chart) == row.Details, "Hover disagrees with the exact daily row/date.");
+        var tip = (ToolTip)chart.ToolTip;
+        Check(tip.Style == null && tip.Background == SystemColors.InfoBrush && tip.Foreground == SystemColors.InfoTextBrush &&
+            ((TextBlock)tip.Content).TextWrapping == TextWrapping.Wrap, "Tooltip does not use readable native system colors/wrapping.");
     }
 
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)

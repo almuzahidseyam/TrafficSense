@@ -1,12 +1,79 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Automation.Peers;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace TrafficSense;
 
 internal sealed class DailyUsageChart : FrameworkElement
 {
+    private readonly TextBlock _detailText = new()
+    {
+        Style = null, FontSize = 14, FontFamily = new FontFamily("Segoe UI, Nirmala UI, Kalpurush"),
+        TextWrapping = TextWrapping.Wrap, MaxWidth = 300, Foreground = SystemColors.InfoTextBrush
+    };
+    private readonly ToolTip _details = new()
+    {
+        Style = null, Background = SystemColors.InfoBrush, Foreground = SystemColors.InfoTextBrush, Padding = new Thickness(8)
+    };
+    private UiLanguage _language = new();
+    private string _summary = "";
+    private Point? _hoverPosition;
+    private UsageDayRow? _hoverRow;
+
+    internal DailyUsageChart()
+    {
+        _details.Content = _detailText; ToolTip = _details;
+        ToolTipService.SetShowDuration(this, 30000);
+        Unloaded += (_, _) => SetHoverPosition(null);
+    }
+
+    internal void ConfigureDetails(UiLanguage language, string summary)
+    { _language = language; _summary = summary; RefreshDetails(); }
+
+    internal void SetHoverPosition(Point? position)
+    {
+        _hoverPosition = position;
+        if (position == null) _details.IsOpen = false;
+        RefreshDetails();
+    }
+
+    private Rect Plot => ActualWidth < 100 || ActualHeight < 60 ? Rect.Empty : new(4, 25, ActualWidth - 8, ActualHeight - 49);
+
+    private void RefreshDetails()
+    {
+        string text = Series.Days.Count == 0 ? "" : _summary;
+        var plot = Plot;
+        DateOnly? date = _hoverPosition is { } point && plot.Contains(point) ? Series.DateAt(point.X - plot.Left, plot.Width) : null;
+        if (date is { } selected)
+        {
+            var day = Series.Days.FirstOrDefault(day => day.Date == selected);
+            if (day == null)
+                text = selected.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "\n" + _language[TextKey.DailyChartNoRecord];
+            else
+            {
+                if (_hoverRow == null) _hoverRow = new(day, _language);
+                else _hoverRow.Update(day, _language);
+                text = _hoverRow.Details;
+            }
+        }
+        else _hoverRow = null;
+        if (_detailText.Text != text) _detailText.Text = text;
+        if (Series.Days.Count == 0)
+        { _hoverPosition = null; _hoverRow = null; _details.IsOpen = false; }
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    { base.OnMouseMove(e); SetHoverPosition(e.GetPosition(this)); }
+
+    protected override void OnMouseLeave(MouseEventArgs e)
+    { base.OnMouseLeave(e); SetHoverPosition(null); }
+
+    protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+    { base.OnRenderSizeChanged(sizeInfo); RefreshDetails(); }
+
     protected override AutomationPeer OnCreateAutomationPeer() => new ChartAutomationPeer(this);
 
     private sealed class ChartAutomationPeer(DailyUsageChart owner) : FrameworkElementAutomationPeer(owner)
@@ -21,6 +88,7 @@ internal sealed class DailyUsageChart : FrameworkElement
     {
         if (Series.Start == series.Start && Series.End == series.End && Series.Days.SequenceEqual(series.Days)) return;
         Series = series;
+        RefreshDetails();
         InvalidateVisual();
     }
 
@@ -28,7 +96,7 @@ internal sealed class DailyUsageChart : FrameworkElement
     {
         base.OnRender(context);
         if (ActualWidth < 100 || ActualHeight < 60 || Series.Days.Count == 0) return;
-        var plot = new Rect(4, 25, ActualWidth - 8, ActualHeight - 49);
+        var plot = Plot;
         context.DrawRectangle(SystemColors.WindowBrush, new Pen(SystemColors.GrayTextBrush, 1), plot);
         double dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
         FormattedText Text(string value) => new(value, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
