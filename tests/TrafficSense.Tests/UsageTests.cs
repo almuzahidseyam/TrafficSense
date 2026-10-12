@@ -6,6 +6,20 @@ namespace TrafficSense.Tests;
 public sealed class UsageTests
 {
     [Fact]
+    public void GraphRetainsTwoMinutesAndRejectsNonFiniteRatesAndBackwardsTime()
+    {
+        var history = new SpeedHistory();
+        for (int i = 0; i < 1000; i++) history.Add(TimeSpan.FromMilliseconds(i * 500), new(i, i * 2));
+        Assert.InRange(history.Samples.Count, 1, SpeedHistory.MaximumSamples);
+        Assert.Equal(TimeSpan.FromMinutes(2), history.Samples.Last().Timestamp - history.Samples.First().Timestamp);
+        int count = history.Samples.Count;
+        history.Add(TimeSpan.Zero, default);
+        Assert.Equal(count, history.Samples.Count);
+        history.Add(TimeSpan.FromSeconds(501), new(double.NaN, double.PositiveInfinity));
+        Assert.Equal(default, history.Samples.Last().Speed);
+    }
+
+    [Fact]
     public void DailyAndMonthlyTotalsFollowLocalDateAndSurviveSerialization()
     {
         var ledger = new UsageLedger();

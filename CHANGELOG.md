@@ -4,6 +4,12 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.9.0] - Development milestone
+
+### Added
+
+- Bounded, in-memory two-minute download/upload graph in Usage and history. It follows the selected speed unit, uses distinct solid/dashed lines and a textual current-speed summary, and leaves gaps across suspended sampling. Hidden widget monitoring continues; history is not collected outside the app's runtime.
+
 ## [1.8.0] - Development milestone
 
 ### Added

@@ -210,9 +210,10 @@ namespace TrafficSense
                 _speedCalculator.Reset();
             var adapter = _adapterSelection.Select(adapters, _settings.SelectedAdapterId);
             NetworkAdapterSnapshot[] snapshots = adapter?.Snapshot is { } snapshot ? [snapshot] : [];
-            _latestSpeed = _speedCalculator.Update(snapshots, _sampleTimestamp());
+            var timestamp = _sampleTimestamp();
+            _latestSpeed = _speedCalculator.Update(snapshots, timestamp);
             _monitoredAdapter = adapter;
-            RecordTraffic();
+            RecordTraffic(timestamp);
             // Hidden transparent WPF windows do not need text/layout updates.
             // Keep sampling so showing the widget uses the latest interval.
             if (IsVisible)

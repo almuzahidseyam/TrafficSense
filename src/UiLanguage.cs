@@ -13,7 +13,7 @@ internal enum TextKey
     UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed,
     TextSize, BackgroundTransparency, DefaultAppearance, LockPosition, ResetPosition,
     SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds,
-    History, Today, ThisMonth, UsageHint, Download, Upload
+    History, Today, ThisMonth, UsageHint, Download, Upload, GraphLegend
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -55,6 +55,7 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.Today] = ("Today", "আজ"),
             [TextKey.Download] = ("Download", "ডাউনলোড"),
             [TextKey.Upload] = ("Upload", "আপলোড"),
+            [TextKey.GraphLegend] = ("Last 2 minutes — download: solid green; upload: dashed blue", "শেষ ২ মিনিট — ডাউনলোড: সবুজ অবিচ্ছিন্ন রেখা; আপলোড: নীল ভাঙা রেখা"),
             [TextKey.ThisMonth] = ("This month", "এই মাস"),
             [TextKey.UsageHint] = ("Measured traffic while TrafficSense is running, across your selected connections. Gaps during sleep, reconnects or app shutdown are excluded. Totals follow the local date; they are not your provider's billing totals.",
                 "TrafficSense চালু থাকা অবস্থায় নির্বাচিত সংযোগগুলোর মাপা ডেটা। স্লিপ, পুনঃসংযোগ বা অ্যাপ বন্ধের বিরতি বাদ যায়। হিসাব স্থানীয় তারিখ অনুযায়ী; এটি ইন্টারনেট সেবাদাতার বিলের হিসাব নয়।"),

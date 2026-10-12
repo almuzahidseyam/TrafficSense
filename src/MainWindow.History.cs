@@ -9,10 +9,12 @@ public partial class MainWindow
     private readonly Func<DateTimeOffset> _localTime;
     private readonly System.Diagnostics.Stopwatch _usageSaveClock = System.Diagnostics.Stopwatch.StartNew();
     private HistoryWindow? _historyWindow;
+    private readonly SpeedHistory _speedHistory = new();
 
-    private void RecordTraffic()
+    private void RecordTraffic(TimeSpan timestamp)
     {
         _usage.Record(_speedCalculator.LastTraffic, _localTime());
+        _speedHistory.Add(timestamp, _latestSpeed);
         _historyWindow?.Refresh();
         if (_usageSaveClock.Elapsed >= TimeSpan.FromSeconds(60)) FlushUsage();
     }
@@ -29,7 +31,7 @@ public partial class MainWindow
         if (_fatalShutdown || Volatile.Read(ref _monitoringClosed) != 0) return;
         if (_historyWindow == null)
         {
-            _historyWindow = new HistoryWindow(Localization, _usage, _localTime);
+            _historyWindow = new HistoryWindow(Localization, _usage, _localTime, _speedHistory, () => _settings.SpeedInBits);
             _historyWindow.Closed += (_, _) => _historyWindow = null;
         }
         if (_historyWindow.WindowState == WindowState.Minimized) _historyWindow.WindowState = WindowState.Normal;
