@@ -17,6 +17,8 @@ internal static class Program
     private static int Main(string[] args)
     {
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
+        if (args.FirstOrDefault() == "--screenshots" && args.Length == 2) return ScreenshotProbe.Run(args[1]);
+        if (args.FirstOrDefault() == "--graph-quality") return GraphQualityProbe.Run();
         if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.FirstOrDefault() == "--system-metrics") return SystemMetricsProbe.Run();
         if (args.FirstOrDefault() == "--taskbar-panel") return TaskbarPanelProbe.Run();
@@ -40,6 +42,7 @@ internal static class Program
         if (args.Length == 0)
         {
             RunChild("--network-recovery");
+            RunChild("--graph-quality");
             RunChild("--system-metrics");
             RunChild("--taskbar-panel");
             RunChild("--customization");

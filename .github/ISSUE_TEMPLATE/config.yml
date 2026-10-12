@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Getting started / বাংলা নির্দেশনা
+    url: https://github.com/almuzahidseyam/TrafficSense/blob/master/docs/GETTING_STARTED_BN.md
+    about: Installation, settings, history and troubleshooting in Bengali.
+  - name: Measurement and compatibility
+    url: https://github.com/almuzahidseyam/TrafficSense/blob/master/docs/COMPATIBILITY.md
+    about: Supported features, comparison boundaries and remaining validation.

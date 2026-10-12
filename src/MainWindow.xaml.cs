@@ -257,7 +257,7 @@ namespace TrafficSense
                 if (_sampleTimestamp() - delivery.Timestamp > TimeSpan.FromSeconds(5))
                 { _latestSpeed = default; _sampleQuality = SampleQuality.Delayed; }
                 MergeSampledUsage(delivery);
-                RecordHistory(delivery.Timestamp);
+                RecordHistory(_sampleQuality == SampleQuality.Delayed ? _sampleTimestamp() : delivery.Timestamp);
                 if (IsVisible) RenderNetworkSpeed();
                 return;
             }

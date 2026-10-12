@@ -8,7 +8,7 @@ Comparison reviewed on 2026-10-13 against the [TrafficMonitor README](https://gi
 | 2 | Optional CPU, RAM, CPU frequency, GPU engine load and disk activity; network details | Native API failures show unavailable; disabled metrics stop polling; unit and isolated Windows probes | Implemented in 1.23.0 |
 | 3 | Taskbar-edge appbar, monitor selection, Explorer restart/DPI recovery, independent visibility | Simulated shell boundary and native WPF lifecycle checks; Windows-supported API; in-taskbar embedding remains a gap | Implemented in 1.24.0 with compatibility limits |
 | 4 | Font/item colors, appearance skins, daily/monthly alerts, data-only sensor extensions and separate LHM bridge | Settings migration/rollback, threshold/calendar, file bounds/freshness, provider and isolated UI/cancellation checks | Implemented in 1.25.0 |
-| 5 | Product documentation, demo, issue/contribution templates and release quality | Reproducible packages/checksums, clean CI and honest compatibility matrix | Pending |
+| 5 | Product documentation, demo, issue/contribution templates and release quality | Reproducible packages/checksums, CI, native graph checks and honest compatibility matrix | Implemented in 1.26.0 |
 
 ## Measurement contract
 
@@ -30,4 +30,4 @@ Scores use `(impact + risk) × (6 − effort)`, with each input from 1 to 5; eff
 | Shell taskbar compatibility | Infrastructure | 4 | 4 | 5 | 8 | Windows shell internals change; recovery and tested support matter |
 | Missing comparison/support docs | Documentation | 3 | 2 | 1 | 25 | Helps users install, understand measurements and report reproducible bugs |
 
-Temperature monitoring and arbitrary native DLL plugins need a separate opt-in safety/compatibility design. The upstream project itself documents hardware-monitoring stability concerns; driver installation is not part of the base monitor. An extension must not turn an absent sensor into a fabricated zero.
+Temperature readings now use the opt-in separate LibreHardwareMonitor bridge or a data-only provider. TrafficSense installs no hardware driver. Arbitrary native DLL plugins, TrafficMonitor bitmap/layout skins and embedding inside Explorer's taskbar remain compatibility gaps; they are not represented as completed features. See [compatibility](docs/COMPATIBILITY.md) and [quality evidence](docs/QUALITY.md) for boundaries and the remaining device-validation work.

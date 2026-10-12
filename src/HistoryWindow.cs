@@ -48,7 +48,7 @@ internal sealed partial class HistoryWindow : Window
         var buttons = new DockPanel { LastChildFill = false };
         DockPanel.SetDock(_close, Dock.Right); DockPanel.SetDock(_export, Dock.Left);
         buttons.Children.Add(_close); buttons.Children.Add(_export); panel.Children.Add(buttons);
-        Content = new ScrollViewer { Content = panel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+        Content = new ScrollViewer { Content = panel, Background = SystemColors.WindowBrush, VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
         _close.Click += (_, _) => Close();
         ToolTipService.SetShowOnDisabled(_export, true);
@@ -84,10 +84,11 @@ internal sealed partial class HistoryWindow : Window
         _today.Text = Summary(TextKey.Today, _usage.Today(date));
         _month.Text = Summary(TextKey.ThisMonth, _usage.Month(date));
         _hint.Text = _language[TextKey.UsageHint];
-        var latest = _history.Samples.LastOrDefault().Speed;
+        var last = _history.Samples.LastOrDefault();
+        var latest = last.Speed;
         _legend.Text = _language[TextKey.GraphLegend] + "\n" + _language[TextKey.Download] + ": " +
-            SpeedFormatter.Format(latest.DownloadBytesPerSecond, _bits()) + "    " + _language[TextKey.Upload] + ": " +
-            SpeedFormatter.Format(latest.UploadBytesPerSecond, _bits());
+            (last.IsValid ? SpeedFormatter.Format(latest.DownloadBytesPerSecond, _bits()) : _language[TextKey.NotAvailable]) + "    " + _language[TextKey.Upload] + ": " +
+            (last.IsValid ? SpeedFormatter.Format(latest.UploadBytesPerSecond, _bits()) : _language[TextKey.NotAvailable]);
         System.Windows.Automation.AutomationProperties.SetName(_graph, _legend.Text);
         _graph.Update(_history.Samples, _bits());
         _close.Content = _language[TextKey.Close];
