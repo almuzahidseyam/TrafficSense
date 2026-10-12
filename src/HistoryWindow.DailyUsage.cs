@@ -6,6 +6,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace TrafficSense;
 
@@ -57,8 +58,26 @@ internal sealed partial class HistoryWindow
         ScrollViewer.SetCanContentScroll(_dailyUsage, true);
         VirtualizingPanel.SetVirtualizationMode(_dailyUsage, VirtualizationMode.Recycling);
         _dailyUsage.ItemsSource = _dailyRows;
+        _dailyChart.DaySelected += SelectDailyUsage;
         panel.Children.Add(_dailyChartTitle); panel.Children.Add(_dailyChartLegend); panel.Children.Add(_dailyChart);
         panel.Children.Add(_dailyLabel); panel.Children.Add(_dailyUsage);
+    }
+
+    private void SelectDailyUsage(DateOnly date)
+    {
+        var row = _dailyRows.FirstOrDefault(row => row.Day.Date == date);
+        if (row == null) return;
+        _dailyUsage.SelectedItem = row;
+        _dailyUsage.CurrentCell = new DataGridCellInfo(row, _dailyUsage.Columns[0]);
+        _dailyUsage.ScrollIntoView(row, _dailyUsage.Columns[0]);
+        // Wait for virtualization to realize the row before revealing it in the
+        // outer history scroll view. A later filter/click may supersede this one.
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            if (ReferenceEquals(_dailyUsage.SelectedItem, row) && _dailyRows.Contains(row) &&
+                _dailyUsage.ItemContainerGenerator.ContainerFromItem(row) is DataGridRow visual)
+                visual.BringIntoView();
+        }), DispatcherPriority.Loaded);
     }
 
     private void RefreshDailyUsage(bool valid, UsageDateRange? range)

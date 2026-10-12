@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.19.0] - 2026-10-12
+
+### Added
+
+- Click a recorded day in the daily usage chart to select the matching date in the newest-first table. The table scrolls to the row and reveals it in the outer history viewport, including with 400 retained records and small screens. The exact-byte popup closes on selection.
+- A hand cursor identifies selectable days. English/Bengali help explains selection; measured zero records are selectable while gaps, right clicks and clicks outside the plot preserve the current selection. Filters, live refresh and language changes retain valid selections without changing stored usage or CSV scope.
+- Isolated Windows checks cover calendar-to-row matching, filtered/zero/gap records, stale/rapid clicks, live selection retention and both levels of scrolling with virtualized rows.
+
+### Upgrading from 1.18.1
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible.
+- Open **Usage and history**, then click a day's chart column to reveal its row in **Daily usage**. Keyboard users can continue navigating the daily table directly.
+
 ## [1.18.1] - 2026-10-12
 
 ### Fixed
@@ -218,7 +231,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.1...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.19.0...HEAD
+[1.19.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.1...v1.19.0
 [1.18.1]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.16.0...v1.17.0

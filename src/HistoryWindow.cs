@@ -61,6 +61,7 @@ internal sealed partial class HistoryWindow : Window
         Closed += (_, _) =>
         {
             _language.Changed -= LanguageChanged;
+            _dailyChart.DaySelected -= SelectDailyUsage;
             // Detach the collection view and cell bindings when the window closes.
             _dailyUsage.ItemsSource = null;
             _dailyRows.Clear();

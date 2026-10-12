@@ -253,6 +253,9 @@ internal static class SoakProbe
         chart.SetHoverPosition(new Point(chart.ActualWidth / 2, 40));
         var tip = (ToolTip)chart.ToolTip;
         tip.Opacity = 0; tip.IsOpen = true;
+        // Exercise deferred virtualized-row selection before filters or closing
+        // can supersede it; no input is sent to the user's running widget.
+        chart.SelectDayAt(new Point(chart.ActualWidth - 5, 40), System.Windows.Input.MouseButton.Left);
     }
 
     private static void Collect()

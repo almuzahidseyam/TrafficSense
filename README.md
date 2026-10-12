@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.18.1](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.18.1)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.19.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.19.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -151,7 +151,7 @@ Choose **CSV period / CSV সময়সীমা** in that window: **All retained
 
 The **Daily usage chart / দিনভিত্তিক চার্ট** beneath those totals shows up to 30 calendar days ending at the latest recorded day in the selected period, oldest to newest. Filled green bars show download and outlined blue bars show upload on a shared byte scale; the top label is the largest download or upload amount. Missing records leave gaps; recorded zero values have a baseline mark. In high contrast, system colors and filled/outlined bars distinguish the two series. The English/Bengali description and exact-byte table provide text alternatives. The chart updates live without animation; the summary and table still cover the entire selected period.
 
-Hover anywhere inside a day's column in the chart's plot area to see its ISO date and exact download, upload and combined bytes, even above a tiny bar. A gap shows that no stored record exists for that date; a recorded zero shows zero bytes. Details follow the current language, new samples, filter changes and chart resizing without requiring another mouse move. Leaving the chart dismisses the popup. Invalid/empty selections and closing history clear it. Native tooltips use system colors and wrapping; keyboard/screen-reader users can read the same exact values in the table.
+Hover anywhere inside a day's column in the chart's plot area to see its ISO date and exact download, upload and combined bytes, even above a tiny bar. A gap shows that no stored record exists for that date; a recorded zero shows zero bytes. Details follow the current language, new samples, filter changes and chart resizing without requiring another mouse move. Click a recorded day to select the matching daily row and scroll it into view, including in a small history window. The popup closes on selection. Gaps and right clicks preserve the current selection. Leaving the chart dismisses the popup. Invalid/empty selections and closing history clear it. Native tooltips use system colors and wrapping; keyboard/screen-reader users can read the same exact values in the table.
 
 The read-only **Daily usage / দিনভিত্তিক হিসাব** table below the chart shows the same selected records as CSV, newest first, with ISO dates and rounded download/upload/combined amounts. Hover a cell for exact byte counts; keyboard arrow keys navigate rows. The list updates live while retaining existing rows, selection and scrolling. Empty or invalid periods clear and hide the chart and list; the explanation above remains visible. At most 400 retained days are listed, with a scrollable, virtualized table on smaller screens.
 

@@ -22,6 +22,7 @@ internal sealed class DailyUsageChart : FrameworkElement
     private string _summary = "";
     private Point? _hoverPosition;
     private UsageDayRow? _hoverRow;
+    internal event Action<DateOnly>? DaySelected;
 
     internal DailyUsageChart()
     {
@@ -42,11 +43,25 @@ internal sealed class DailyUsageChart : FrameworkElement
 
     private Rect Plot => ActualWidth < 100 || ActualHeight < 60 ? Rect.Empty : new(4, 25, ActualWidth - 8, ActualHeight - 49);
 
+    private DateOnly? DateAt(Point position)
+    {
+        var plot = Plot;
+        return plot.Contains(position) ? Series.DateAt(position.X - plot.Left, plot.Width) : null;
+    }
+
+    internal bool SelectDayAt(Point position, MouseButton button)
+    {
+        if (button != MouseButton.Left || DateAt(position) is not { } date || !Series.Days.Any(day => day.Date == date)) return false;
+        SetHoverPosition(null);
+        DaySelected?.Invoke(date);
+        return true;
+    }
+
     private void RefreshDetails()
     {
         string text = Series.Days.Count == 0 ? "" : _summary;
-        var plot = Plot;
-        DateOnly? date = _hoverPosition is { } point && plot.Contains(point) ? Series.DateAt(point.X - plot.Left, plot.Width) : null;
+        DateOnly? date = _hoverPosition is { } point ? DateAt(point) : null;
+        Cursor = date is { } hovered && Series.Days.Any(day => day.Date == hovered) ? Cursors.Hand : null;
         if (date is { } selected)
         {
             var day = Series.Days.FirstOrDefault(day => day.Date == selected);
@@ -70,6 +85,12 @@ internal sealed class DailyUsageChart : FrameworkElement
 
     protected override void OnMouseLeave(MouseEventArgs e)
     { base.OnMouseLeave(e); SetHoverPosition(null); }
+
+    protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+    {
+        base.OnMouseLeftButtonDown(e);
+        if (SelectDayAt(e.GetPosition(this), e.ChangedButton)) e.Handled = true;
+    }
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
     { base.OnRenderSizeChanged(sizeInfo); RefreshDetails(); }

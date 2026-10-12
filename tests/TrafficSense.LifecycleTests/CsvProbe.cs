@@ -128,6 +128,9 @@ internal static class CsvProbe
                         chart.Series.Days.Sum(day => (decimal)day.Received + day.Sent) == 225, "Range chart disagrees with daily rows/CSV or chronological order.");
                     CheckDayDetails(chart, (UsageDayRow)daily.Items[1]);
                     CheckDayDetails(chart, (UsageDayRow)daily.Items[0]);
+                    SelectChartDay(history, new(2026, 10, 11));
+                    Check(((UsageDayRow)daily.SelectedItem).Date == "2026-10-11" && ledger.Dirty,
+                        "Chronological chart selected the newest-first table by index or marked usage saved.");
                     detailTip.IsOpen = true;
                     string before = File.ReadAllText(destination); int choicesBefore = chooses;
                     foreach (string invalid in new[] { "bad", "2026-02-29", "2026-10-13", "" })
@@ -138,6 +141,8 @@ internal static class CsvProbe
                         Check(selectedUsage.Visibility == Visibility.Collapsed && selectedUsage.Text == "" && AutomationProperties.GetName(selectedUsage) == "",
                             "Invalid dates left stale totals visible or accessible.");
                         Check(daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Invalid dates left stale daily rows.");
+                        Check(daily.SelectedItem == null && !chart.SelectDayAt(new(20, 40), System.Windows.Input.MouseButton.Left),
+                            "Invalid period retained a selection or accepted chart input.");
                         Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed && AutomationProperties.GetName(chart) == "",
                             "Invalid dates left stale chart records or accessible values.");
                         Check(Details(chart) == "" && !detailTip.IsOpen, "Invalid period retained tooltip content or popup.");
@@ -158,7 +163,7 @@ internal static class CsvProbe
                     Check(selectedUsage.Text == "Selected period usage\nDownload: 140 B\nUpload: 70 B\nTotal: 210 B", "English single-day live totals are incorrect.");
                     Check(chart.Series.Days.Single().Received == 140 && peer.GetName().StartsWith("Daily usage chart") && peer.GetHelpText().Contains("Missing records"),
                         "English chart translation/live sample failed.");
-                    var retainedRow = (UsageDayRow)daily.Items[0]; daily.SelectedItem = retainedRow;
+                    var retainedRow = (UsageDayRow)daily.Items[0]; SelectChartDay(history, retainedRow.Day.Date);
                     CheckDayDetails(chart, retainedRow);
                     ledger.Record(new(10, 5), now); history.Refresh();
                     Check(selectedUsage.Text.EndsWith("Download: 150 B\nUpload: 75 B\nTotal: 225 B"), "Live refresh did not update selected totals.");
@@ -177,6 +182,14 @@ internal static class CsvProbe
                         daily.Items.Cast<UsageDayRow>().Select(row => row.Day.Date).Reverse()), "All-days chart invented missing records or disagrees with the table.");
                     Hover(chart, new(2026, 10, 1));
                     Check(Details(chart) == "2026-10-01\nNo stored usage for this day.", "Missing-day hover invented zero usage or selected a neighboring record.");
+                    SelectChartDay(history, new(2026, 9, 30));
+                    var beforeIgnoredClick = daily.SelectedItem;
+                    Check(!chart.SelectDayAt(DayPosition(chart, new(2026, 10, 1)), System.Windows.Input.MouseButton.Left) &&
+                        !chart.SelectDayAt(DayPosition(chart, new(2026, 10, 12)), System.Windows.Input.MouseButton.Right) &&
+                        !chart.SelectDayAt(new(3, 40), System.Windows.Input.MouseButton.Left) &&
+                        !chart.SelectDayAt(new(chart.ActualWidth - 4, 40), System.Windows.Input.MouseButton.Left) &&
+                        !chart.SelectDayAt(new(20, 24), System.Windows.Input.MouseButton.Left) &&
+                        ReferenceEquals(daily.SelectedItem, beforeIgnoredClick), "Gap, outside-plot or right click changed daily selection.");
                     chart.SetHoverPosition(new(3, 40));
                     Check(Details(chart).StartsWith("Daily usage chart") && !Details(chart).Contains("Total: 225 bytes"), "Outside-plot hover retained stale day values.");
                     Hover(chart, new(2026, 10, 12));
@@ -212,7 +225,7 @@ internal static class CsvProbe
         try
         {
             Check(app.Run() == 0 && passed, "CSV lifecycle failed.");
-            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, exact-byte hover/native-popup translation/live update/cleanup, inclusive filtering/ordering/gaps, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
+            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, exact-byte hover/native-popup translation/live update/cleanup, chart click selects/reveals the matching daily row, inclusive filtering/ordering/gaps, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
             return 0;
         }
         finally
@@ -274,11 +287,22 @@ internal static class CsvProbe
             window.MaxHeight = 360; Drain(window); outer.ScrollToBottom(); Drain(window);
             Check(outer.ComputedVerticalScrollBarVisibility == Visibility.Visible && window.ActualHeight <= 361, "Daily list made small-screen controls unreachable.");
             Check(ledger.Dirty, "Viewing daily rows marked pending usage saved.");
+            outer.ScrollToTop(); Drain(window);
+            SelectChartDay(window, chart.Series.Start);
+            Check(grid.SelectedIndex == 29 && scroll.VerticalOffset > 0 && outer.VerticalOffset > 0,
+                "Chart click did not scroll both virtualized daily rows and the small history viewport.");
+            window.Refresh(); language.Select("en"); Drain(window);
+            Check(((UsageDayRow)grid.SelectedItem).Day.Date == chart.Series.Start, "Refresh/translation lost chart selection.");
+            chart.SelectDayAt(DayPosition(chart, chart.Series.Start), System.Windows.Input.MouseButton.Left);
+            SelectChartDay(window, chart.Series.End);
+            Check(grid.SelectedIndex == 0, "Queued earlier click overrode the latest selection.");
+            Render(window, "chart-selection-en");
         }
         finally { window.Close(); }
     }
     private static void VerifyZeroChart(UiLanguage language, DateTimeOffset now)
     {
+        language.Select("bn");
         var today = DateOnly.FromDateTime(now.Date);
         var ledger = new UsageLedger([new(today.AddDays(-2), 0, 0), new(today, 0, 0)]);
         var window = new HistoryWindow(language, ledger, () => now, new(), () => false);
@@ -292,6 +316,11 @@ internal static class CsvProbe
             Check(Details(chart).EndsWith("ডাউনলোড: 0 বাইট\nআপলোড: 0 বাইট\nসর্বমোট: 0 বাইট"), "Recorded zero was confused with a missing day.");
             Hover(chart, today.AddDays(-1));
             Check(Details(chart).EndsWith("এই দিনের সংরক্ষিত হিসাব নেই।"), "Bengali gap tooltip is missing.");
+            SelectChartDay(window, today.AddDays(-2));
+            Check(!chart.SelectDayAt(DayPosition(chart, today.AddDays(-1)), System.Windows.Input.MouseButton.Left), "Zero-chart gap accepted a click.");
+            language.Select("bn"); Drain(window);
+            Check(((UsageDayRow)Field<DataGrid>(window, "_dailyUsage").SelectedItem).Day.Date == today.AddDays(-2),
+                "Zero-record selection did not survive language change.");
             Render(window, "zero-gaps");
             Check(!ledger.Dirty, "Viewing zero records changed stored usage.");
         }
@@ -323,10 +352,31 @@ internal static class CsvProbe
         tip.IsOpen = wasOpen;
     }
     private static string Details(DailyUsageChart chart) => ((TextBlock)((ToolTip)chart.ToolTip).Content).Text;
+    private static Point DayPosition(DailyUsageChart chart, DateOnly date) =>
+        new(4 + (date.DayNumber - chart.Series.Start.DayNumber + .5) * (chart.ActualWidth - 8) / chart.Series.CalendarDays, 26);
+    private static void SelectChartDay(HistoryWindow window, DateOnly date)
+    {
+        Drain(window);
+        var chart = Field<DailyUsageChart>(window, "_dailyChart");
+        var grid = Field<DataGrid>(window, "_dailyUsage");
+        var point = DayPosition(chart, date);
+        Check(VisualTreeHelper.HitTest(chart, point)?.VisualHit == chart, "Chart day cannot receive a click.");
+        Check(chart.SelectDayAt(point, System.Windows.Input.MouseButton.Left), "Recorded chart day refused a click.");
+        Drain(window);
+        Check(grid.SelectedItem is UsageDayRow row && row.Day.Date == date && grid.CurrentCell.Item == row,
+            "Chart click selected the wrong daily row/current cell.");
+        Check(!((ToolTip)chart.ToolTip).IsOpen, "Chart click left its popup covering the selected row.");
+        var visual = (DataGridRow?)grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem);
+        Check(visual != null, "Chart click did not realize its virtualized row.");
+        var outer = (ScrollViewer)window.Content;
+        var bounds = visual!.TransformToAncestor(outer).TransformBounds(new Rect(visual.RenderSize));
+        Check(bounds.Top >= -1 && bounds.Bottom <= outer.ViewportHeight + 1,
+            "Selected chart row was not brought into the outer viewport: " + bounds);
+    }
     private static void Hover(DailyUsageChart chart, DateOnly date)
     {
         Drain(Window.GetWindow(chart));
-        var position = new Point(4 + (date.DayNumber - chart.Series.Start.DayNumber + .5) * (chart.ActualWidth - 8) / chart.Series.CalendarDays, 26);
+        var position = DayPosition(chart, date);
         Check(VisualTreeHelper.HitTest(chart, position)?.VisualHit == chart, "Day columns above small bars do not receive mouse input.");
         chart.SetHoverPosition(position);
     }
