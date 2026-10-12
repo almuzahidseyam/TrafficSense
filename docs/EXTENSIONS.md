@@ -1,6 +1,6 @@
 # Sensor extensions
 
-TrafficSense accepts a **data-only sensor file**; a provider runs separately and can supply temperature, fan speed or other values. The monitor never loads a provider DLL or executes code named in the file. TrafficMonitor native DLL plugins are not compatible with this protocol.
+TrafficSense accepts a **data-only sensor file**; a provider runs separately and can supply temperature, fan speed or other values. The monitor never loads a provider DLL or executes code named in the file. Native DLLs use the separate, explicit [native plugin bridge](NATIVE-PLUGINS.md), not this file protocol.
 
 ## LibreHardwareMonitor bridge
 

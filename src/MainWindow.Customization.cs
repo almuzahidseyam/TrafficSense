@@ -45,6 +45,8 @@ public partial class MainWindow
 
     private void ApplyCustomizationLanguage()
     {
+        ApplyLayoutLanguage();
+        MenuPluginBridge.Header = Localization[TextKey.PluginBridge];
         MenuSkinPresets.Header = Localization[TextKey.SkinPresets]; MenuColors.Header = Localization[TextKey.ItemColors];
         MenuFontFamily.Header = Localization[TextKey.ChooseFont]; MenuSkinImport.Header = Localization[TextKey.ImportSkin];
         MenuSkinExport.Header = Localization[TextKey.ExportSkin]; MenuDailyLimit.Header = Localization[TextKey.DailyLimit];

@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using TrafficSense;
@@ -29,8 +30,11 @@ internal static class TaskbarPanelProbe
             {
                 Check(window.ChangeTaskbarPanel(true), "Panel enable failed."); Drain();
                 var panel = Panel(window)!; Check(panel.Registered && shell.Registrations == 1 && shell.Bounds.Top < shell.Bounds.Bottom, "Panel registration/position missing.");
+                var speed = (TextBlock)typeof(TaskbarPanelWindow).GetField("_speed",Private)!.GetValue(panel)!;
+                Check(new TextRange(speed.ContentStart,speed.ContentEnd).Text.Contains(window.Localization[TextKey.NotAvailable]),"Unknown panel sample looked like measured zero.");
                 window.Hide(); window.ChangeLanguage("bn"); Drain();
                 Check(panel.Title == "টাস্কবারের পাশে প্যানেল" && !window.IsVisible && panel.IsVisible, "Panel and floating visibility/language are coupled.");
+                Check(new TextRange(speed.ContentStart,speed.ContentEnd).Text.Contains(window.Localization[TextKey.NotAvailable]),"Hidden widget left panel quality text untranslated.");
                 var original = shell.Bounds; Check(window.ChangeTaskbarPanel(true, top: true), "Top-edge save failed."); Drain();
                 Check(shell.Bounds.Top < original.Top && shell.LastTop, "Top edge did not reposition.");
                 var handle = new WindowInteropHelper(panel).Handle;

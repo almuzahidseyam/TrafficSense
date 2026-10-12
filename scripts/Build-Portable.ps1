@@ -57,6 +57,7 @@ if (Get-ChildItem -LiteralPath $extracted -Filter '*.dll') { throw 'The executab
 # Use the same publish profile for a probe that exercises the actual App, WPF,
 # tray, language, restart and single-instance code with temporary settings.
 Publish-Portable 'tests/TrafficSense.LifecycleTests/TrafficSense.LifecycleTests.csproj' $probeDirectory
+$fixture = & (Join-Path $PSScriptRoot 'Build-TestPlugin.ps1') -OutputDirectory (Join-Path $buildDirectory 'plugin-fixture')
 $start = New-Object System.Diagnostics.ProcessStartInfo
 $start.FileName = Join-Path $probeDirectory 'TrafficSense.LifecycleTests.exe'
 $start.WorkingDirectory = $extracted
@@ -71,6 +72,7 @@ $start.EnvironmentVariables['DOTNET_BUNDLE_EXTRACT_BASE_DIR'] = Join-Path $build
 $start.EnvironmentVariables['TRAFFICSENSE_VERIFY_BUNDLE'] = '1'
 $start.EnvironmentVariables['TRAFFICSENSE_EXPECTED_VERSION'] = $release.Version
 $start.EnvironmentVariables['TRAFFICSENSE_PACKAGE_EXE'] = Join-Path $extracted 'TrafficSense.exe'
+$start.EnvironmentVariables['TRAFFICSENSE_PLUGIN_FIXTURE'] = Join-Path $buildDirectory 'plugin-fixture/fixture.dll'
 # Do not inherit developer diagnostics or startup hooks in a distribution test.
 foreach ($name in @('DOTNET_STARTUP_HOOKS', 'DOTNET_ADDITIONAL_DEPS', 'DOTNET_SHARED_STORE')) {
     $start.EnvironmentVariables.Remove($name)

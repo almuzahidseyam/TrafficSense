@@ -9,12 +9,18 @@ public partial class MainWindow
 {
     private readonly IAppBarShell? _appBarShell;
     private TaskbarPanelWindow? _taskbarPanel;
+    private EmbeddedTaskbarClient? _embedded;
+    private bool _embeddingBusy, _embeddedActive;
+    private DateTimeOffset _embeddingNext;
+    private string? _embeddingStatus;
 
     private void ApplyPanelLanguage()
     {
         MenuTaskbarPanel.Header = Localization[TextKey.TaskbarPanel];
         MenuTaskbarPanel.IsChecked = _settings.TaskbarPanel;
         MenuTaskbarPanel.ToolTip = Localization[TextKey.PanelHint];
+        MenuEmbedTaskbar.Header = Localization[TextKey.EmbedTaskbar]; MenuEmbedTaskbar.IsChecked = _settings.EmbedTaskbar;
+        MenuEmbedTaskbar.ToolTip = Localization[TextKey.EmbedHint] + "\n" + _embeddingStatus;
         MenuPanelTop.Header = Localization[TextKey.PanelTop]; MenuPanelTop.IsChecked = _settings.PanelAtTop;
         MenuPanelMonitor.Header = Localization[TextKey.PanelMonitor];
         RefreshTaskbarPanel();
@@ -44,8 +50,10 @@ public partial class MainWindow
 
     private void ConfigureTaskbarPanel()
     {
+        if (!_settings.TaskbarPanel || !_settings.EmbedTaskbar) { _embedded?.Dispose(); _embedded = null; _embeddedActive = false; }
         if (!_settings.TaskbarPanel || _fatalShutdown || Volatile.Read(ref _monitoringClosed) != 0)
         { _taskbarPanel?.ReleaseAndClose(); _taskbarPanel = null; return; }
+        if (_settings.EmbedTaskbar && _embeddedActive) { _taskbarPanel?.ReleaseAndClose(); _taskbarPanel = null; return; }
         if (_taskbarPanel != null) { _taskbarPanel.Reposition(); return; }
         _taskbarPanel = new(_appBarShell ?? new AppBarShell(), PanelMonitorBounds, ShowHistory, () =>
         {
@@ -62,14 +70,55 @@ public partial class MainWindow
 
     private void RefreshTaskbarPanel()
     {
+        RefreshEmbedded();
         if (_taskbarPanel == null) return;
         var metrics = _systemService?.Latest ?? new();
         string lines = string.Join("\n", MetricLabels.Where(label => (((SystemMetric)_settings.DisplayMetrics) & label.Metric) != 0)
             .Select(label => Localization[label.Label] + ": " + MetricText(label.Metric, metrics)));
-        _taskbarPanel.Update(SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits),
-            SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits), lines, Localization,
+        if (_sampleQuality != SampleQuality.Fresh) lines = PanelSampleState() + (lines.Length == 0 ? "" : "\n" + lines);
+        _taskbarPanel.Update(PanelRate(_latestSpeed.DownloadBytesPerSecond),
+            PanelRate(_latestSpeed.UploadBytesPerSecond), lines, Localization,
             _settings.PanelAtTop, WidgetSkin.From(_settings), _settings.Theme == "Light");
     }
+
+    private string PanelRate(double rate) => _sampleQuality == SampleQuality.Fresh ? SpeedFormatter.Format(rate,_settings.SpeedInBits) : Localization[TextKey.NotAvailable];
+    private string PanelSampleState() => Localization[_sampleQuality == SampleQuality.Unavailable ? TextKey.SampleUnavailableShort : _sampleQuality == SampleQuality.Delayed ? TextKey.SampleDelayedShort : TextKey.SamplingShort];
+
+    private async void RefreshEmbedded()
+    {
+        if (!_settings.TaskbarPanel || !_settings.EmbedTaskbar || _embeddingBusy || DateTimeOffset.UtcNow < _embeddingNext || _appBarShell != null || _fatalShutdown || Volatile.Read(ref _monitoringClosed) != 0) return;
+        _embeddingBusy = true; _embeddingNext = DateTimeOffset.UtcNow.AddSeconds(1);
+        EmbeddedTaskbarClient? client = null;
+        try
+        {
+            client = _embedded ??= new(); var bounds = PanelMonitorBounds();
+            string text = "↓ " + PanelRate(_latestSpeed.DownloadBytesPerSecond) + "   ↑ " + PanelRate(_latestSpeed.UploadBytesPerSecond);
+            if (_sampleQuality != SampleQuality.Fresh) text = PanelSampleState() + " · " + text;
+            var reply = await client.Update(new(new(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom), text, _settings.Theme == "Light"));
+            if (!ReferenceEquals(client, _embedded)) return;
+            bool changed = _embeddedActive != reply.Embedded; _embeddedActive = reply.Embedded; _embeddingStatus = reply.Reason;
+            MenuEmbedTaskbar.ToolTip = Localization[TextKey.EmbedHint] + "\n" + reply.Reason;
+            if (changed) ConfigureTaskbarPanel();
+            if (reply.Action == "history") ShowHistory();
+            if (reply.Action == "settings") { var menu = ((Border)Content).ContextMenu; menu.PlacementTarget = this; menu.IsOpen = true; }
+            if (!reply.Embedded) { _embedded.Dispose(); _embedded = null; _embeddingNext = DateTimeOffset.UtcNow.AddSeconds(30); }
+        }
+        catch (Exception e) when (e is System.IO.InvalidDataException or System.IO.IOException or System.ComponentModel.Win32Exception or OperationCanceledException or System.Text.Json.JsonException or InvalidOperationException or ArgumentException)
+        {
+            if (client == null || ReferenceEquals(client, _embedded))
+            { _embedded?.Dispose(); _embedded = null; _embeddedActive = false; _embeddingNext = DateTimeOffset.UtcNow.AddSeconds(30); _diagnostics?.Write("TaskbarEmbedding", e); ConfigureTaskbarPanel(); }
+        }
+        finally { _embeddingBusy = false; }
+    }
+    internal bool ChangeEmbedding(bool enabled)
+    {
+        var previous = (_settings.EmbedTaskbar,_settings.TaskbarPanel); _settings.EmbedTaskbar = enabled;
+        if (enabled) _settings.TaskbarPanel = true;
+        var result = _saveSettings(_settings); if (!result.Success) { (_settings.EmbedTaskbar,_settings.TaskbarPanel) = previous; ShowSettingsError(result.Error); }
+        _embeddingNext = default; ConfigureTaskbarPanel(); ApplyPanelLanguage();
+        return result.Success;
+    }
+    private void MenuEmbedTaskbar_Click(object sender, RoutedEventArgs e) => ChangeEmbedding(MenuEmbedTaskbar.IsChecked);
 
     private void MenuTaskbarPanel_Click(object sender, RoutedEventArgs e) { ChangeTaskbarPanel(MenuTaskbarPanel.IsChecked); e.Handled = true; }
     private void MenuPanelTop_Click(object sender, RoutedEventArgs e) { ChangeTaskbarPanel(_settings.TaskbarPanel, MenuPanelTop.IsChecked); e.Handled = true; }

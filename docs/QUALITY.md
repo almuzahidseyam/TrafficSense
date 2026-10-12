@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.26.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.27.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -21,9 +21,10 @@ Suggestions still open: simplify the growing context menu into grouped settings,
 
 ## What is verified
 
-- **282 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema. Graph retention covers the full two minutes even at 250 ms.
+- **291 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema. Graph retention covers the full two minutes even at 250 ms.
 - **Synthetic timing characterization:** 4,096 samples at each of four intervals; known-rate relative error ≤10⁻¹², byte conservation beyond 4 GiB, tiny deltas at large lifetime values. See [methodology](MEASUREMENT.md).
 - **Real WPF/process probes:** bilingual live controls, history/chart/table selection, clipboard boundary, graph path gaps, appearance and restart, native counters, taskbar messages with a simulated shell, sensor bridge entry/cancellation, update errors, tray/duplicate activation and fatal/normal cleanup.
+- **Native compatibility probes:** independently authored compiler-built DLL fixtures exercise retained host callbacks, legacy GDI and extended drawing, options/commands, startup failures, crash/hang deadlines and kernel-job cleanup after an abrupt owner exit. Actual WPF checks cover layout positions, PNG alpha, managed copies, compact layout, invalid/save rollback and backup/restore. Child attachment is exercised against an isolated owned native window; Explorer is only inspected read-only locally.
 - **Distribution checks:** self-contained ZIP extraction/content/runtime checks, per-user install/uninstall, version/changelog/tag alignment and SHA-256 files. Public release binaries are downloaded and checked against checksums/metadata before release completion is reported.
 - **Resource regression:** CI warms up for 20 seconds, then measures 60 seconds across shown/hidden states and performs 1,500 accelerated stress iterations. Reports include CPU, managed/private/working-set memory, native handles, ticks and UI delays. CPU is recorded rather than gated by a machine-specific percentage.
 - **Dependency advisory check:** the configured NuGet sources reported no vulnerable packages for the app's direct/transitive package graph at review time. This is not a complete security audit and must be rerun as advisories change.
@@ -36,7 +37,7 @@ Retention checks record ordinary collection snapshots and separately use the exi
 - Long-duration runs with optional GPU/disk counters, panel and sensor bridge enabled, on multiple devices.
 - Controlled same-interface traffic comparisons across NIC drivers and VPN/split-route arrangements. No “most accurate” claim is made from arithmetic tests alone.
 - Actual sensor-provider versions/hardware coverage. Included tests use realistic schema fixtures and cancellation boundaries; they install no hardware driver or real provider.
-- Full screen-reader usability and non-English/Bengali languages, native ARM64/x86, signed packages and TrafficMonitor native plugin/bitmap-skin compatibility.
+- Full screen-reader usability and non-English/Bengali languages, native ARM64/x86, signed packages and a larger real community-plugin/legacy-skin compatibility corpus.
 
 ## Verdict
 

@@ -4,6 +4,26 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.27.0] - 2026-10-13
+
+### Added
+
+- Independently implemented TrafficMonitor INI/XML positioned-layout imports with small/large variants, local fonts/styles, labels, alignment, per-item colors, PNG alpha and opaque BMP backgrounds. Validated assets are copied to managed local storage. Imports preserve previous settings on failure; missing assets fall back to the standard widget. Includes an original Mint example.
+- Explicit native **x64 DLL plugin bridge** in an isolated STA process with a message loop: API 1–8 version gates, retained host callbacks, legacy monitor info, text values, GDI/extended drawing, options and commands. Text/custom images bind to XML plugin IDs. Bounded protocol/bitmap decoding, sample deadlines and a Windows kill-on-close job contain failures and remove owned workers after owner exit. Third-party code is never loaded into the monitor process or automatically at startup. This is crash containment, not a security sandbox.
+- Opt-in **experimental taskbar embedding** in a separate native-window process, selected-monitor discovery and accessibility-based vacant-space checks. Unsupported/full/inaccessible layouts use the existing edge panel. Worker failure/Explorer replacement can retry with a new worker. No shell injection, button resizing or undocumented Explorer memory access.
+- Grouped English/Bengali settings menus and reproducible live-environment diagnostics: same-interface native counter brackets, exact byte conservation and read-only taskbar/display inspection.
+- Taskbar rates show unavailable while sampling/disconnected/delayed instead of presenting unknown intervals as measured idle; quality text also updates when the floating widget is hidden.
+
+### Validation and boundaries
+
+- 291 pure regression cases; actual WPF layout/PNG/rollback/backup and isolated child-window probes. Independently authored native fixtures cover host callbacks, GDI and extended drawing, settings/commands, missing DLLs, crash/hang deadlines and abrupt-owner-exit cleanup. Packaged executable entry modes are exercised by portable checks.
+- One local Windows 11 build 26200 environment: 21 passive native/managed counter brackets matched; 89,070 received and 17,645 sent bytes conserved exactly. One 1920×1200 display inspected; a vacant taskbar region was found without attaching a window. This is not a controlled throughput benchmark or VPN/multi-monitor hardware certification.
+- Native plugins may need their own runtime/dependencies/permissions; previews are bounded to 512×40 pixels. Plugin mouse/keyboard events, graph overlays and notification callbacks are not forwarded. There is no plugin store or automatic discovery. XML thermal fields need an exact plugin mapping; unknown values remain unavailable. Taskbar internals vary across Windows releases; embedding remains experimental.
+
+### Upgrade
+
+- Exit the widget and close its bridges before replacing the package. Existing preferences/history/backup files remain compatible. New native plugins and taskbar embedding are opt-in; no sensor driver is installed.
+
 ## [1.26.0] - 2026-10-13
 
 ### Changed

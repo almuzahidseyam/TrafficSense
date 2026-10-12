@@ -13,6 +13,8 @@ public class AppSettings
     public int DailyLimitGiB { get; set; }
     public int MonthlyLimitGiB { get; set; }
     public string? SensorFile { get; set; }
+    public string? LayoutSkinFile { get; set; }
+    public bool LayoutSkinCompact { get; set; }
     public string WidgetFontFamily { get; set; } = "Segoe UI, Nirmala UI, Kalpurush";
     public bool WidgetBold { get; set; } = true;
     public string WidgetBackground { get; set; } = "Auto";
@@ -20,6 +22,7 @@ public class AppSettings
     public string UploadColor { get; set; } = "Auto";
     public string MetricsColor { get; set; } = "Auto";
     public bool TaskbarPanel { get; set; }
+    public bool EmbedTaskbar { get; set; }
     public bool PanelAtTop { get; set; }
     public string? PanelMonitor { get; set; }
     public int RefreshMilliseconds { get; set; } = 1000;

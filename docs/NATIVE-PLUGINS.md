@@ -1,0 +1,22 @@
+# Native plugin bridge
+
+In the packaged app choose **System metrics & extensions → Sensor source → Native plugin bridge**. Select a **trusted, local x64 TrafficMonitor DLL**. The bridge displays plugin items and custom images, offers the plugin's settings and named commands, and has a Stop button. Closing it stops its worker. Plugins are never discovered or executed automatically on startup; backups do not auto-enable native code.
+
+The DLL runs with the current user's permissions in a separate process. This protects normal monitoring from accidental crashes/hangs; **it is not a security sandbox**. A plugin can read/write files, access networks, launch programs or require its own privileges/dependencies. TrafficSense does not elevate it or install hardware drivers. Obtain plugins from their authors and follow their licenses. The bridge does not distribute upstream plugin binaries or claim their approval.
+
+## Implemented ABI surface
+
+The implementation independently follows the [documented C++ virtual interface](https://github.com/zhongyang219/TrafficMonitor/blob/master/include/PluginInterface.h) and `TMPluginGetInstance` export. It checks API versions 1–8 before calling newer methods. Windows x64 calling conventions are required; 32-bit DLLs are rejected by the loader. Dependencies are resolved from the DLL's directory and Windows' default safe directories, not the current working directory.
+
+- Plugin metadata, item IDs/labels/text, `DataRequired`, legacy monitor info and retained `ITrafficMonitor` v1 callbacks.
+- GDI custom drawing and API 8 `IPluginDrawer` v1: text, clipping, fills, outlines/rounding, bitmap stretch/fill/fit with alpha, icons, extents, lines and HDC access. Preview images are opaque, bounded to 512×40 pixels at 96 DPI. This is a compact preview, not a complete upstream taskbar drawing environment.
+- Options dialog and named commands. Sampling has a three-second deadline; interactive plugin settings/commands allow five minutes and can be terminated with Stop. Dialogs are owned by the worker and may appear separately.
+- Current upload/download, CPU/RAM/GPU/disk/frequency and today's totals are supplied when available. Unknown numeric host values are `-1`; text is `N/A`. The legacy unsigned speed fields have no unknown representation and use zero when unavailable; they are not authoritative sample-quality metadata. Native bridge polling is once per second and does not alter core sampling intervals.
+- Each DLL path gets a stable configuration folder under `%LOCALAPPDATA%\TrafficSense\plugins`. Strings, items, protocol records and image sizes are bounded. DLL crash/hang/malformed output stops that worker; monitoring continues. Windows kill-on-close jobs also clean up owned workers after an abrupt owner exit.
+- XML layout `plugin_map` fields bind exact IDs from the running bridge; images and values become unavailable after five seconds without a successful sample.
+
+## Explicit limits
+
+No plugin store, automatic discovery, native ARM64/x86, plugin mouse/keyboard event forwarding, resource graph overlays, notification delivery callback, upstream localization-resource table or upstream main/taskbar HWND is provided. Those callbacks return empty/no window or do nothing rather than impersonating Explorer/upstream. API versions above 8 are rejected. A plugin that depends on unsupported callbacks, a different compiler ABI/runtime, larger/taller drawing areas, drivers or special privileges can fail; use its data-only provider alternative where appropriate.
+
+Independent native fixtures test host callbacks, GDI/extended drawing, options/commands, missing DLL, crash, timeout and abrupt-owner-exit cleanup. These are not an assertion that every community plugin has been tested. Include plugin author/version, API, dependencies and Windows build when reporting a compatibility issue.

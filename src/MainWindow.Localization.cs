@@ -9,6 +9,7 @@ public partial class MainWindow
 
     private void ApplyLanguage()
     {
+        ApplyNavigationLanguage();
         MenuNetworkAdapter.Header = Localization[TextKey.NetworkAdapter];
         MenuAutoStart.Header = Localization[TextKey.StartWithWindows];
         MenuPositionLock.Header = Localization[TextKey.LockPosition];

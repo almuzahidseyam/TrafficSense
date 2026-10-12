@@ -16,6 +16,13 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.FirstOrDefault() == "--plugin-worker" && args.Length == 2) return PluginWorker.Run(args[1]);
+        if (args.FirstOrDefault() == "--taskbar-worker") return EmbeddedTaskbarWorker.Run();
+        if (args.FirstOrDefault() == "--taskbar-inspect") return EmbeddedTaskbarWorker.Run(inspectOnly: true);
+        if (args.FirstOrDefault() == "--compatibility") return CompatibilityProbe.Run();
+        if (args.FirstOrDefault() == "--live-environment" && args.Length == 3) return LiveEnvironmentProbe.Run(args[1], args[2]);
+        if (args.FirstOrDefault() == "--plugin-probe" && args.Length == 2) return PluginProbe.Run(args[1]);
+        if (args.FirstOrDefault() == "--plugin-job-owner" && args.Length == 3) return PluginProbe.RunJobOwner(args[1],args[2]);
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
         if (args.FirstOrDefault() == "--screenshots" && args.Length == 2) return ScreenshotProbe.Run(args[1]);
         if (args.FirstOrDefault() == "--graph-quality") return GraphQualityProbe.Run();
@@ -41,11 +48,13 @@ internal static class Program
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
         if (args.Length == 0)
         {
+            if (Environment.GetEnvironmentVariable("TRAFFICSENSE_PLUGIN_FIXTURE") is { } fixture) PluginProbe.Run(fixture);
             RunChild("--network-recovery");
             RunChild("--graph-quality");
             RunChild("--system-metrics");
             RunChild("--taskbar-panel");
             RunChild("--customization");
+            RunChild("--compatibility");
             RunChild("--sensor-bridge-probe");
             RunChild("--sensor-bridge");
             RunChild("--about");

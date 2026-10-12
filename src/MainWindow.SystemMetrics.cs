@@ -43,6 +43,7 @@ public partial class MainWindow
     {
         if (Volatile.Read(ref _monitoringClosed) != 0) return;
         var mask = (SystemMetric)_settings.DisplayMetrics | (_systemWindow != null ? SystemMetric.All : SystemMetric.None);
+        if (_settings.LayoutSkinFile != null || _pluginBridge != null) mask |= SystemMetric.All & ~SystemMetric.Sensors;
         if (mask == _systemMask && _systemSensorFile == _settings.SensorFile) return;
         _systemService?.Dispose(); _systemService = null;
         _systemMask = mask; _systemSensorFile = _settings.SensorFile;
@@ -84,6 +85,7 @@ public partial class MainWindow
 
     private void RefreshSystemMetrics()
     {
+        if (IsVisible) RenderLayoutSkin();
         var metrics = _systemService?.Latest ?? new();
         if (IsVisible)
         {

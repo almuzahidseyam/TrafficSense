@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Original TrafficSense example, MIT licensed. Values come from live metrics. -->
+<root>
+  <skin>
+    <skin_author>TrafficSense contributors</skin_author>
+    <text_color>11984965,16426336,16380145,16380145</text_color>
+    <specify_each_item_color>1</specify_each_item_color>
+    <font name="Segoe UI" size="11" style="1" />
+    <display_text><up>↑ </up><down>↓ </down><cpu>CPU </cpu><memory>RAM </memory></display_text>
+  </skin>
+  <layout text_height="24" no_label="0">
+    <layout_l width="280" height="84">
+      <down x="16" y="10" width="248" align="3" show="1" />
+      <up x="16" y="34" width="248" align="3" show="1" />
+      <cpu x="16" y="58" width="120" align="0" show="1" />
+      <memory x="144" y="58" width="120" align="0" show="1" />
+    </layout_l>
+    <layout_s width="280" height="60">
+      <down x="16" y="8" width="248" align="3" show="1" />
+      <up x="16" y="32" width="248" align="3" show="1" />
+    </layout_s>
+  </layout>
+</root>

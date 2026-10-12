@@ -67,6 +67,7 @@ public partial class MainWindow
         // Only the background alpha changes; text, arrows, menus and dialogs
         // retain full opacity. SizeChanged keeps the enlarged widget on screen.
         ApplyTheme();
+        ApplyLayoutSkin();
         _appearancePending = false;
         UpdateAppearanceChecks();
     }

@@ -6,8 +6,8 @@ TrafficSense Windows-এ download/upload গতি, CPU/RAM এবং ডেট�
 
 1. [সর্বশেষ সংস্করণ](https://github.com/almuzahidseyam/TrafficSense/releases/latest) থেকে `TrafficSense-Setup.exe` অথবা `TrafficSense.zip` নামান।
 2. Setup দিয়ে ইনস্টল করুন, অথবা ZIP সম্পূর্ণ extract করে `TrafficSense.exe` খুলুন। আলাদা .NET ইনস্টল লাগবে না।
-3. উইজেটে right-click → **Language → বাংলা** নির্বাচন করুন।
-4. **Network adapter / নেটওয়ার্ক অ্যাডাপ্টার** থেকে Auto রাখুন, অথবা নির্দিষ্ট Wi-Fi/Ethernet/VPN বাছুন।
+3. উইজেটে right-click → **Preferences → Language → বাংলা** নির্বাচন করুন।
+4. **সংযোগ ও গতি → নেটওয়ার্ক অ্যাডাপ্টার** থেকে Auto রাখুন, অথবা নির্দিষ্ট Wi-Fi/Ethernet/VPN বাছুন।
 
 নতুন সংস্করণ চালুর আগে আগেরটির tray মেনু থেকে **প্রস্থান** করুন এবং Sensor bridge বন্ধ করুন। শুধু লুকালে অ্যাপ চালু থাকে; আবার খুললে আগের চলমান কপিটিই সামনে আসে।
 
@@ -18,7 +18,9 @@ TrafficSense Windows-এ download/upload গতি, CPU/RAM এবং ডেট�
 - **অবস্থান লক/ফিরিয়ে আনা:** ভুলে টেনে সরানো বন্ধ করুন অথবা মূল মনিটরের দৃশ্যমান স্থানে ফিরুন।
 - **লেখার আকার/ফন্ট/রং/স্বচ্ছতা:** সঙ্গে সঙ্গে কার্যকর হয়। Skin JSON দিয়ে শুধু চেহারার সেটিং আদানপ্রদান করা যায়।
 - **System metrics:** দরকারমতো CPU, RAM, frequency, GPU ও disk চালু করুন। বন্ধ থাকলে ঐচ্ছিক counter সংগ্রহ বন্ধ হয়।
-- **Taskbar-edge panel:** স্ক্রিনের উপর/নিচে আলাদা সরু panel; Explorer-এর taskbar বোতামের ভেতরে বসে না।
+- **Taskbar-এ দেখানো:** উপরে/নিচে edge panel, অথবা পরীক্ষামূলকভাবে taskbar-এর ভেতরে। খালি জায়গা যাচাই না হলে edge panel দেখাবে। নির্বাচিত monitor-এর সেটিং এখানে পাওয়া যাবে।
+- **TrafficMonitor skin:** Widget-এর চেহারা ও অবস্থান থেকে INI/XML skin আনুন। ছোট/বড় layout, PNG/BMP background ও label পড়বে। [নিজস্ব Mint উদাহরণ](../examples/skins/Mint) ও [skin নির্দেশনা](SKINS.md) দেখুন।
+- **Native plugin bridge:** সিস্টেমের তথ্য ও extension → Sensor source থেকে খুলুন। শুধুমাত্র বিশ্বস্ত x64 DLL বাছুন; আলাদা worker-এ text, drawing, settings ও command চলে। এটি security sandbox নয়। Stop বা bridge বন্ধ করলে worker থামে। [সমর্থন ও সীমা](NATIVE-PLUGINS.md)।
 
 ## হিসাব দেখুন বা কপি করুন
 

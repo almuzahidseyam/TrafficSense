@@ -30,11 +30,17 @@
                 <MenuItem Header="Item colors" x:Name="MenuColors" />
                 <MenuItem Header="Import skin" x:Name="MenuSkinImport" Click="MenuSkinImport_Click" />
                 <MenuItem Header="Export skin" x:Name="MenuSkinExport" Click="MenuSkinExport_Click" />
+                <MenuItem x:Name="MenuLayoutSkin">
+                    <MenuItem x:Name="MenuLayoutImport" Click="MenuLayoutImport_Click" />
+                    <MenuItem x:Name="MenuLayoutCompact" IsCheckable="True" Click="MenuLayoutCompact_Click" />
+                    <MenuItem x:Name="MenuLayoutClear" Click="MenuLayoutClear_Click" />
+                </MenuItem>
                 <MenuItem Header="Speed unit" x:Name="MenuSpeedUnit" />
                 <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
                 <MenuItem Header="Display metrics" x:Name="MenuMetrics" />
                 <MenuItem Header="System and connection details" x:Name="MenuSystemDetails" Click="MenuSystemDetails_Click" />
                 <MenuItem Header="Sensor source" x:Name="MenuSensorSource">
+                    <MenuItem x:Name="MenuPluginBridge" Click="MenuPluginBridge_Click" />
                     <MenuItem Header="Open sensor bridge" x:Name="MenuSensorBridge" Click="MenuSensorBridge_Click" />
                     <MenuItem Header="Choose sensor JSON" x:Name="MenuChooseSensor" Click="MenuChooseSensor_Click" />
                     <MenuItem Header="Clear sensor source" x:Name="MenuClearSensor" Click="MenuClearSensor_Click" />
@@ -42,6 +48,7 @@
                 <MenuItem Header="Daily data alert" x:Name="MenuDailyLimit" />
                 <MenuItem Header="Monthly data alert" x:Name="MenuMonthlyLimit" />
                 <MenuItem Header="Taskbar-edge panel" x:Name="MenuTaskbarPanel" IsCheckable="True" Click="MenuTaskbarPanel_Click" />
+                <MenuItem x:Name="MenuEmbedTaskbar" IsCheckable="True" Click="MenuEmbedTaskbar_Click" />
                 <MenuItem Header="Panel at top" x:Name="MenuPanelTop" IsCheckable="True" Click="MenuPanelTop_Click" />
                 <MenuItem Header="Panel monitor" x:Name="MenuPanelMonitor" SubmenuOpened="MenuPanelMonitor_Opened" />
                 <MenuItem Header="Global shortcut (Ctrl+Alt+T)" x:Name="MenuShortcut" IsCheckable="True" Click="MenuShortcut_Click" />
@@ -61,6 +68,11 @@
             </ContextMenu>
         </Border.ContextMenu>
         <Grid>
+        <StackPanel x:Name="LayoutSurface" Visibility="Collapsed">
+            <Canvas x:Name="LayoutCanvas" ClipToBounds="True" />
+            <TextBlock x:Name="LayoutStatus" FontSize="12" TextWrapping="Wrap" />
+        </StackPanel>
+        <Grid x:Name="NormalSurface">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -83,6 +95,7 @@
                        Foreground="White" FontFamily="Segoe UI, Nirmala UI" FontSize="14" TextWrapping="Wrap" MaxWidth="360" />
             <TextBlock x:Name="TxtSampleState" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,4,0,0" Visibility="Collapsed"
                        Foreground="White" FontFamily="Segoe UI, Nirmala UI" FontSize="12" TextWrapping="Wrap" MaxWidth="120" />
+        </Grid>
         </Grid>
     </Border>
 </Window>
