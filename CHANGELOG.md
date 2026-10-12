@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-10-12
+
+### Added
+
+- **Export CSV… / CSV সংরক্ষণ করুন…** in Usage and history exports all retained daily totals (up to 400 recorded days), including the latest sampled traffic awaiting normal persistence.
+- Stable columns `Date,DownloadBytes,UploadBytes,TotalBytes`, ascending ISO local dates and exact byte counts independent of UI language, regional number formats or selected speed units. CSV uses comma separators, UTF-8 with BOM and CRLF lines; days without stored records are omitted.
+- The export button explains empty history and becomes available when measured usage exists. Cancel leaves files and usage unchanged. File replacement is atomic; write failures preserve the previous destination and local totals, with localized error reporting.
+
+### Upgrading from 1.12.0
+
+- Exit the old widget, then run Setup or extract the new portable ZIP. Settings, backups and usage remain compatible.
+- Open **Usage and history → Export CSV…**, choose a destination and open/import the file in a spreadsheet app. Values are bytes (`1 MiB = 1,048,576 bytes`). Export covers traffic measured while TrafficSense runs; it does not reconstruct unmeasured days or alter the stored usage history.
+
 ## [1.12.0] - 2026-10-12
 
 ### Added
@@ -128,7 +141,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.5.0...v1.11.0
 [1.5.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.4.0...v1.5.0
