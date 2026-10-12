@@ -32,3 +32,15 @@ jobs:
             .artifacts/portable/**/TrafficSense.zip.sha256
           include-hidden-files: true
           if-no-files-found: error
+      - name: Check visible and hidden monitoring resource stability
+        timeout-minutes: 5
+        shell: pwsh
+        run: ./scripts/Test-Stability.ps1 -Seconds 60 -StressIterations 500
+      - name: Upload stability measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TrafficSense-stability
+          path: .artifacts/stability/**/stability.json
+          include-hidden-files: true
+          if-no-files-found: warn

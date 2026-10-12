@@ -16,6 +16,7 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
         if (args.Length == 0) VerifyPackagedEntryPoint();
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));
@@ -106,11 +107,19 @@ internal static class Program
                 double left = window.Left, top = window.Top;
                 show.PerformClick();
                 Check(!window.IsVisible && !show.Checked && timer.IsEnabled, "Hide stopped monitoring or left the widget visible.");
+                download.Text = "hidden sample sentinel";
+                TimeSpan? hiddenBaseline = (TimeSpan?)baselineField.GetValue(calculator);
+                typeof(MainWindow).GetMethod("RefreshNetworkSpeed", Private)!.Invoke(window, null);
+                Check(download.Text == "hidden sample sentinel" && !Equals(hiddenBaseline, baselineField.GetValue(calculator)),
+                    "Hidden sampling stopped or updated the hidden text/layout.");
                 trayBangla.PerformClick();
                 Check(!window.IsVisible && timer.IsEnabled && bangla.IsChecked && show.Text == "উইজেট দেখান",
                     "Language change while hidden showed/stopped the widget or failed to translate.");
                 typeof(Forms.NotifyIcon).GetMethod("OnDoubleClick", Private)!.Invoke(notify, new object[] { EventArgs.Empty });
+                window.Dispatcher.Invoke(() => { }, DispatcherPriority.Loaded);
                 Check(window.IsVisible && show.Checked, "Tray double-click did not show widget.");
+                var latestSpeed = (NetworkSpeed)typeof(MainWindow).GetField("_latestSpeed", Private)!.GetValue(window)!;
+                Check(download.Text == SpeedFormatter.Format(latestSpeed.DownloadBytesPerSecond), "Showing the widget did not render the latest sampled speed.");
                 Check(Math.Abs(window.Left - left) < 1 && Math.Abs(window.Top - top) < 1, "Hide/show changed the dragged position.");
 
                 typeof(MainWindow).GetMethod("MenuHide_Click", Private)!.Invoke(window, new object[] { window, new RoutedEventArgs() });
@@ -177,7 +186,7 @@ internal static class Program
 
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("SingleFile", "IL3000",
         Justification = "This probe deliberately verifies that CoreLib has no external assembly file in the single-file bundle.")]
-    private static void VerifyBundledRuntime()
+    internal static void VerifyBundledRuntime()
     {
         if (Environment.GetEnvironmentVariable("TRAFFICSENSE_VERIFY_BUNDLE") != "1") return;
         string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!) + Path.DirectorySeparatorChar;

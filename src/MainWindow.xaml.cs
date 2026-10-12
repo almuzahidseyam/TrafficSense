@@ -18,6 +18,7 @@ namespace TrafficSense
         private readonly Func<AppSettings, SettingsSaveResult> _saveSettings;
         private readonly Action<string>? _reportError;
         private NetworkAdapterInfo? _monitoredAdapter;
+        private NetworkSpeed _latestSpeed;
         private StartupStatus _startupStatus = new(false);
         internal UiLanguage Localization { get; }
         private HwndSource? _windowSource;
@@ -47,6 +48,7 @@ namespace TrafficSense
                 _placementReady = true;
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
                 ApplyTheme();
+                RenderNetworkSpeed();
             };
 
             SourceInitialized += (_, _) =>
@@ -112,10 +114,18 @@ namespace TrafficSense
             var adapters = NetworkSnapshotReader.Read();
             var adapter = _adapterSelection.Select(adapters, _settings.SelectedAdapterId);
             NetworkAdapterSnapshot[] snapshots = adapter?.Snapshot is { } snapshot ? [snapshot] : [];
-            var speed = _speedCalculator.Update(snapshots, _samplingClock.Elapsed);
-            TxtDownload.Text = SpeedFormatter.Format(speed.DownloadBytesPerSecond);
-            TxtUpload.Text = SpeedFormatter.Format(speed.UploadBytesPerSecond);
+            _latestSpeed = _speedCalculator.Update(snapshots, _samplingClock.Elapsed);
             _monitoredAdapter = adapter;
+            // Hidden transparent WPF windows do not need text/layout updates.
+            // Keep sampling so showing the widget uses the latest interval.
+            if (IsVisible)
+                RenderNetworkSpeed();
+        }
+
+        private void RenderNetworkSpeed()
+        {
+            TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond);
+            TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond);
             ApplyNetworkTooltip();
         }
 
