@@ -12,7 +12,8 @@ internal enum TextKey
     CheckUpdates, UpdateHint, UpdateChecking, UpdateAvailable, UpdateCurrent, UpdateNoRelease,
     UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed,
     TextSize, BackgroundTransparency, DefaultAppearance, LockPosition, ResetPosition,
-    SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds
+    SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds,
+    History, Today, ThisMonth, UsageHint, Download, Upload
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -50,6 +51,13 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.BitsPerSecond] = ("Bits/s (Kbps, Mbps)", "বিট/সেকেন্ড (Kbps, Mbps)"),
             [TextKey.BytesPerSecond] = ("Bytes/s (KB/s, MB/s)", "বাইট/সেকেন্ড (KB/s, MB/s)"),
             [TextKey.Seconds] = ("{0} seconds", "{0} সেকেন্ড"),
+            [TextKey.History] = ("Usage and history", "ডেটা ব্যবহার ও ইতিহাস"),
+            [TextKey.Today] = ("Today", "আজ"),
+            [TextKey.Download] = ("Download", "ডাউনলোড"),
+            [TextKey.Upload] = ("Upload", "আপলোড"),
+            [TextKey.ThisMonth] = ("This month", "এই মাস"),
+            [TextKey.UsageHint] = ("Measured traffic while TrafficSense is running, across your selected connections. Gaps during sleep, reconnects or app shutdown are excluded. Totals follow the local date; they are not your provider's billing totals.",
+                "TrafficSense চালু থাকা অবস্থায় নির্বাচিত সংযোগগুলোর মাপা ডেটা। স্লিপ, পুনঃসংযোগ বা অ্যাপ বন্ধের বিরতি বাদ যায়। হিসাব স্থানীয় তারিখ অনুযায়ী; এটি ইন্টারনেট সেবাদাতার বিলের হিসাব নয়।"),
             [TextKey.Language] = ("Language", "ভাষা"),
             [TextKey.HideWidget] = ("Hide widget", "উইজেট লুকান"),
             [TextKey.ShowWidget] = ("Show widget", "উইজেট দেখান"),

@@ -3,6 +3,7 @@ namespace TrafficSense;
 internal readonly record struct NetworkAdapterSnapshot(string Id, long BytesReceived, long BytesSent);
 
 internal readonly record struct NetworkSpeed(double DownloadBytesPerSecond, double UploadBytesPerSecond);
+internal readonly record struct NetworkTraffic(long Received, long Sent);
 
 internal sealed class NetworkSpeedCalculator
 {
@@ -11,11 +12,13 @@ internal sealed class NetworkSpeedCalculator
     private static readonly TimeSpan MaximumSampleInterval = TimeSpan.FromSeconds(5);
     private Dictionary<string, NetworkAdapterSnapshot> _previous = new();
     private TimeSpan? _previousTimestamp;
+    public NetworkTraffic LastTraffic { get; private set; }
 
     public void Reset()
     {
         _previous.Clear();
         _previousTimestamp = null;
+        LastTraffic = default;
     }
 
     public NetworkSpeed Update(IEnumerable<NetworkAdapterSnapshot> snapshots, TimeSpan timestamp)
@@ -26,6 +29,7 @@ internal sealed class NetworkSpeedCalculator
 
         double received = 0;
         double sent = 0;
+        long receivedBytes = 0, sentBytes = 0;
         double seconds = _previousTimestamp.HasValue
             ? (timestamp - _previousTimestamp.Value).TotalSeconds
             : 0;
@@ -46,11 +50,14 @@ internal sealed class NetworkSpeedCalculator
 
                 received += sample.BytesReceived - previous.BytesReceived;
                 sent += sample.BytesSent - previous.BytesSent;
+                receivedBytes = UsageLedger.Add(receivedBytes, sample.BytesReceived - previous.BytesReceived);
+                sentBytes = UsageLedger.Add(sentBytes, sample.BytesSent - previous.BytesSent);
             }
         }
 
         _previous = current;
         _previousTimestamp = timestamp;
+        LastTraffic = new(receivedBytes, sentBytes);
 
         return validInterval ? new NetworkSpeed(received / seconds, sent / seconds) : default;
     }

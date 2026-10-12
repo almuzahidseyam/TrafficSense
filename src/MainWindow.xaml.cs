@@ -37,14 +37,16 @@ namespace TrafficSense
         private bool _placementQueued;
         private bool _renderQueued;
 
-        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save, diagnostics: DiagnosticLog.Default) { }
+        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save, diagnostics: DiagnosticLog.Default,
+            usageStore: new UsageStore(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "TrafficSense", "usage.json"), DiagnosticLog.Default)) { }
 
         internal MainWindow(AppSettings settings, Func<AppSettings, SettingsSaveResult> saveSettings,
             Action<string>? reportError = null,
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
             Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
-            Action? dragMove = null)
+            Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
@@ -56,6 +58,9 @@ namespace TrafficSense
             _updates = updates;
             _openReleasePage = openReleasePage;
             _dragMove = dragMove ?? DragMove;
+            _usageStore = usageStore;
+            _usage = usageStore?.Load() ?? new();
+            _localTime = localTime ?? (() => DateTimeOffset.Now);
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             _settings.WidgetFontSize = WidgetAppearance.NormalizeFontSize(_settings.WidgetFontSize);
             _settings.BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(_settings.BackgroundOpacity);
@@ -94,6 +99,8 @@ namespace TrafficSense
             {
                 StopMonitoring();
                 CloseAbout();
+                CloseHistory();
+                FlushUsage();
                 Localization.Changed -= Localization_Changed;
                 _placementReady = false;
                 if (_windowSource is { IsDisposed: false })
@@ -135,6 +142,7 @@ namespace TrafficSense
             _fatalShutdown = true;
             StopMonitoring();
             CloseAbout();
+            CloseHistory();
             IsEnabled = false;
         }
 
@@ -204,6 +212,7 @@ namespace TrafficSense
             NetworkAdapterSnapshot[] snapshots = adapter?.Snapshot is { } snapshot ? [snapshot] : [];
             _latestSpeed = _speedCalculator.Update(snapshots, _sampleTimestamp());
             _monitoredAdapter = adapter;
+            RecordTraffic();
             // Hidden transparent WPF windows do not need text/layout updates.
             // Keep sampling so showing the widget uses the latest interval.
             if (IsVisible)

@@ -32,6 +32,7 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="About TrafficSense" x:Name="MenuAbout" Click="MenuAbout_Click" />
+                <MenuItem Header="Usage and history" x:Name="MenuHistory" Click="MenuHistory_Click" />
                 <MenuItem Header="Hide widget" x:Name="MenuHide" Click="MenuHide_Click" />
                 <MenuItem Header="Exit" x:Name="MenuExit" Click="MenuExit_Click" />
             </ContextMenu>

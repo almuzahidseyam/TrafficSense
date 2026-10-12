@@ -4,6 +4,12 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.8.0] - Development milestone
+
+### Added
+
+- Local daily/monthly upload/download totals for valid measured intervals on the selected connection. Bounded history (400 days) is atomically saved every minute and on normal exit in `%LOCALAPPDATA%/TrafficSense/usage.json`. Sleep/reconnect/app-off gaps and initial counter baselines do not inflate totals. Usage/history opens from the widget or tray and follows the UI language.
+
 ## [1.7.0] - Development milestone
 
 ### Added
