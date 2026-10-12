@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.24.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.24.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
+Version **[1.25.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.25.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -241,3 +241,7 @@ Choose **Copy format / কপি করার ফরম্যাট** above the 
 Optional system information: right-click → **Display system metrics / সিস্টেমের তথ্য দেখান** to select CPU, physical RAM, reported frequency, busiest GPU engine or disk activity. Default is off. **System and connection details** temporarily collects all these counters and shows IP/link/interface data. Polling stops when no items or details window need it. Windows counters refresh once a second independently of network sampling. Unsupported/stale counters show **Unavailable**. GPU is the busiest physical engine after combining its process contributions; disk is 100 minus total idle time. These are not temperature sensors, and reported CPU frequency may be nominal.
 
 **Taskbar-edge panel / টাস্কবারের পাশে প্যানেল** uses Windows' documented [appbar API](https://learn.microsoft.com/en-us/windows/win32/shell/application-desktop-toolbars) to reserve a thin strip adjacent to the taskbar. It provides network/system values and History/Settings/Disable controls. Select top/bottom and a monitor from the widget menu; missing named monitors fall back to the primary monitor. Hide/show the floating widget separately using the tray. This panel does not embed inside Explorer's taskbar buttons. Shell callbacks and cleanup are tested through an isolated fake API to avoid rearranging the user's desktop; direct Windows 10/11, Explorer restart and mixed-DPI device testing remains part of the compatibility matrix.
+
+Appearance: choose a preset, font or item color from the widget menu. Import/export appearance-only skins without changing other preferences; see [skins](docs/SKINS.md). Optional **Daily data alert / Monthly data alert** notifies on a new recorded download+upload limit crossing in GiB. Existing over-limit totals do not repeatedly notify after restart or reconfiguration.
+
+Temperature/sensor extensions: see [the extension guide](docs/EXTENSIONS.md). **Sensor extension → Open sensor bridge** opens a separate process that can read numeric Celsius values from an already running local LibreHardwareMonitor web server. It does not install that provider or its hardware drivers. You can also connect a custom versioned sensor file. Old/invalid/unsupported readings show unavailable, not zero. Exit both the widget and bridge before upgrading.

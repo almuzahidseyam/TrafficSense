@@ -66,9 +66,9 @@ public partial class MainWindow
         var metrics = _systemService?.Latest ?? new();
         string lines = string.Join("\n", MetricLabels.Where(label => (((SystemMetric)_settings.DisplayMetrics) & label.Metric) != 0)
             .Select(label => Localization[label.Label] + ": " + MetricText(label.Metric, metrics)));
-        _taskbarPanel.Update("↓ " + SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits) + "   ↑ " +
+        _taskbarPanel.Update(SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits),
             SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits), lines, Localization,
-            _settings.PanelAtTop, _settings.WidgetFontSize, _settings.Theme == "Light");
+            _settings.PanelAtTop, WidgetSkin.From(_settings), _settings.Theme == "Light");
     }
 
     private void MenuTaskbarPanel_Click(object sender, RoutedEventArgs e) { ChangeTaskbarPanel(MenuTaskbarPanel.IsChecked); e.Handled = true; }

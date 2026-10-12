@@ -10,6 +10,15 @@ public class AppSettings
     public bool PositionLocked { get; set; }
     public bool SpeedInBits { get; set; }
     public int DisplayMetrics { get; set; }
+    public int DailyLimitGiB { get; set; }
+    public int MonthlyLimitGiB { get; set; }
+    public string? SensorFile { get; set; }
+    public string WidgetFontFamily { get; set; } = "Segoe UI, Nirmala UI, Kalpurush";
+    public bool WidgetBold { get; set; } = true;
+    public string WidgetBackground { get; set; } = "Auto";
+    public string DownloadColor { get; set; } = "Auto";
+    public string UploadColor { get; set; } = "Auto";
+    public string MetricsColor { get; set; } = "Auto";
     public bool TaskbarPanel { get; set; }
     public bool PanelAtTop { get; set; }
     public string? PanelMonitor { get; set; }

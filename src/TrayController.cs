@@ -56,6 +56,7 @@ internal sealed class TrayController : IDisposable
         _window.IsVisibleChanged += WindowVisibilityChanged;
         _window.Localization.Changed += LanguageChanged;
         _window.PositionLockChanged += PositionLockChanged;
+        _window.UsageAlert += ShowUsageAlert;
         _positionLock.Checked = _window.PositionLocked;
         _showWidget.Checked = _window.IsVisible;
         ApplyLanguage();
@@ -64,6 +65,10 @@ internal sealed class TrayController : IDisposable
 
     private void LanguageChanged(object? sender, EventArgs e) => ApplyLanguage();
     private void PositionLockChanged(object? sender, EventArgs e) => _positionLock.Checked = _window.PositionLocked;
+    private void ShowUsageAlert(UsageAlertNotification notification)
+    {
+        if (!_disposed) _notifyIcon.ShowBalloonTip(5000, notification.Title, notification.Message, Forms.ToolTipIcon.Warning);
+    }
 
     private void ApplyLanguage()
     {
@@ -99,6 +104,7 @@ internal sealed class TrayController : IDisposable
         _window.IsVisibleChanged -= WindowVisibilityChanged;
         _window.Localization.Changed -= LanguageChanged;
         _window.PositionLockChanged -= PositionLockChanged;
+        _window.UsageAlert -= ShowUsageAlert;
         _notifyIcon.DoubleClick -= ShowWidget;
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();

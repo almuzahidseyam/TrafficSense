@@ -10,11 +10,12 @@ public partial class MainWindow
     private readonly Func<SystemMetric, SystemMetrics>? _readSystemMetrics;
     private SystemMetricsService? _systemService;
     private SystemMetric _systemMask;
+    private string? _systemSensorFile;
     private Window? _systemWindow;
     private TextBox? _systemDetails;
     private static readonly (SystemMetric Metric, TextKey Label)[] MetricLabels =
     [ (SystemMetric.Cpu, TextKey.Cpu), (SystemMetric.Memory, TextKey.Memory), (SystemMetric.Frequency, TextKey.CpuFrequency),
-      (SystemMetric.Gpu, TextKey.Gpu), (SystemMetric.Disk, TextKey.Disk) ];
+      (SystemMetric.Gpu, TextKey.Gpu), (SystemMetric.Disk, TextKey.Disk), (SystemMetric.Sensors, TextKey.ExternalSensors) ];
 
     private void InitializeSystemMetrics()
     {
@@ -42,10 +43,10 @@ public partial class MainWindow
     {
         if (Volatile.Read(ref _monitoringClosed) != 0) return;
         var mask = (SystemMetric)_settings.DisplayMetrics | (_systemWindow != null ? SystemMetric.All : SystemMetric.None);
-        if (mask == _systemMask) return;
+        if (mask == _systemMask && _systemSensorFile == _settings.SensorFile) return;
         _systemService?.Dispose(); _systemService = null;
-        _systemMask = mask;
-        if (mask != SystemMetric.None) _systemService = new(mask, _diagnostics, _readSystemMetrics);
+        _systemMask = mask; _systemSensorFile = _settings.SensorFile;
+        if (mask != SystemMetric.None) _systemService = new(mask, _diagnostics, _readSystemMetrics, _settings.SensorFile);
     }
 
     private void ApplySystemLanguage()
@@ -71,6 +72,8 @@ public partial class MainWindow
             SystemMetric.Cpu => Number(metrics.CpuPercent, "%"),
             SystemMetric.Memory => Number(metrics.MemoryPercent, "%"),
             SystemMetric.Frequency => Number(metrics.CpuMhz / 1000, " GHz"),
+            SystemMetric.Sensors => metrics.External == null || !ExternalSensorFile.IsFresh(metrics.External.UpdatedAt, DateTimeOffset.UtcNow) ? Localization[TextKey.SensorUnavailable] :
+                string.Join("; ", metrics.External.Sensors.Select(sensor => sensor.Label + ": " + sensor.Value.ToString("F1", CultureInfo.CurrentCulture) + " " + sensor.Unit)),
             SystemMetric.Gpu => Number(metrics.GpuPercent, "%"),
             SystemMetric.Disk => Number(metrics.DiskPercent, "%") + "  R " +
                 (metrics.DiskReadBytes.HasValue ? SpeedFormatter.Format(metrics.DiskReadBytes.Value) : Localization[TextKey.NotAvailable]) + "  W " +

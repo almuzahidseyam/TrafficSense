@@ -25,10 +25,22 @@
                 <MenuItem Header="Switch Theme (Light/Dark)" x:Name="MenuTheme" Click="MenuTheme_Click" />
                 <MenuItem Header="Text size" x:Name="MenuFontSize" />
                 <MenuItem Header="Background transparency" x:Name="MenuTransparency" />
+                <MenuItem Header="Appearance presets" x:Name="MenuSkinPresets" />
+                <MenuItem Header="Font" x:Name="MenuFontFamily" Click="MenuFontFamily_Click" />
+                <MenuItem Header="Item colors" x:Name="MenuColors" />
+                <MenuItem Header="Import skin" x:Name="MenuSkinImport" Click="MenuSkinImport_Click" />
+                <MenuItem Header="Export skin" x:Name="MenuSkinExport" Click="MenuSkinExport_Click" />
                 <MenuItem Header="Speed unit" x:Name="MenuSpeedUnit" />
                 <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
                 <MenuItem Header="Display metrics" x:Name="MenuMetrics" />
                 <MenuItem Header="System and connection details" x:Name="MenuSystemDetails" Click="MenuSystemDetails_Click" />
+                <MenuItem Header="Sensor source" x:Name="MenuSensorSource">
+                    <MenuItem Header="Open sensor bridge" x:Name="MenuSensorBridge" Click="MenuSensorBridge_Click" />
+                    <MenuItem Header="Choose sensor JSON" x:Name="MenuChooseSensor" Click="MenuChooseSensor_Click" />
+                    <MenuItem Header="Clear sensor source" x:Name="MenuClearSensor" Click="MenuClearSensor_Click" />
+                </MenuItem>
+                <MenuItem Header="Daily data alert" x:Name="MenuDailyLimit" />
+                <MenuItem Header="Monthly data alert" x:Name="MenuMonthlyLimit" />
                 <MenuItem Header="Taskbar-edge panel" x:Name="MenuTaskbarPanel" IsCheckable="True" Click="MenuTaskbarPanel_Click" />
                 <MenuItem Header="Panel at top" x:Name="MenuPanelTop" IsCheckable="True" Click="MenuPanelTop_Click" />
                 <MenuItem Header="Panel monitor" x:Name="MenuPanelMonitor" SubmenuOpened="MenuPanelMonitor_Opened" />
@@ -57,6 +69,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Download -->
@@ -68,6 +81,8 @@
             <TextBlock x:Name="TxtUpload" Text="0.00 KB/s" Grid.Row="1" Grid.Column="1" Margin="0,4,0,0" Foreground="White" FontFamily="Segoe UI, Kalpurush, Arial" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
             <TextBlock x:Name="TxtMetrics" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,6,0,0" Visibility="Collapsed"
                        Foreground="White" FontFamily="Segoe UI, Nirmala UI" FontSize="14" TextWrapping="Wrap" MaxWidth="360" />
+            <TextBlock x:Name="TxtSampleState" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,4,0,0" Visibility="Collapsed"
+                       Foreground="White" FontFamily="Segoe UI, Nirmala UI" FontSize="12" TextWrapping="Wrap" MaxWidth="120" />
         </Grid>
     </Border>
 </Window>

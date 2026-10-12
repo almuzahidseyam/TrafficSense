@@ -7,6 +7,7 @@ internal sealed class SystemMetricsService : IDisposable
     private readonly SystemMetric _enabled;
     private readonly Func<SystemMetric, SystemMetrics>? _read;
     private readonly DiagnosticLog? _log;
+    private readonly string? _sensorFile;
     private readonly Timer _timer;
     private readonly object _gate = new();
     private WindowsSystemMetricsReader? _reader;
@@ -15,9 +16,9 @@ internal sealed class SystemMetricsService : IDisposable
     private long _timestamp;
     private bool _reportedError;
 
-    internal SystemMetricsService(SystemMetric enabled, DiagnosticLog? log = null, Func<SystemMetric, SystemMetrics>? read = null)
+    internal SystemMetricsService(SystemMetric enabled, DiagnosticLog? log = null, Func<SystemMetric, SystemMetrics>? read = null, string? sensorFile = null)
     {
-        _enabled = enabled; _log = log; _read = read;
+        _enabled = enabled; _log = log; _read = read; _sensorFile = sensorFile;
         _timer = new Timer(_ => Sample(), null, 0, 1000);
     }
 
@@ -29,6 +30,7 @@ internal sealed class SystemMetricsService : IDisposable
             if (Volatile.Read(ref _closed) != 0) return;
             _reader ??= _read == null ? new WindowsSystemMetricsReader(_enabled) : null;
             var metrics = _read?.Invoke(_enabled) ?? _reader!.Read();
+            if (_enabled.HasFlag(SystemMetric.Sensors)) metrics = metrics with { External = ExternalSensorFile.Read(_sensorFile, DateTimeOffset.UtcNow) };
             lock (_gate) { if (_closed == 0) { _latest = metrics; _timestamp = Stopwatch.GetTimestamp(); } }
         }
         catch (Exception error) when (error is System.ComponentModel.Win32Exception or InvalidOperationException or ArgumentException)

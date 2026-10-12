@@ -60,7 +60,9 @@ internal static class SettingsBackup
         if (data.ValueKind != JsonValueKind.Object) throw new JsonException("Expected settings object.");
         foreach (var property in data.EnumerateObject())
             if (!expected.Remove(property.Name)) throw new JsonException("Unknown or duplicate preference.");
-        string[] optional = [nameof(AppSettings.DisplayMetrics), nameof(AppSettings.TaskbarPanel), nameof(AppSettings.PanelAtTop), nameof(AppSettings.PanelMonitor)];
+        string[] optional = [nameof(AppSettings.DisplayMetrics), nameof(AppSettings.TaskbarPanel), nameof(AppSettings.PanelAtTop), nameof(AppSettings.PanelMonitor),
+            nameof(AppSettings.DailyLimitGiB), nameof(AppSettings.MonthlyLimitGiB), nameof(AppSettings.SensorFile), nameof(AppSettings.WidgetFontFamily),
+            nameof(AppSettings.WidgetBold), nameof(AppSettings.WidgetBackground), nameof(AppSettings.DownloadColor), nameof(AppSettings.UploadColor), nameof(AppSettings.MetricsColor)];
         if (expected.Except(optional).Any()) throw new JsonException("Incomplete backup.");
         var settings = data.Deserialize<AppSettings>() ?? throw new JsonException("Missing settings.");
         // Reject out-of-range values rather than silently normalizing a damaged backup.

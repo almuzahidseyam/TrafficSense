@@ -4,6 +4,22 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.25.0] - 2026-10-13
+
+### Added
+
+- Native font selection, separate background/download/upload/system text colors, Classic/Ocean/Monochrome presets and bounded appearance-only JSON skin import/export. Changes preserve network/position/history preferences, save atomically and roll back on failure. Windows high-contrast colors override custom colors for readability. Panel styling follows the selected font/colors.
+- Optional daily/monthly combined download + upload alerts with explicit GiB limits. Only a newly observed threshold crossing notifies; startup totals and already-exceeded reconfigured limits remain quiet. Local calendar periods rearm independently and exact decimal totals avoid overflow. Windows can suppress tray balloons through its notification settings.
+- A data-only extension protocol for up to eight named sensors, with bounded JSON reads, finite numeric validation and five-second publication freshness. Unavailable/old/invalid sources never turn into fabricated zero readings. No native plugin DLL is loaded into the network monitor.
+- A separately instanced **Sensor bridge** mode connects to an already running local LibreHardwareMonitor web server, reads numeric Celsius temperatures and publishes the extension file atomically. Requests are loopback-only, proxy/redirect disabled, response size/time bounded and disconnect/close cancel polling. The bridge installs no hardware drivers. Provider hardware support, permissions and actual sensor update freshness remain the provider's responsibility; older providers without numeric RawValue are unsupported.
+- Visible sampling/unavailable/delayed status in the floating widget. System rate counters rebaseline after provider/sleep gaps instead of presenting long-interval averages as current utilization.
+- Regressions for skins, original backup compatibility, exact limits/calendar rollover, malformed/stale/oversized sensor files, culture-independent bridge parsing and isolated UI/cancellation. Probe notifications use an injected sink and do not display user alerts.
+
+### Upgrading from 1.24.0
+
+- Exit the widget and any sensor bridge window before upgrading. New alerts/sensors remain off by default; existing settings/history/backup files remain compatible.
+- The optional bridge needs LibreHardwareMonitor running with a locally accessible web server. It does not install or start that third-party app. See docs/EXTENSIONS.md.
+
 ## [1.24.0] - 2026-10-13
 
 ### Added
