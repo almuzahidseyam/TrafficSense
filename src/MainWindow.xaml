@@ -24,6 +24,8 @@
                 <MenuItem Header="Switch Theme (Light/Dark)" x:Name="MenuTheme" Click="MenuTheme_Click" />
                 <MenuItem Header="Text size" x:Name="MenuFontSize" />
                 <MenuItem Header="Background transparency" x:Name="MenuTransparency" />
+                <MenuItem Header="Speed unit" x:Name="MenuSpeedUnit" />
+                <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
                 <MenuItem Header="Language" x:Name="MenuLanguage">
                     <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />
                     <MenuItem Header="বাংলা" x:Name="MenuBangla" Tag="bn" IsCheckable="True" Click="MenuLanguage_Click" />

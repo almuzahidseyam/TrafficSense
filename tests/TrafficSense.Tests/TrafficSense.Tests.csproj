@@ -18,6 +18,7 @@
     <Compile Include="../../src/NetworkSpeedCalculator.cs" Link="NetworkSpeedCalculator.cs" />
     <Compile Include="../../src/NetworkAdapterSelection.cs" Link="NetworkAdapterSelection.cs" />
     <Compile Include="../../src/SpeedFormatter.cs" Link="SpeedFormatter.cs" />
+    <Compile Include="../../src/MonitorPreferences.cs" Link="MonitorPreferences.cs" />
     <Compile Include="../../src/AppSettings.cs" Link="AppSettings.cs" />
     <Compile Include="../../src/WidgetAppearance.cs" Link="WidgetAppearance.cs" />
     <Compile Include="../../src/UiLanguage.cs" Link="UiLanguage.cs" />

@@ -23,6 +23,7 @@ public partial class MainWindow
         TxtUpload.ToolTip = Localization[TextKey.UploadSpeed];
         UpdateLanguageChecks();
         ApplyAppearanceLanguage();
+        ApplyMonitorLanguage();
         ApplyAutoStartStatus(_startupStatus);
         BuildAdapterMenu();
         ApplyNetworkTooltip();

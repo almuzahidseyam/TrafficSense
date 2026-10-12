@@ -11,7 +11,8 @@ internal enum TextKey
     About, Version, LogFolder, OpenLogFolder, LogFolderOpenFailed, Close,
     CheckUpdates, UpdateHint, UpdateChecking, UpdateAvailable, UpdateCurrent, UpdateNoRelease,
     UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed,
-    TextSize, BackgroundTransparency, DefaultAppearance, LockPosition, ResetPosition
+    TextSize, BackgroundTransparency, DefaultAppearance, LockPosition, ResetPosition,
+    SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -44,6 +45,11 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.DefaultAppearance] = ("Default", "ডিফল্ট"),
             [TextKey.LockPosition] = ("Lock position", "অবস্থান লক করুন"),
             [TextKey.ResetPosition] = ("Reset position", "অবস্থান ফিরিয়ে আনুন"),
+            [TextKey.SpeedUnit] = ("Speed unit", "গতির একক"),
+            [TextKey.RefreshInterval] = ("Refresh interval", "গতি আপডেটের ব্যবধান"),
+            [TextKey.BitsPerSecond] = ("Bits/s (Kbps, Mbps)", "বিট/সেকেন্ড (Kbps, Mbps)"),
+            [TextKey.BytesPerSecond] = ("Bytes/s (KB/s, MB/s)", "বাইট/সেকেন্ড (KB/s, MB/s)"),
+            [TextKey.Seconds] = ("{0} seconds", "{0} সেকেন্ড"),
             [TextKey.Language] = ("Language", "ভাষা"),
             [TextKey.HideWidget] = ("Hide widget", "উইজেট লুকান"),
             [TextKey.ShowWidget] = ("Show widget", "উইজেট দেখান"),

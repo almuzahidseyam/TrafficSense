@@ -52,6 +52,8 @@ internal sealed class SettingsStore(string filePath, DiagnosticLog? diagnostics 
         ScreenLeft = settings.ScreenLeft,
         ScreenTop = settings.ScreenTop,
         PositionLocked = settings.PositionLocked,
+        SpeedInBits = settings.SpeedInBits,
+        RefreshMilliseconds = MonitorPreferences.NormalizeInterval(settings.RefreshMilliseconds),
         Theme = settings.Theme == "Light" ? "Light" : "Dark",
         Language = UiLanguage.Normalize(settings.Language),
         SelectedAdapterId = string.IsNullOrWhiteSpace(settings.SelectedAdapterId) ? null : settings.SelectedAdapterId,

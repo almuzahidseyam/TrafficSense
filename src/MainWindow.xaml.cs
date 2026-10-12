@@ -59,9 +59,11 @@ namespace TrafficSense
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             _settings.WidgetFontSize = WidgetAppearance.NormalizeFontSize(_settings.WidgetFontSize);
             _settings.BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(_settings.BackgroundOpacity);
+            _settings.RefreshMilliseconds = MonitorPreferences.NormalizeInterval(_settings.RefreshMilliseconds);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
             InitializeAppearanceMenus();
+            InitializeMonitorMenus();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
             ApplyPendingAppearance();
@@ -175,7 +177,7 @@ namespace TrafficSense
         {
             RefreshNetworkSpeed();
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Interval = TimeSpan.FromMilliseconds(_settings.RefreshMilliseconds);
             _timer.Tick += Timer_Tick;
             _timer.Start();
         }
@@ -211,8 +213,8 @@ namespace TrafficSense
         private void RenderNetworkSpeed()
         {
             if (_fatalShutdown) return;
-            TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond);
-            TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond);
+            TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits);
+            TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits);
             ApplyNetworkTooltip();
         }
 

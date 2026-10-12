@@ -4,6 +4,12 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.7.0] - Development milestone
+
+### Added
+
+- Saved byte/bit speed units (legacy binary KB/s–GB/s or decimal Kbps–Gbps) and 0.5/1/2-second refresh intervals. Changes preserve the measurement baseline; actual elapsed time determines speed. Failed saves restore the menu/timer state.
+
 ## [1.6.0] - Development milestone
 
 ### Added

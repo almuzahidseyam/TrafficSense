@@ -8,6 +8,8 @@ public class AppSettings
     public int? ScreenLeft { get; set; }
     public int? ScreenTop { get; set; }
     public bool PositionLocked { get; set; }
+    public bool SpeedInBits { get; set; }
+    public int RefreshMilliseconds { get; set; } = 1000;
     public string Theme { get; set; } = "Dark";
     public string Language { get; set; } = "en";
     public string? SelectedAdapterId { get; set; }

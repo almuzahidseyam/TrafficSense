@@ -2,11 +2,21 @@ namespace TrafficSense;
 
 internal static class SpeedFormatter
 {
-    public static string Format(double bytesPerSecond)
+    public static string Format(double bytesPerSecond, bool bits = false)
     {
         if (!double.IsFinite(bytesPerSecond) || bytesPerSecond < 0)
         {
             bytesPerSecond = 0;
+        }
+
+        if (bits)
+        {
+            // Network bit rates use decimal SI units; byte mode retains legacy 1024 units.
+            double value = bytesPerSecond / 125; // divide first to avoid overflow
+            if (value >= 1_000_000) return $"{value / 1_000_000:F2} Gbps";
+            if (value >= 1_000) return $"{value / 1_000:F2} Mbps";
+            if (value >= 1) return $"{value:F2} Kbps";
+            return $"{bytesPerSecond * 8:F0} bps";
         }
 
         if (bytesPerSecond >= 1024.0 * 1024 * 1024)

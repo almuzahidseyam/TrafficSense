@@ -124,6 +124,18 @@ internal static class PositionLockProbe
                 Check(SetWindowPos(handle, IntPtr.Zero, work.Left + 50, work.Top + 50, 0, 0,
                     0x0001 | 0x0004 | 0x0010), "Could not position test window for restart.");
                 Drain(widget);
+                var timer = (DispatcherTimer)typeof(MainWindow).GetField("_timer", Private)!.GetValue(widget)!;
+                widget.Hide();
+                Check(widget.ChangeMonitorPreferences(true, 500) && timer.Interval == TimeSpan.FromMilliseconds(500) && !widget.IsVisible,
+                    "Monitor preferences did not apply while hidden.");
+                saved = File.ReadAllBytes(path);
+                using (var blocked = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+                    Check(!widget.ChangeMonitorPreferences(false, 2000), "Blocked monitor preference change succeeded.");
+                Check(timer.Interval == TimeSpan.FromMilliseconds(500) && store.Load().SpeedInBits && saved.SequenceEqual(File.ReadAllBytes(path)),
+                    "Failed preference save changed interval/units.");
+                Check(widget.ChangeMonitorPreferences(false, 1000), "Could not restore monitor preferences.");
+                widget.Show();
+                Drain(widget);
                 // Disposed tray controllers must no longer receive lock events.
                 using (var temporary = new TrayController(widget)) { }
                 widget.ChangePositionLock(false);
