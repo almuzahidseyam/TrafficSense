@@ -53,6 +53,7 @@ internal static class SoakProbe
         MethodInfo refresh = typeof(MainWindow).GetMethod("RefreshNetworkSpeed", Private)!;
         MethodInfo adapterMenu = typeof(MainWindow).GetMethod("BuildAdapterMenu", Private)!;
         MethodInfo theme = typeof(MainWindow).GetMethod("MenuTheme_Click", Private)!;
+        MethodInfo appearance = typeof(MainWindow).GetMethod("ChangeAppearance", Private)!;
 
         void Finish()
         {
@@ -76,6 +77,12 @@ internal static class SoakProbe
                     {
                         window!.ChangeLanguage(window.Localization.Code == "en" ? "bn" : "en");
                         theme.Invoke(window, new object[] { window, new RoutedEventArgs() });
+                        int appearanceIndex = completedIterations / 50;
+                        appearance.Invoke(window, new object[]
+                        {
+                            WidgetAppearance.FontSizes[appearanceIndex % WidgetAppearance.FontSizes.Count],
+                            WidgetAppearance.BackgroundOpacities[appearanceIndex % WidgetAppearance.BackgroundOpacities.Count]
+                        });
                         // ShowActivated=false keeps stress cycles from taking
                         // focus away from the user. Activation is covered by
                         // the separate lifecycle probe.

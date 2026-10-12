@@ -96,10 +96,14 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 
 ## Settings & Window Position
 
+- Development builds add **Text size / লেখার আকার** and **Background transparency / পটভূমির স্বচ্ছতা** to the widget's right-click menu. Text sizes are 12, 14 (default), 16, 18, 20 and 24. Transparency offers Default, 0%, 25%, 50%, 75% and 90%; it changes the background only, keeping text, arrows and menus fully visible. Default restores the previous background appearance.
+- Appearance changes apply immediately and persist across restart and light/dark theme changes. Enlarging the widget keeps it within the monitor work area. Failed saves restore the previous style/checkmarks and preserve the settings file. Older or unsupported saved appearance values use the original defaults. This feature is listed under Unreleased in the changelog.
 - Right-click the widget to change its theme or enable **Start with Windows** (at sign-in).
 - Settings are stored in `%APPDATA%\TrafficSense\settings.json`. Corrupt settings fall back to defaults; failed saves show an error and preserve the previous file.
 - Startup registration is updated only when you change **Start with Windows**. Its checkbox reflects the registration for the current executable, independently of the settings file. After moving the app, enable it again from its new location.
 - The widget returns to a visible monitor work area when a monitor is removed, the resolution/DPI changes, or the taskbar work area changes. Existing saved window positions are migrated automatically.
+
+The Windows lifecycle and portable probes exercise appearance changes, screen-edge resizing, bilingual menus, locked-file rollback, hidden monitoring and restart with temporary settings. Run the appearance checks alone with `dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --appearance`. Resource stress checks also cycle text size and transparency.
 
 ## System Tray & Single Instance
 

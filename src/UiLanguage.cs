@@ -10,7 +10,8 @@ internal enum TextKey
     FatalError, AppWillClose, LogSaved, LogUnavailable,
     About, Version, LogFolder, OpenLogFolder, LogFolderOpenFailed, Close,
     CheckUpdates, UpdateHint, UpdateChecking, UpdateAvailable, UpdateCurrent, UpdateNoRelease,
-    UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed
+    UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed,
+    TextSize, BackgroundTransparency, DefaultAppearance
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -38,6 +39,9 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.NetworkAdapter] = ("Network adapter", "নেটওয়ার্ক অ্যাডাপ্টার"),
             [TextKey.StartWithWindows] = ("Start with Windows", "Windows চালু হলে চালু করুন"),
             [TextKey.SwitchTheme] = ("Switch Theme (Light/Dark)", "থিম বদলান (হালকা/গাঢ়)"),
+            [TextKey.TextSize] = ("Text size", "লেখার আকার"),
+            [TextKey.BackgroundTransparency] = ("Background transparency", "পটভূমির স্বচ্ছতা"),
+            [TextKey.DefaultAppearance] = ("Default", "ডিফল্ট"),
             [TextKey.Language] = ("Language", "ভাষা"),
             [TextKey.HideWidget] = ("Hide widget", "উইজেট লুকান"),
             [TextKey.ShowWidget] = ("Show widget", "উইজেট দেখান"),

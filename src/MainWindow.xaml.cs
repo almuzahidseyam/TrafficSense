@@ -54,10 +54,14 @@ namespace TrafficSense
             _updates = updates;
             _openReleasePage = openReleasePage;
             _settings.Language = UiLanguage.Normalize(_settings.Language);
+            _settings.WidgetFontSize = WidgetAppearance.NormalizeFontSize(_settings.WidgetFontSize);
+            _settings.BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(_settings.BackgroundOpacity);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
+            InitializeAppearanceMenus();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
+            ApplyAppearance();
             
             this.Loaded += (s, e) => 
             {
@@ -67,7 +71,6 @@ namespace TrafficSense
                     NativeWindowPlacement.EnsureVisible(this);
                 _placementReady = true;
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
-                ApplyTheme();
             };
 
             IsVisibleChanged += (_, _) =>
@@ -362,13 +365,13 @@ namespace TrafficSense
             var border = (System.Windows.Controls.Border)this.Content;
             if (_settings.Theme == "Light")
             {
-                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(120, 255, 255, 255));
+                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)_settings.BackgroundOpacity, 255, 255, 255));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.Black;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.Black;
             }
             else
             {
-                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(120, 0, 0, 0));
+                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)_settings.BackgroundOpacity, 0, 0, 0));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.White;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.White;
             }

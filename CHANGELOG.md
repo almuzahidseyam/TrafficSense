@@ -4,6 +4,10 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+### Added
+
+- Saved widget text-size and background-transparency choices in the widget's English/Bengali context menu. Changes apply immediately, resize/clamp the widget to its monitor work area and preserve readable text/arrows. Failed saves keep the previous appearance and selections; older settings retain the original appearance.
+
 ## [1.4.0] - 2026-10-12
 
 ### Added

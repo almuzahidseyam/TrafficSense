@@ -53,6 +53,8 @@ internal sealed class SettingsStore(string filePath, DiagnosticLog? diagnostics 
         ScreenTop = settings.ScreenTop,
         Theme = settings.Theme == "Light" ? "Light" : "Dark",
         Language = UiLanguage.Normalize(settings.Language),
-        SelectedAdapterId = string.IsNullOrWhiteSpace(settings.SelectedAdapterId) ? null : settings.SelectedAdapterId
+        SelectedAdapterId = string.IsNullOrWhiteSpace(settings.SelectedAdapterId) ? null : settings.SelectedAdapterId,
+        WidgetFontSize = WidgetAppearance.NormalizeFontSize(settings.WidgetFontSize),
+        BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(settings.BackgroundOpacity)
     };
 }

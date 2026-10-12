@@ -20,6 +20,8 @@
                 </MenuItem>
                 <MenuItem Header="Start with Windows" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
                 <MenuItem Header="Switch Theme (Light/Dark)" x:Name="MenuTheme" Click="MenuTheme_Click" />
+                <MenuItem Header="Text size" x:Name="MenuFontSize" />
+                <MenuItem Header="Background transparency" x:Name="MenuTransparency" />
                 <MenuItem Header="Language" x:Name="MenuLanguage">
                     <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />
                     <MenuItem Header="বাংলা" x:Name="MenuBangla" Tag="bn" IsCheckable="True" Click="MenuLanguage_Click" />
@@ -41,11 +43,11 @@
             </Grid.RowDefinitions>
 
             <!-- Download -->
-            <ui:SymbolIcon Symbol="ArrowDownload24" Foreground="#4CAF50" Grid.Row="0" Grid.Column="0" Margin="0,0,8,0" FontSize="16" />
+            <ui:SymbolIcon x:Name="IconDownload" Symbol="ArrowDownload24" Foreground="#4CAF50" Grid.Row="0" Grid.Column="0" Margin="0,0,8,0" FontSize="16" />
             <TextBlock x:Name="TxtDownload" Text="0.00 KB/s" Grid.Row="0" Grid.Column="1" Foreground="White" FontFamily="Segoe UI, Kalpurush, Arial" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
 
             <!-- Upload -->
-            <ui:SymbolIcon Symbol="ArrowUpload24" Foreground="#2196F3" Grid.Row="1" Grid.Column="0" Margin="0,4,8,0" FontSize="16" />
+            <ui:SymbolIcon x:Name="IconUpload" Symbol="ArrowUpload24" Foreground="#2196F3" Grid.Row="1" Grid.Column="0" Margin="0,4,8,0" FontSize="16" />
             <TextBlock x:Name="TxtUpload" Text="0.00 KB/s" Grid.Row="1" Grid.Column="1" Margin="0,4,0,0" Foreground="White" FontFamily="Segoe UI, Kalpurush, Arial" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
         </Grid>
     </Border>
