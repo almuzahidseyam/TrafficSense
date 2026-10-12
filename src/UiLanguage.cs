@@ -19,7 +19,7 @@ internal enum TextKey
     CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed,
     CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays,
     SelectedUsage, TotalUsage, DailyUsage, DailyUsageHint, UsageDate, ExactBytes,
-    DailyChart, DailyChartLegend, DailyChartRange, DailyChartHint
+    DailyChart, DailyChartLegend, DailyChartRange, DailyChartHint, DailyChartNoRecord
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -89,8 +89,9 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.DailyChart] = ("Daily usage chart (up to 30 days)", "দিনভিত্তিক চার্ট (সর্বোচ্চ ৩০ দিন)"),
             [TextKey.DailyChartLegend] = ("Download: filled; upload: outlined. Gaps: no record; baseline mark: zero.",
                 "ডাউনলোড: ভরাট; আপলোড: খালি bar। ফাঁকা: রেকর্ড নেই; নিচের চিহ্ন: শূন্য।"),
-            [TextKey.DailyChartHint] = ("Up to 30 calendar days ending at the latest record in the selected period, oldest to newest. Missing records leave gaps. Full selected totals and all recorded days remain in the summary and table.",
-                "নির্বাচিত সময়ের সর্বশেষ রেকর্ড পর্যন্ত সর্বোচ্চ ৩০ দিন, পুরোনো থেকে নতুন। রেকর্ড না থাকা দিন ফাঁকা থাকে। সারাংশ ও তালিকায় নির্বাচিত সময়ের পুরো হিসাব আছে।"),
+            [TextKey.DailyChartHint] = ("Up to 30 calendar days ending at the latest record in the selected period, oldest to newest. Hover a day's column for its date and exact download, upload and total bytes. Missing records leave gaps. Full selected totals and all recorded days remain in the summary and table.",
+                "নির্বাচিত সময়ের সর্বশেষ রেকর্ড পর্যন্ত সর্বোচ্চ ৩০ দিন, পুরোনো থেকে নতুন। দিনের কলামে মাউস রাখলে তারিখ, ডাউনলোড, আপলোড ও মোট বাইট দেখাবে। রেকর্ড না থাকা দিন ফাঁকা থাকে। সারাংশ ও তালিকায় নির্বাচিত সময়ের পুরো হিসাব আছে।"),
+            [TextKey.DailyChartNoRecord] = ("No stored usage for this day.", "এই দিনের সংরক্ষিত হিসাব নেই।"),
             [TextKey.DailyChartRange] = ("{0:yyyy-MM-dd} to {1:yyyy-MM-dd}; {2} recorded day(s).", "{0:yyyy-MM-dd} থেকে {1:yyyy-MM-dd}; {2} দিনের সংরক্ষিত হিসাব।"),
             [TextKey.CsvExportEmpty] = ("No measured usage to export yet.", "সংরক্ষণ করার মতো মাপা ডেটা এখনো নেই।"),
             [TextKey.CsvExportFailed] = ("Could not export usage. Existing files and usage totals were kept.",

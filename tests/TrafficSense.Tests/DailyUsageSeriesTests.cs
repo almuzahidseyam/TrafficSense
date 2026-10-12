@@ -4,6 +4,50 @@ namespace TrafficSense.Tests;
 
 public sealed class DailyUsageSeriesTests
 {
+    [Theory]
+    [InlineData(0, 300, 0)]
+    [InlineData(9.99, 300, 0)]
+    [InlineData(10, 300, 1)]
+    [InlineData(299.99, 300, 29)]
+    [InlineData(0, 600, 0)]
+    [InlineData(20, 600, 1)]
+    [InlineData(599.99, 600, 29)]
+    public void HoverMapsCalendarSlotsIncludingMissingDaysAndResizing(double x, double width, int offset)
+    {
+        var start = new DateOnly(2026, 12, 20);
+        var chart = DailyUsageSeries.Create([new(start, 100, 50), new(start.AddDays(29), 200, 75)]);
+        Assert.Equal(start.AddDays(offset), chart.DateAt(x, width));
+    }
+
+    [Theory]
+    [InlineData(-1, 300)]
+    [InlineData(300, 300)]
+    [InlineData(301, 300)]
+    [InlineData(0, 0)]
+    [InlineData(0, -1)]
+    [InlineData(double.NaN, 300)]
+    [InlineData(double.PositiveInfinity, 300)]
+    [InlineData(0, double.NaN)]
+    [InlineData(0, double.PositiveInfinity)]
+    public void HoverOutsidePlotOrBeforeLayoutHasNoDate(double x, double width)
+    {
+        var chart = DailyUsageSeries.Create([new(new(2026, 10, 12), 100, 50)]);
+        Assert.Null(chart.DateAt(x, width));
+    }
+
+    [Fact]
+    public void EmptyChartHasNoHoverDate() => Assert.Null(DailyUsageSeries.Empty.DateAt(0, 300));
+
+    [Theory]
+    [InlineData(1, 1, 1)]
+    [InlineData(9999, 12, 31)]
+    public void SingleDayHoverAtCalendarLimitsDoesNotOverflow(int year, int month, int day)
+    {
+        var date = new DateOnly(year, month, day);
+        var chart = DailyUsageSeries.Create([new(date, 0, 0)]);
+        Assert.Equal(date, chart.DateAt(299.999, 300));
+    }
+
     [Fact]
     public void EmptySelectionHasNoDatesOrInventedRecords()
     {

@@ -10,6 +10,14 @@ internal sealed class DailyUsageSeries
     internal int CalendarDays => Days.Count == 0 ? 0 : End.DayNumber - Start.DayNumber + 1;
     internal decimal PeakBytes => Days.Select(day => (decimal)Math.Max(day.Received, day.Sent)).DefaultIfEmpty().Max();
 
+    internal DateOnly? DateAt(double position, double width)
+    {
+        if (Days.Count == 0 || !double.IsFinite(position) || !double.IsFinite(width) || width <= 0 || position < 0 || position >= width)
+            return null;
+        int offset = Math.Min(CalendarDays - 1, (int)(position / width * CalendarDays));
+        return Start.AddDays(offset);
+    }
+
     private DailyUsageSeries(UsageDay[] days, DateOnly start, DateOnly end)
     { Days = Array.AsReadOnly(days); Start = start; End = end; }
 
