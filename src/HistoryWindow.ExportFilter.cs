@@ -17,6 +17,7 @@ internal sealed partial class HistoryWindow
     private readonly TextBox _toDate = new() { Margin = new(0, 4, 0, 0), TabIndex = 3 };
     private readonly TextBlock _dateHint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) };
     private readonly TextBlock _filterStatus = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
+    private readonly TextBlock _selectedUsage = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private bool _updatingFilter, _historyPlacementQueued;
 
     private void InitializeExportFilter(Panel panel)
@@ -40,6 +41,7 @@ internal sealed partial class HistoryWindow
         Grid.SetColumn(to, 1); _customDates.Children.Add(from); _customDates.Children.Add(to);
         panel.Children.Add(_periodLabel); panel.Children.Add(_period); panel.Children.Add(_months);
         panel.Children.Add(_customDates); panel.Children.Add(_dateHint); panel.Children.Add(_filterStatus);
+        panel.Children.Add(_selectedUsage);
         _period.SelectionChanged += (_, _) => UpdateExportFilter();
         _months.SelectionChanged += (_, _) => UpdateExportFilter();
         _fromDate.TextChanged += (_, _) => UpdateExportFilter();
@@ -95,7 +97,8 @@ internal sealed partial class HistoryWindow
         _months.Visibility = ExportPeriod == TextKey.CsvMonth ? Visibility.Visible : Visibility.Collapsed;
         _customDates.Visibility = _dateHint.Visibility = ExportPeriod == TextKey.CsvDateRange ? Visibility.Visible : Visibility.Collapsed;
         bool valid = TryGetExportRange(out var range);
-        int count = valid ? _usage.Days.Count(day => range == null || range.Value.Contains(day.Date)) : 0;
+        var totals = valid ? _usage.GetTotals(range) : default;
+        int count = totals.RecordedDays;
         _export.IsEnabled = valid && count > 0;
         _export.Foreground = _export.IsEnabled ? SystemColors.ControlTextBrush : SystemColors.GrayTextBrush;
         TextKey message = !valid ? TextKey.CsvInvalidDates : _usage.Days.Count == 0 ? TextKey.CsvExportEmpty : TextKey.CsvNoMatches;
@@ -103,6 +106,12 @@ internal sealed partial class HistoryWindow
         _export.ToolTip = count > 0 ? _language[TextKey.CsvExportHint] : _filterStatus.Text;
         AutomationProperties.SetHelpText(_export, _export.ToolTip.ToString());
         AutomationProperties.SetName(_filterStatus, _filterStatus.Text);
+        _selectedUsage.Visibility = valid ? Visibility.Visible : Visibility.Collapsed;
+        _selectedUsage.Text = valid ? _language[TextKey.SelectedUsage] + "\n" +
+            _language[TextKey.Download] + ": " + FormatBytes(totals.Received) + "\n" +
+            _language[TextKey.Upload] + ": " + FormatBytes(totals.Sent) + "\n" +
+            _language[TextKey.TotalUsage] + ": " + FormatBytes(totals.Total) : "";
+        AutomationProperties.SetName(_selectedUsage, _selectedUsage.Text);
     }
 
     private void QueueHistoryPlacement()

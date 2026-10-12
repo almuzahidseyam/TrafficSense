@@ -2,6 +2,11 @@ namespace TrafficSense;
 
 internal sealed record UsageDay(DateOnly Date, long Received, long Sent);
 
+internal readonly record struct UsageTotals(decimal Received, decimal Sent, int RecordedDays)
+{
+    public decimal Total => Received + Sent;
+}
+
 internal sealed class UsageLedger
 {
     public const int MaximumDays = 400;
@@ -31,6 +36,19 @@ internal sealed class UsageLedger
     }
 
     public UsageDay Today(DateOnly date) => _days.TryGetValue(date, out var day) ? day : new(date, 0, 0);
+    public UsageTotals GetTotals(UsageDateRange? range = null)
+    {
+        if (range is { IsValid: false }) throw new ArgumentException("Invalid date range.", nameof(range));
+        decimal received = 0, sent = 0;
+        int count = 0;
+        foreach (var day in _days.Values)
+        {
+            if (range != null && !range.Value.Contains(day.Date)) continue;
+            // Up to 400 Int64 day counters fit exactly in decimal, including their combined total.
+            received += day.Received; sent += day.Sent; count++;
+        }
+        return new(received, sent, count);
+    }
     public UsageDay Month(DateOnly date)
     {
         long received = 0, sent = 0;

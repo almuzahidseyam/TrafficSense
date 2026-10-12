@@ -17,7 +17,8 @@ internal enum TextKey
     GlobalShortcut, ShortcutHelp, ShortcutUnavailable,
     SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed,
     CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed,
-    CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays
+    CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays,
+    SelectedUsage, TotalUsage
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -77,6 +78,8 @@ internal sealed class UiLanguage(string? code = "en")
                 "YYYY-MM-DD অনুযায়ী সঠিক তারিখ দিন। শুরুর তারিখ শেষের তারিখের পরে হতে পারবে না।"),
             [TextKey.CsvNoMatches] = ("No stored usage in this period. Choose another period.", "এই সময়ে সংরক্ষিত হিসাব নেই। অন্য সময় বাছাই করুন।"),
             [TextKey.CsvSelectedDays] = ("{0} recorded day(s) selected.", "নির্বাচিত সময়ে {0} দিনের সংরক্ষিত হিসাব আছে।"),
+            [TextKey.SelectedUsage] = ("Selected period usage", "নির্বাচিত সময়ের ডেটা ব্যবহার"),
+            [TextKey.TotalUsage] = ("Total", "সর্বমোট"),
             [TextKey.CsvExportEmpty] = ("No measured usage to export yet.", "সংরক্ষণ করার মতো মাপা ডেটা এখনো নেই।"),
             [TextKey.CsvExportFailed] = ("Could not export usage. Existing files and usage totals were kept.",
                 "ডেটা ব্যবহারের হিসাব সংরক্ষণ করা যায়নি। আগের ফাইল ও হিসাব অক্ষত আছে।"),

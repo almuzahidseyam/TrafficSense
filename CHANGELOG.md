@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-10-12
+
+### Added
+
+- Live selected-period download, upload and combined usage totals below the CSV period controls, in English and Bengali. All retained days, a selected month and inclusive custom dates use the same records as CSV export.
+- Valid periods with no records show zero totals and the existing explanation. Invalid/reversed dates clear and hide the summary so stale amounts cannot be mistaken for the current selection. Changing language or refreshing traffic preserves the selection and updates the summary, including traffic sampled while the save dialog was open.
+- Exact decimal aggregation across up to 400 retained daily counters prevents integer overflow; displayed amounts use the existing rounded B/KB/MB/GB units while CSV retains exact bytes. Reading totals does not modify usage, mark pending traffic saved or change settings.
+
+### Upgrading from 1.14.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Existing settings, backups and usage remain compatible.
+- Open **Usage and history**, choose **CSV period**, and read **Selected period usage** below the recorded-day count. Both custom date boundaries are included; unrecorded days are not reconstructed. Scroll on smaller screens to reach the summary and export button.
+
 ## [1.14.0] - 2026-10-12
 
 ### Added
