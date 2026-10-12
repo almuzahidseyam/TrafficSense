@@ -75,10 +75,14 @@ public partial class MainWindow
         var metrics = _systemService?.Latest ?? new();
         string lines = string.Join("\n", MetricLabels.Where(label => (((SystemMetric)_settings.DisplayMetrics) & label.Metric) != 0)
             .Select(label => Localization[label.Label] + ": " + MetricText(label.Metric, metrics)));
-        _taskbarPanel.Update(SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits),
-            SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits), lines, Localization,
+        if (_sampleQuality != SampleQuality.Fresh) lines = PanelSampleState() + (lines.Length == 0 ? "" : "\n" + lines);
+        _taskbarPanel.Update(PanelRate(_latestSpeed.DownloadBytesPerSecond),
+            PanelRate(_latestSpeed.UploadBytesPerSecond), lines, Localization,
             _settings.PanelAtTop, WidgetSkin.From(_settings), _settings.Theme == "Light");
     }
+
+    private string PanelRate(double rate) => _sampleQuality == SampleQuality.Fresh ? SpeedFormatter.Format(rate,_settings.SpeedInBits) : Localization[TextKey.NotAvailable];
+    private string PanelSampleState() => Localization[_sampleQuality == SampleQuality.Unavailable ? TextKey.SampleUnavailableShort : _sampleQuality == SampleQuality.Delayed ? TextKey.SampleDelayedShort : TextKey.SamplingShort];
 
     private async void RefreshEmbedded()
     {
@@ -88,8 +92,8 @@ public partial class MainWindow
         try
         {
             client = _embedded ??= new(); var bounds = PanelMonitorBounds();
-            string text = "↓ " + SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits) + "   ↑ " + SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits);
-            if (_sampleQuality != SampleQuality.Fresh) text += " · " + Localization[_sampleQuality == SampleQuality.Unavailable ? TextKey.SampleUnavailableShort : _sampleQuality == SampleQuality.Delayed ? TextKey.SampleDelayedShort : TextKey.SamplingShort];
+            string text = "↓ " + PanelRate(_latestSpeed.DownloadBytesPerSecond) + "   ↑ " + PanelRate(_latestSpeed.UploadBytesPerSecond);
+            if (_sampleQuality != SampleQuality.Fresh) text = PanelSampleState() + " · " + text;
             var reply = await client.Update(new(new(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom), text, _settings.Theme == "Light"));
             if (!ReferenceEquals(client, _embedded)) return;
             bool changed = _embeddedActive != reply.Embedded; _embeddedActive = reply.Embedded; _embeddingStatus = reply.Reason;

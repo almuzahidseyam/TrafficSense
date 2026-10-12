@@ -12,6 +12,7 @@ Published releases carry their publication date. Intermediate development milest
 - Explicit native **x64 DLL plugin bridge** in an isolated STA process with a message loop: API 1–8 version gates, retained host callbacks, legacy monitor info, text values, GDI/extended drawing, options and commands. Text/custom images bind to XML plugin IDs. Bounded protocol/bitmap decoding, sample deadlines and a Windows kill-on-close job contain failures and remove owned workers after owner exit. Third-party code is never loaded into the monitor process or automatically at startup. This is crash containment, not a security sandbox.
 - Opt-in **experimental taskbar embedding** in a separate native-window process, selected-monitor discovery and accessibility-based vacant-space checks. Unsupported/full/inaccessible layouts use the existing edge panel. Worker failure/Explorer replacement can retry with a new worker. No shell injection, button resizing or undocumented Explorer memory access.
 - Grouped English/Bengali settings menus and reproducible live-environment diagnostics: same-interface native counter brackets, exact byte conservation and read-only taskbar/display inspection.
+- Taskbar rates show unavailable while sampling/disconnected/delayed instead of presenting unknown intervals as measured idle; quality text also updates when the floating widget is hidden.
 
 ### Validation and boundaries
 
