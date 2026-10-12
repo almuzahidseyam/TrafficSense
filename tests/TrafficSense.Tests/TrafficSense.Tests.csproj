@@ -17,6 +17,7 @@
   <ItemGroup>
     <Compile Include="../../src/NetworkSpeedCalculator.cs" Link="NetworkSpeedCalculator.cs" />
     <Compile Include="../../src/NetworkSamplingService.cs" Link="NetworkSamplingService.cs" />
+    <Compile Include="../../src/SystemMetrics.cs" Link="SystemMetrics.cs" />
     <Compile Include="../../src/NetworkAdapterSelection.cs" Link="NetworkAdapterSelection.cs" />
     <Compile Include="../../src/SpeedFormatter.cs" Link="SpeedFormatter.cs" />
     <Compile Include="../../src/MonitorPreferences.cs" Link="MonitorPreferences.cs" />

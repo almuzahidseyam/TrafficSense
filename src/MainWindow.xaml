@@ -27,6 +27,8 @@
                 <MenuItem Header="Background transparency" x:Name="MenuTransparency" />
                 <MenuItem Header="Speed unit" x:Name="MenuSpeedUnit" />
                 <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
+                <MenuItem Header="Display metrics" x:Name="MenuMetrics" />
+                <MenuItem Header="System and connection details" x:Name="MenuSystemDetails" Click="MenuSystemDetails_Click" />
                 <MenuItem Header="Global shortcut (Ctrl+Alt+T)" x:Name="MenuShortcut" IsCheckable="True" Click="MenuShortcut_Click" />
                 <MenuItem Header="Language" x:Name="MenuLanguage">
                     <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />
@@ -51,6 +53,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Download -->
@@ -60,6 +63,8 @@
             <!-- Upload -->
             <ui:SymbolIcon x:Name="IconUpload" Symbol="ArrowUpload24" Foreground="#2196F3" Grid.Row="1" Grid.Column="0" Margin="0,4,8,0" FontSize="16" />
             <TextBlock x:Name="TxtUpload" Text="0.00 KB/s" Grid.Row="1" Grid.Column="1" Margin="0,4,0,0" Foreground="White" FontFamily="Segoe UI, Kalpurush, Arial" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <TextBlock x:Name="TxtMetrics" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,6,0,0" Visibility="Collapsed"
+                       Foreground="White" FontFamily="Segoe UI, Nirmala UI" FontSize="14" TextWrapping="Wrap" MaxWidth="360" />
         </Grid>
     </Border>
 </Window>

@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.23.0] - 2026-10-13
+
+### Added
+
+- Optional CPU utilization, physical RAM usage, Windows-reported CPU frequency, busiest GPU engine utilization and disk utilization/read/write rates. Select individual items in **Display system metrics**. English PDH paths support localized Windows; absent/invalid/stale counters show Unavailable rather than zero. Monitoring uses background reads once per second, with no added hardware drivers or elevation.
+- Reusable **System and connection details** window with all optional counters, physical memory totals, IP addresses, link capacity, interface byte counters and measurement explanations. Closing the window returns to only the selected widget counters; disabling all items stops optional polling and releases native queries.
+- Process contributions are combined only for the same physical GPU engine. Distinct engines/GPUs are not summed into a misleading utilization. Disk activity is derived from total idle time; frequency may be nominal, as supplied by Windows. Temperature is not inferred from unrelated sensors.
+- Bilingual controls, immediate settings save with rollback, hidden-render guard, compatible import of older settings backups and native/pure regression coverage.
+
+### Upgrading from 1.22.0
+
+- Exit the old widget before upgrading. Optional system metrics default to off. Existing settings, history and older complete backup files remain supported.
+
 ## [1.22.0] - 2026-10-13
 
 ### Added

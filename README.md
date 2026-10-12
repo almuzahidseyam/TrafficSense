@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.22.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.22.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
+Version **[1.23.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.23.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -237,3 +237,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Made with ❤️ for the community!**
 
 Choose **Copy format / কপি করার ফরম্যাট** above the daily copy button: **Plain text** uses the current language; **CSV** includes the fixed English header and exact byte values shared with file export. The format defaults to plain text each time history opens.
+
+Optional system information: right-click → **Display system metrics / সিস্টেমের তথ্য দেখান** to select CPU, physical RAM, reported frequency, busiest GPU engine or disk activity. Default is off. **System and connection details** temporarily collects all these counters and shows IP/link/interface data. Polling stops when no items or details window need it. Windows counters refresh once a second independently of network sampling. Unsupported/stale counters show **Unavailable**. GPU is the busiest physical engine after combining its process contributions; disk is 100 minus total idle time. These are not temperature sensors, and reported CPU frequency may be nominal.

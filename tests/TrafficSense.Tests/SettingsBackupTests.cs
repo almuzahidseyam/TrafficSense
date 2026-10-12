@@ -11,6 +11,16 @@ public sealed class SettingsBackupTests : IDisposable
     public SettingsBackupTests() => Directory.CreateDirectory(_root);
 
     [Fact]
+    public void PreviousReleaseBackupImportsWithoutNewOptionalMetricsPreference()
+    {
+        var root = ValidBackup(); root["Settings"]!.AsObject().Remove("DisplayMetrics");
+        File.WriteAllText(Backup, root.ToJsonString());
+        Assert.Equal(0, SettingsBackup.Read(Backup).DisplayMetrics);
+        root = ValidBackup(); root["Settings"]!["DisplayMetrics"] = 999;
+        Reject(root);
+    }
+
+    [Fact]
     public void BackupRoundTripsAllPreferencesWithoutMutatingSource()
     {
         var settings = new AppSettings

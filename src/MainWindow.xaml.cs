@@ -51,10 +51,11 @@ namespace TrafficSense
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
             Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
             Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null,
-            GlobalShortcut? shortcut = null)
+            GlobalShortcut? shortcut = null, Func<SystemMetric, SystemMetrics>? readSystemMetrics = null)
         {
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
             _readAdapters = readAdapters ?? (() => NetworkSnapshotReader.Read(_sampleTimestamp));
+            _readSystemMetrics = readSystemMetrics;
             _backgroundSampling = readAdapters == null && sampleTimestamp == null;
             _settings = settings;
             _saveSettings = saveSettings;
@@ -76,6 +77,7 @@ namespace TrafficSense
             InitializeComponent();
             InitializeAppearanceMenus();
             InitializeMonitorMenus();
+            InitializeSystemMetrics();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
             ApplyPendingAppearance();
@@ -134,6 +136,7 @@ namespace TrafficSense
                     ApplyPendingAppearance();
                     ApplyRestoredPosition();
                     RenderNetworkSpeed();
+                    RefreshSystemMetrics();
                 }
             }));
         }
@@ -144,6 +147,8 @@ namespace TrafficSense
             NetworkChange.NetworkAddressChanged -= NetworkChanged;
             NetworkChange.NetworkAvailabilityChanged -= NetworkChanged;
             _sampler?.Dispose();
+            _systemService?.Dispose();
+            _systemWindow?.Close();
             if (_sampler != null) MergeSampledUsage(_sampler.Consume());
             if (_timer != null)
             {
@@ -220,6 +225,7 @@ namespace TrafficSense
         private void Timer_Tick(object? sender, EventArgs e)
         {
             RefreshNetworkSpeed();
+            RefreshSystemMetrics();
         }
 
         private void NetworkChanged(object? sender, EventArgs e)
@@ -433,12 +439,14 @@ namespace TrafficSense
                 border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)_settings.BackgroundOpacity, 255, 255, 255));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.Black;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.Black;
+                TxtMetrics.Foreground = System.Windows.Media.Brushes.Black;
             }
             else
             {
                 border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)_settings.BackgroundOpacity, 0, 0, 0));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.White;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.White;
+                TxtMetrics.Foreground = System.Windows.Media.Brushes.White;
             }
         }
 

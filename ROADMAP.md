@@ -5,7 +5,7 @@ Comparison reviewed on 2026-10-13 against the [TrafficMonitor README](https://gi
 | Stage | Work | Acceptance evidence | Status |
 | --- | --- | --- | --- |
 | 1 | Background sampling, actual counter timestamps, 250 ms option, IPv6 route fallback, plain text/CSV clipboard | Deterministic counter/concurrency/midnight tests; Windows recovery, clipboard and resource probes | Implemented in 1.22.0 |
-| 2 | Optional CPU, RAM, CPU frequency, GPU engine load and disk activity; network details | Native API failures show unavailable; disabled metrics stop polling; unit and isolated Windows probes | In progress |
+| 2 | Optional CPU, RAM, CPU frequency, GPU engine load and disk activity; network details | Native API failures show unavailable; disabled metrics stop polling; unit and isolated Windows probes | Implemented in 1.23.0 |
 | 3 | Taskbar display, positioning, Explorer restart/DPI recovery, visibility controls | Windows shell lifecycle and placement checks; compatibility limits documented | Pending |
 | 4 | Display customization, usage alerts, extension boundary | Settings migration/rollback tests; bounded and optional work | Pending |
 | 5 | Product documentation, demo, issue/contribution templates and release quality | Reproducible packages/checksums, clean CI and honest compatibility matrix | Pending |

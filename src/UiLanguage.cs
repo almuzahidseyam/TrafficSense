@@ -22,7 +22,8 @@ internal enum TextKey
     DailyChart, DailyChartLegend, DailyChartRange, DailyChartHint, DailyChartNoRecord,
     DailyChartSelection, DailyChartSelectionOutside,
     CopyDay, CopyDaySelect, CopyDayHint, CopyDayDone, CopyDayFailed,
-    CopyFormat, CopyPlainText, CopyCsv, CopyCsvHint, Sampling, SampleUnavailable, SampleDelayed, MeasurementHint
+    CopyFormat, CopyPlainText, CopyCsv, CopyCsvHint, Sampling, SampleUnavailable, SampleDelayed, MeasurementHint,
+    DisplayMetrics, SystemDetails, Cpu, Memory, CpuFrequency, Gpu, Disk, NotAvailable, MetricsHint, LinkSpeed, InterfaceCounters
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -47,6 +48,18 @@ internal sealed class UiLanguage(string? code = "en")
     private static readonly IReadOnlyDictionary<TextKey, (string English, string Bangla)> Messages =
         new Dictionary<TextKey, (string, string)>
         {
+            [TextKey.DisplayMetrics] = ("Display system metrics", "সিস্টেমের তথ্য দেখান"),
+            [TextKey.SystemDetails] = ("System and connection details", "সিস্টেম ও সংযোগের বিস্তারিত"),
+            [TextKey.Cpu] = ("CPU", "CPU ব্যবহার"),
+            [TextKey.Memory] = ("RAM", "RAM ব্যবহার"),
+            [TextKey.CpuFrequency] = ("Reported CPU frequency", "CPU-এর রিপোর্ট করা ফ্রিকোয়েন্সি"),
+            [TextKey.Gpu] = ("GPU (busiest engine)", "GPU (সবচেয়ে ব্যস্ত ইঞ্জিন)"),
+            [TextKey.Disk] = ("Disk activity", "ডিস্কের ব্যবহার"),
+            [TextKey.NotAvailable] = ("Unavailable", "পাওয়া যায়নি"),
+            [TextKey.LinkSpeed] = ("Link speed", "সংযোগের লিংক গতি"),
+            [TextKey.InterfaceCounters] = ("Interface lifetime received/sent bytes", "অ্যাডাপ্টারের মোট পাওয়া/পাঠানো বাইট"),
+            [TextKey.MetricsHint] = ("Optional Windows counters update once a second without installing drivers. RAM is physical memory in use. CPU frequency is the Windows-reported counter, which may be nominal. GPU shows the busiest engine, not a sum of different engines; disk activity is 100 minus total idle time. Unsupported/disabled counters show Unavailable. Temperature sensors require a separate extension.",
+                "ঐচ্ছিক Windows counter প্রতি সেকেন্ডে আপডেট হয়; ড্রাইভার লাগে না। RAM হলো ব্যবহৃত physical memory। CPU ফ্রিকোয়েন্সি Windows-এর রিপোর্ট, যা nominal হতে পারে। GPU-তে সবচেয়ে ব্যস্ত ইঞ্জিন, বিভিন্ন ইঞ্জিনের যোগফল নয়। ডিস্ক ব্যবহার হলো ১০০ থেকে মোট idle time বাদ। অনুপলব্ধ counter-এ পাওয়া যায়নি দেখাবে। তাপমাত্রার জন্য আলাদা extension প্রয়োজন।"),
             [TextKey.CopyFormat] = ("Copy format", "কপি করার ফরম্যাট"),
             [TextKey.CopyPlainText] = ("Plain text", "সাধারণ লেখা"),
             [TextKey.CopyCsv] = ("CSV", "CSV (কমা দিয়ে আলাদা)"),
