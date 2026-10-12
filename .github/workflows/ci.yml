@@ -17,6 +17,9 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Build application
         run: dotnet build src/TrafficSense.csproj -c Release
+      - name: Validate release version and changelog
+        shell: pwsh
+        run: ./scripts/Prepare-Release.ps1
       - name: Run regression tests
         run: dotnet test tests/TrafficSense.Tests/TrafficSense.Tests.csproj -c Release
       - name: Build and verify portable ZIP and Windows lifecycle

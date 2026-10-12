@@ -13,6 +13,7 @@ $profile = Join-Path $repository 'build/Portable.pubxml'
 $buildDirectory = Join-Path ([IO.Path]::GetFullPath($OutputDirectory)) ([Guid]::NewGuid().ToString('N'))
 $publishDirectory = Join-Path $buildDirectory 'probe'
 $reportPath = Join-Path $buildDirectory 'stability.json'
+$release = & (Join-Path $PSScriptRoot 'Prepare-Release.ps1') -OutputPath (Join-Path $buildDirectory 'RELEASE-NOTES.md')
 & $DotNet publish (Join-Path $repository 'tests/TrafficSense.LifecycleTests/TrafficSense.LifecycleTests.csproj') `
     -c Release "-p:PublishProfileFullPath=$profile" -o $publishDirectory --nologo | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Could not publish the stability probe.' }
@@ -29,6 +30,7 @@ $start.EnvironmentVariables['DOTNET_ROOT_X64'] = $start.EnvironmentVariables['DO
 $start.EnvironmentVariables['DOTNET_MULTILEVEL_LOOKUP'] = '0'
 $start.EnvironmentVariables['DOTNET_BUNDLE_EXTRACT_BASE_DIR'] = Join-Path $buildDirectory 'bundled-runtime'
 $start.EnvironmentVariables['TRAFFICSENSE_VERIFY_BUNDLE'] = '1'
+$start.EnvironmentVariables['TRAFFICSENSE_EXPECTED_VERSION'] = $release.Version
 foreach ($name in @('DOTNET_STARTUP_HOOKS', 'DOTNET_ADDITIONAL_DEPS', 'DOTNET_SHARED_STORE')) {
     $start.EnvironmentVariables.Remove($name)
 }
