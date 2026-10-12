@@ -21,7 +21,7 @@ Suggestions still open: simplify the growing context menu into grouped settings,
 
 ## What is verified
 
-- **281 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema.
+- **282 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema. Graph retention covers the full two minutes even at 250 ms.
 - **Synthetic timing characterization:** 4,096 samples at each of four intervals; known-rate relative error ≤10⁻¹², byte conservation beyond 4 GiB, tiny deltas at large lifetime values. See [methodology](MEASUREMENT.md).
 - **Real WPF/process probes:** bilingual live controls, history/chart/table selection, clipboard boundary, graph path gaps, appearance and restart, native counters, taskbar messages with a simulated shell, sensor bridge entry/cancellation, update errors, tray/duplicate activation and fatal/normal cleanup.
 - **Distribution checks:** self-contained ZIP extraction/content/runtime checks, per-user install/uninstall, version/changelog/tag alignment and SHA-256 files. Public release binaries are downloaded and checked against checksums/metadata before release completion is reported.

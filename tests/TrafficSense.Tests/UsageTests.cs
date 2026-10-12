@@ -21,6 +21,15 @@ public sealed class UsageTests
     }
 
     [Fact]
+    public void FastestIntervalRetainsTheEntireTwoMinuteGraphWindow()
+    {
+        var history = new SpeedHistory();
+        for (int index = 0; index < 2000; index++) history.Add(TimeSpan.FromMilliseconds(index * 250), new(index, index));
+        Assert.Equal(481, history.Samples.Count);
+        Assert.Equal(SpeedHistory.Duration, history.Samples.Last().Timestamp - history.Samples.First().Timestamp);
+    }
+
+    [Fact]
     public void GraphDistinguishesUnknownIntervalsFromMeasuredIdle()
     {
         var history = new SpeedHistory();

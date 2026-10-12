@@ -4,7 +4,8 @@ internal readonly record struct SpeedPoint(TimeSpan Timestamp, NetworkSpeed Spee
 internal sealed class SpeedHistory
 {
     public static readonly TimeSpan Duration = TimeSpan.FromMinutes(2);
-    public const int MaximumSamples = 256;
+    // Two minutes at the fastest supported 250 ms interval needs 481 points.
+    public const int MaximumSamples = 512;
     private readonly Queue<SpeedPoint> _samples = new();
     public IReadOnlyCollection<SpeedPoint> Samples => _samples;
     public void Add(TimeSpan timestamp, NetworkSpeed speed, bool isValid = true)
