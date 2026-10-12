@@ -127,7 +127,7 @@ internal static class AboutProbe
     }
 
     private static string Text(AboutWindow window, string name) => ((TextBox)window.FindName(name)).Text;
-    private static void Capture(AboutWindow window, string language)
+    internal static void Capture(AboutWindow window, string language)
     {
         string? directory = Environment.GetEnvironmentVariable("TRAFFICSENSE_ABOUT_SCREENSHOTS");
         if (string.IsNullOrEmpty(directory)) return;

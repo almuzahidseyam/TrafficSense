@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         Title="About TrafficSense" Width="480" SizeToContent="Height"
+        MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Topmost="True"
         FontFamily="Segoe UI, Nirmala UI, Kalpurush" FontSize="14"
         Background="#F7F9FC" Foreground="#182236">
@@ -13,12 +14,24 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <StackPanel Margin="24">
         <TextBlock Text="TrafficSense" FontSize="26" FontWeight="SemiBold" Margin="0,0,0,20" />
         <TextBlock x:Name="VersionLabel" FontWeight="SemiBold" Margin="0,0,0,6" />
         <TextBox x:Name="VersionValue" IsReadOnly="True" TextWrapping="Wrap" Padding="8"
                  Background="White" BorderBrush="#CDD5E0" Margin="0,0,0,18"
                  AutomationProperties.LabeledBy="{Binding ElementName=VersionLabel}" />
+        <Button x:Name="CheckUpdatesButton" Click="CheckUpdates_Click" Padding="12,7"
+                HorizontalAlignment="Left" Margin="0,0,0,8" />
+        <TextBlock x:Name="UpdateStatusText" TextWrapping="Wrap" Margin="0,0,0,12"
+                   AutomationProperties.LiveSetting="Polite" />
+        <StackPanel x:Name="UpdateDownloadPanel" Visibility="Collapsed" Margin="0,0,0,18">
+            <Button x:Name="OpenReleaseButton" Click="OpenRelease_Click" Padding="12,7"
+                    HorizontalAlignment="Left" Margin="0,0,0,8" />
+            <TextBox x:Name="ReleasePageValue" IsReadOnly="True" TextWrapping="Wrap" Padding="8"
+                     Background="White" BorderBrush="#CDD5E0"
+                     AutomationProperties.LabeledBy="{Binding ElementName=OpenReleaseButton}" />
+        </StackPanel>
         <TextBlock x:Name="LogFolderLabel" FontWeight="SemiBold" Margin="0,0,0,6" />
         <TextBox x:Name="LogFolderValue" IsReadOnly="True" TextWrapping="Wrap" Padding="8"
                  Background="White" BorderBrush="#CDD5E0" Margin="0,0,0,20"
@@ -28,4 +41,5 @@
             <Button x:Name="CloseButton" Click="Close_Click" IsCancel="True" Padding="12,7" MinWidth="80" />
         </WrapPanel>
     </StackPanel>
+    </ScrollViewer>
 </Window>

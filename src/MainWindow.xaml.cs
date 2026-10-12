@@ -24,6 +24,8 @@ namespace TrafficSense
         private readonly Action<string>? _reportError;
         private readonly DiagnosticLog? _diagnostics;
         private readonly Action<string>? _launchLogFolder;
+        private readonly UpdateChecker? _updates;
+        private readonly Action<Uri>? _openReleasePage;
         private bool _fatalShutdown;
         private NetworkAdapterInfo? _monitoredAdapter;
         private NetworkSpeed _latestSpeed;
@@ -40,7 +42,7 @@ namespace TrafficSense
             Action<string>? reportError = null,
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
-            Action<string>? launchLogFolder = null)
+            Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
@@ -49,6 +51,8 @@ namespace TrafficSense
             _reportError = reportError;
             _diagnostics = diagnostics;
             _launchLogFolder = launchLogFolder;
+            _updates = updates;
+            _openReleasePage = openReleasePage;
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();

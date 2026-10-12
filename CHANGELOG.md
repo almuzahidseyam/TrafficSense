@@ -4,6 +4,10 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+### Added
+
+- Manual update checks in About, with English/Bengali status messages and a release page/download button when a newer stable version is available. Checks handle offline connections, timeouts and GitHub rate limits without blocking the widget, and are cancelled when About closes. Release links stay within this project's GitHub repository; nothing is installed automatically.
+
 ## [1.3.0] - 2026-10-12
 
 ### Added
