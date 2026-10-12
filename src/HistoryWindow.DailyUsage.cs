@@ -15,6 +15,7 @@ internal sealed partial class HistoryWindow
     private readonly TextBlock _dailyChartTitle = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 4) };
     private readonly TextBlock _dailyChartLegend = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 6) };
     private readonly DailyUsageChart _dailyChart = new() { Height = 170, Margin = new(0, 0, 0, 12) };
+    private readonly TextBlock _dailyChartSelection = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8), Visibility = Visibility.Collapsed };
     private readonly TextBlock _dailyLabel = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 4) };
     private readonly ObservableCollection<UsageDayRow> _dailyRows = new();
     private readonly DataGrid _dailyUsage = new()
@@ -59,8 +60,30 @@ internal sealed partial class HistoryWindow
         VirtualizingPanel.SetVirtualizationMode(_dailyUsage, VirtualizationMode.Recycling);
         _dailyUsage.ItemsSource = _dailyRows;
         _dailyChart.DaySelected += SelectDailyUsage;
+        _dailyUsage.SelectionChanged += DailyUsageSelectionChanged;
         panel.Children.Add(_dailyChartTitle); panel.Children.Add(_dailyChartLegend); panel.Children.Add(_dailyChart);
+        panel.Children.Add(_dailyChartSelection);
         panel.Children.Add(_dailyLabel); panel.Children.Add(_dailyUsage);
+    }
+
+    private void DailyUsageSelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDailySelection();
+
+    private void UpdateDailySelection()
+    {
+        var row = _dailyUsage.SelectedItem as UsageDayRow;
+        _dailyChart.SetSelectedDay(row?.Day.Date);
+        var series = _dailyChart.Series;
+        string selection = row == null ? "" : string.Format(CultureInfo.InvariantCulture,
+            _language[_dailyChart.HighlightedDay == null ? TextKey.DailyChartSelectionOutside : TextKey.DailyChartSelection], row.Date);
+        _dailyChartSelection.Text = selection;
+        _dailyChartSelection.Visibility = selection.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+        AutomationProperties.SetName(_dailyChartSelection, selection);
+        string summary = series.Days.Count == 0 ? "" : _dailyChartTitle.Text + "\n" +
+            string.Format(CultureInfo.InvariantCulture, _language[TextKey.DailyChartRange], series.Start, series.End, series.Days.Count);
+        if (selection.Length > 0) summary += "\n" + selection;
+        AutomationProperties.SetName(_dailyChart, summary);
+        AutomationProperties.SetHelpText(_dailyChart, _dailyChartLegend.Text + "\n" + _language[TextKey.DailyChartHint]);
+        _dailyChart.ConfigureDetails(_language, summary + "\n" + _language[TextKey.DailyChartHint]);
     }
 
     private void SelectDailyUsage(DateOnly date)
@@ -92,12 +115,6 @@ internal sealed partial class HistoryWindow
         _dailyChart.Update(DailyUsageSeries.Create(days));
         _dailyChartTitle.Text = _language[TextKey.DailyChart];
         _dailyChartLegend.Text = _language[TextKey.DailyChartLegend];
-        var series = _dailyChart.Series;
-        string chartSummary = series.Days.Count == 0 ? "" : _dailyChartTitle.Text + "\n" +
-            string.Format(CultureInfo.InvariantCulture, _language[TextKey.DailyChartRange], series.Start, series.End, series.Days.Count);
-        AutomationProperties.SetName(_dailyChart, chartSummary);
-        AutomationProperties.SetHelpText(_dailyChart, _dailyChartLegend.Text + "\n" + _language[TextKey.DailyChartHint]);
-        _dailyChart.ConfigureDetails(_language, chartSummary + "\n" + _language[TextKey.DailyChartHint]);
         _dailyChartTitle.Visibility = _dailyChartLegend.Visibility = _dailyChart.Visibility = days.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         var dates = days.Select(day => day.Date).ToHashSet();
         // Keep existing rows for stable selection/scrolling and update only changed
@@ -112,6 +129,7 @@ internal sealed partial class HistoryWindow
         }
         _dailyLabel.Visibility = _dailyUsage.Visibility = days.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         _dailyUsage.Height = Math.Clamp(32 + days.Length * 28, 100, 200);
+        UpdateDailySelection();
     }
 }
 

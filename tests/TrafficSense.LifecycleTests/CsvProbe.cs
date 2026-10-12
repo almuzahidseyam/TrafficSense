@@ -143,6 +143,8 @@ internal static class CsvProbe
                         Check(daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Invalid dates left stale daily rows.");
                         Check(daily.SelectedItem == null && !chart.SelectDayAt(new(20, 40), System.Windows.Input.MouseButton.Left),
                             "Invalid period retained a selection or accepted chart input.");
+                        Check(chart.SelectedDay == null && chart.HighlightedDay == null && Field<TextBlock>(history, "_dailyChartSelection").Text == "",
+                            "Invalid period retained a chart highlight/selection description.");
                         Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed && AutomationProperties.GetName(chart) == "",
                             "Invalid dates left stale chart records or accessible values.");
                         Check(Details(chart) == "" && !detailTip.IsOpen, "Invalid period retained tooltip content or popup.");
@@ -173,6 +175,8 @@ internal static class CsvProbe
                     Check(ReferenceEquals(chart.Series, unchangedSeries), "Unchanged refresh replaced the chart snapshot.");
                     Check(ReferenceEquals(daily.SelectedItem, retainedRow) && ReferenceEquals(daily.Items[0], retainedRow) && retainedRow.Download == "150 B" &&
                         retainedRow.Details.EndsWith("Total: 225 bytes") && ((TextBlock)daily.Columns[0].Header).Text == "Date", "Live daily refresh replaced selection or missed English amounts/headers.");
+                    Check(chart.HighlightedDay == retainedRow.Day.Date && AutomationProperties.GetName(chart).Contains("Selected day: 2026-10-12"),
+                        "Live chart highlight or its English accessible description was lost.");
                     Select(period, TextKey.CsvMonth); now = now.AddMonths(1); history.Refresh();
                     Check((DateOnly)((ComboBoxItem)months.SelectedItem).Tag == new DateOnly(2026, 9, 1) && export.IsEnabled, "New month discarded selection.");
                     Select(period, TextKey.CsvAllDays); Click(export);
@@ -213,6 +217,8 @@ internal static class CsvProbe
                     var closedGrid = Field<DataGrid>(history, "_dailyUsage");
                     Check(closedGrid.ItemsSource == null && closedGrid.Columns.Count == 0, "Closing history retained daily view/cell bindings.");
                     Check(Field<DailyUsageChart>(history, "_dailyChart").Series.Days.Count == 0, "Closed history retained chart records.");
+                    Check(Field<DailyUsageChart>(history, "_dailyChart").SelectedDay == null && Field<TextBlock>(history, "_dailyChartSelection").Text == "",
+                        "Closed history retained the selected day/description.");
                     Check(Details(Field<DailyUsageChart>(history, "_dailyChart")) == "", "Closed history retained tooltip details.");
                     Check(!((ToolTip)Field<DailyUsageChart>(history, "_dailyChart").ToolTip).IsOpen, "Closed history retained its tooltip popup.");
                 }
@@ -225,7 +231,7 @@ internal static class CsvProbe
         try
         {
             Check(app.Run() == 0 && passed, "CSV lifecycle failed.");
-            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, exact-byte hover/native-popup translation/live update/cleanup, chart click selects/reveals the matching daily row, inclusive filtering/ordering/gaps, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
+            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, exact-byte hover/native-popup translation/live update/cleanup, chart click selects/reveals the matching daily row, bidirectional day highlight/label with native-pixel checks, rollover/outside-window/filter restoration, inclusive filtering/ordering/gaps, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
             return 0;
         }
         finally
@@ -248,6 +254,8 @@ internal static class CsvProbe
             var chart = Field<DailyUsageChart>(window, "_dailyChart");
             Check(chart.Series.Days.Count == 30 && chart.Series.CalendarDays == 30 && chart.Series.Start == today.AddDays(-29) &&
                 chart.Series.End == today && chart.Series.PeakBytes == long.MaxValue, "Large chart exceeded 30 calendar days or overflowed its scale.");
+            VerifyHighlightPixels(window, today.AddDays(-29));
+            grid.SelectedItem = null;
             Hover(chart, today);
             Check(Details(chart).EndsWith("সর্বমোট: 18446744073709551614 বাইট"), "Maximum hover totals overflowed.");
             var outer = (ScrollViewer)window.Content;
@@ -257,6 +265,9 @@ internal static class CsvProbe
                 "Maximum daily counters overflowed or large list omitted rows.");
             Check(Descendants(grid).OfType<DataGridRow>().Count() < 50, "Daily grid created hundreds of visual rows instead of virtualizing.");
             var selected = grid.Items[200]; grid.SelectedItem = selected; grid.ScrollIntoView(selected); Drain(window);
+            Check(chart.SelectedDay == ((UsageDayRow)selected).Day.Date && chart.HighlightedDay == null &&
+                Field<TextBlock>(window, "_dailyChartSelection").Text.Contains("৩০ দিনের বাইরে"),
+                "An older table selection highlighted the wrong visible chart column or lacked its Bengali explanation.");
             var scroll = Descendants(grid).OfType<ScrollViewer>().First();
             double offset = scroll.VerticalOffset;
             var initialSeries = chart.Series;
@@ -267,6 +278,8 @@ internal static class CsvProbe
             Check(Details(chart).EndsWith("Total: 18446744073709551614 bytes"), "Large stationary hover did not translate.");
             Check(ReferenceEquals(chart.Series, initialSeries) && AutomationProperties.GetName(chart).StartsWith("Daily usage chart"), "Chart translation changed its records.");
             Check(ReferenceEquals(grid.SelectedItem, selected) && first.Details.EndsWith("Total: 18446744073709551614 bytes"), "Translation replaced daily rows or missed exact bytes.");
+            Check(Field<TextBlock>(window, "_dailyChartSelection").Text.Contains("outside the chart's 30-day window"),
+                "Outside-chart selection did not translate.");
             Hover(chart, today);
             double rolloverWidth = chart.ActualWidth;
             ledger.Record(new(1, 2), now.AddDays(1)); now = now.AddDays(1); window.Refresh(); Drain(window);
@@ -297,6 +310,20 @@ internal static class CsvProbe
             SelectChartDay(window, chart.Series.End);
             Check(grid.SelectedIndex == 0, "Queued earlier click overrode the latest selection.");
             Render(window, "chart-selection-en");
+            var oldest = chart.Series.Start;
+            grid.SelectedItem = grid.Items.Cast<UsageDayRow>().Single(row => row.Day.Date == oldest);
+            Check(chart.HighlightedDay == oldest, "Table selection did not highlight its visible date.");
+            ledger.Record(new(3, 4), now.AddDays(1)); now = now.AddDays(1); window.Refresh(); Drain(window);
+            Check(chart.SelectedDay == oldest && chart.HighlightedDay == null && ((UsageDayRow)grid.SelectedItem).Day.Date == oldest,
+                "Calendar rollover moved selection onto a neighboring day or discarded a retained table row.");
+            var from = Field<TextBox>(window, "_fromDate"); var to = Field<TextBox>(window, "_toDate");
+            from.Text = to.Text = oldest.ToString("yyyy-MM-dd");
+            Select(Field<ComboBox>(window, "_period"), TextKey.CsvDateRange); Drain(window);
+            Check(chart.Series.CalendarDays == 1 && chart.HighlightedDay == oldest, "Filtering an older selected day back into the chart did not restore its marker.");
+            Render(window, "highlight-single-max");
+            grid.SelectedItem = null; Drain(window);
+            Check(chart.SelectedDay == null && chart.HighlightedDay == null && Field<TextBlock>(window, "_dailyChartSelection").Visibility == Visibility.Collapsed,
+                "Clearing table selection retained the marker or visible explanation.");
         }
         finally { window.Close(); }
     }
@@ -305,7 +332,7 @@ internal static class CsvProbe
         language.Select("bn");
         var today = DateOnly.FromDateTime(now.Date);
         var ledger = new UsageLedger([new(today.AddDays(-2), 0, 0), new(today, 0, 0)]);
-        var window = new HistoryWindow(language, ledger, () => now, new(), () => false);
+        var window = new HistoryWindow(language, ledger, () => now, new(), () => false) { MaxHeight = 360 };
         try
         {
             window.Width = window.MinWidth; window.Show(); Drain(window);
@@ -321,6 +348,10 @@ internal static class CsvProbe
             language.Select("bn"); Drain(window);
             Check(((UsageDayRow)Field<DataGrid>(window, "_dailyUsage").SelectedItem).Day.Date == today.AddDays(-2),
                 "Zero-record selection did not survive language change.");
+            Check(Field<TextBlock>(window, "_dailyChartSelection").Text == "নির্বাচিত দিন: " + today.AddDays(-2).ToString("yyyy-MM-dd"),
+                "Selected-day label did not translate or identify the measured-zero day.");
+            VerifyHighlightPixels(window, today.AddDays(-2));
+            window.Width = 480; Drain(window); VerifyHighlightPixels(window, today);
             Render(window, "zero-gaps");
             Check(!ledger.Dirty, "Viewing zero records changed stored usage.");
         }
@@ -354,6 +385,46 @@ internal static class CsvProbe
     private static string Details(DailyUsageChart chart) => ((TextBlock)((ToolTip)chart.ToolTip).Content).Text;
     private static Point DayPosition(DailyUsageChart chart, DateOnly date) =>
         new(4 + (date.DayNumber - chart.Series.Start.DayNumber + .5) * (chart.ActualWidth - 8) / chart.Series.CalendarDays, 26);
+    private static void VerifyHighlightPixels(HistoryWindow window, DateOnly date)
+    {
+        var chart = Field<DailyUsageChart>(window, "_dailyChart");
+        var grid = Field<DataGrid>(window, "_dailyUsage");
+        grid.SelectedItem = null; Drain(window);
+        var size = chart.RenderSize;
+        byte[] Pixels()
+        {
+            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height), 96, 96, PixelFormats.Pbgra32);
+            var visual = new DrawingVisual();
+            // Capture the chart's native drawing in its own coordinates. A
+            // VisualBrush can scale content bounds or include ancestor offsets.
+            using (var drawing = visual.RenderOpen()) drawing.DrawDrawing(VisualTreeHelper.GetDrawing(chart));
+            bitmap.Render(visual);
+            string? directory = Environment.GetEnvironmentVariable("TRAFFICSENSE_CSV_SCREENSHOTS");
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                using var file = File.Create(Path.Combine(directory, "marker-" + (chart.SelectedDay?.ToString("yyyy-MM-dd") ?? "none") + ".png"));
+                encoder.Save(file);
+            }
+            var pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight * 4];
+            bitmap.CopyPixels(pixels, bitmap.PixelWidth * 4, 0); return pixels;
+        }
+        var before = Pixels();
+        grid.SelectedItem = grid.Items.Cast<UsageDayRow>().Single(row => row.Day.Date == date); Drain(window);
+        Check(chart.RenderSize == size && chart.HighlightedDay == date, "Table selection changed the plot or missed its marker.");
+        var after = Pixels();
+        double slot = (size.Width - 8) / chart.Series.CalendarDays;
+        double left = 4 + (date.DayNumber - chart.Series.Start.DayNumber) * slot;
+        int changed = 0, width = (int)Math.Ceiling(size.Width);
+        for (int i = 0; i < before.Length; i += 4)
+        {
+            if (before.AsSpan(i, 4).SequenceEqual(after.AsSpan(i, 4))) continue;
+            int x = i / 4 % width, y = i / 4 / width; changed++;
+            Check(x >= Math.Floor(left) - 1 && x <= Math.Ceiling(left + slot) + 1 && y >= 24 && y <= size.Height - 23,
+                $"Selection marker changed a neighboring day, axis or label at {x},{y}; slot {left}..{left + slot}, size {size}.");
+        }
+        Check(changed > 20, "Selected zero-usage day has no visible rendered marker.");
+    }
     private static void SelectChartDay(HistoryWindow window, DateOnly date)
     {
         Drain(window);
@@ -365,6 +436,10 @@ internal static class CsvProbe
         Drain(window);
         Check(grid.SelectedItem is UsageDayRow row && row.Day.Date == date && grid.CurrentCell.Item == row,
             "Chart click selected the wrong daily row/current cell.");
+        Check(chart.SelectedDay == date && chart.HighlightedDay == date &&
+            Field<TextBlock>(window, "_dailyChartSelection").Text.Contains(date.ToString("yyyy-MM-dd")) &&
+            AutomationProperties.GetName(chart).Contains(Field<TextBlock>(window, "_dailyChartSelection").Text),
+            "Chart click did not synchronize its marker, visible date and accessible description.");
         Check(!((ToolTip)chart.ToolTip).IsOpen, "Chart click left its popup covering the selected row.");
         var visual = (DataGridRow?)grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem);
         Check(visual != null, "Chart click did not realize its virtualized row.");

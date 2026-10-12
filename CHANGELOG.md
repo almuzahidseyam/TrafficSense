@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-10-12
+
+### Added
+
+- Selected-day highlight in the daily usage chart: an outline and triangle drawn over the day's column using the Windows highlight color, with a translated selected-date label and accessible description. Markers remain visible on zero usage and maximum-height bars, without changing adjacent columns or axis labels.
+- Selection stays synchronized in both directions: clicking the chart or selecting a daily table row updates the marker. Date-based selection survives live traffic, language changes, resizing and calendar rollover. An older selected row outside the plotted 30-day window is explained without marking a different day; filtering it back into view restores the marker. Clearing selection, invalid/empty filtering and closing history clear it.
+- Isolated Windows checks cover native rendered pixels, first/last slots, narrow 30-day columns with maximum counters, zero records, bilingual descriptions, filter restoration, rollover and existing table scrolling/virtualization.
+
+### Upgrading from 1.19.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and stored usage remain compatible.
+- In **Usage and history**, select a chart day or daily table row to see the matching highlighted column and selected date. Full selected totals and CSV scope remain unchanged.
+
 ## [1.19.0] - 2026-10-12
 
 ### Added
@@ -231,7 +244,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.1...v1.19.0
 [1.18.1]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.17.0...v1.18.0

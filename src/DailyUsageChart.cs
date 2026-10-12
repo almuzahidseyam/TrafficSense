@@ -104,6 +104,15 @@ internal sealed class DailyUsageChart : FrameworkElement
     }
 
     internal DailyUsageSeries Series { get; private set; } = DailyUsageSeries.Empty;
+    internal DateOnly? SelectedDay { get; private set; }
+    internal DateOnly? HighlightedDay => SelectedDay is { } date && Series.Days.Any(day => day.Date == date) ? date : null;
+
+    internal void SetSelectedDay(DateOnly? date)
+    {
+        if (SelectedDay == date) return;
+        SelectedDay = date;
+        InvalidateVisual();
+    }
 
     internal void Update(DailyUsageSeries series)
     {
@@ -151,6 +160,24 @@ internal sealed class DailyUsageChart : FrameworkElement
             }
             Bar(day.Received, x, download, true);
             Bar(day.Sent, x + slot * .44, upload, false);
+        }
+        if (HighlightedDay is { } selected)
+        {
+            double left = plot.Left + (selected.DayNumber - Series.Start.DayNumber) * slot;
+            // Draw over both bars so the marker survives maximum-height bars,
+            // measured zeros and high contrast. The inset keeps edge days visible.
+            context.DrawRectangle(null, new Pen(SystemColors.HighlightBrush, 2),
+                new Rect(left + 1, plot.Top + 1, slot - 2, plot.Height - 2));
+            double center = left + slot / 2, half = Math.Min(4, (slot - 2) / 2);
+            var marker = new StreamGeometry();
+            using (var geometry = marker.Open())
+            {
+                geometry.BeginFigure(new Point(center - half, plot.Top + 2), true, true);
+                geometry.LineTo(new Point(center + half, plot.Top + 2), true, false);
+                geometry.LineTo(new Point(center, plot.Top + 8), true, false);
+            }
+            marker.Freeze();
+            context.DrawGeometry(SystemColors.HighlightBrush, null, marker);
         }
         context.Pop();
     }
