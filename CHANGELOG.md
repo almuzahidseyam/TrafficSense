@@ -4,6 +4,18 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.26.0] - 2026-10-13
+
+### Changed
+
+- Realtime graphs leave gaps for baseline, disconnected, delayed and invalid samples instead of presenting them as measured idle traffic. The current history legend shows unavailable when its last sample is unknown; valid zero remains a plotted zero. Invalid values cannot inflate the graph scale.
+- Added product-first English/Bengali getting-started instructions, actual WPF screenshots with clearly illustrative data, an upstream compatibility matrix, measurement methodology, reproducible accuracy traces, contribution guidance and structured issue forms.
+
+### Validation
+
+- Added 4,096-sample jitter traces at every supported interval, exact byte conservation beyond 4 GiB, and single-byte deltas above double's exact lifetime-integer range. These verify arithmetic and timing behavior, not comparative accuracy across physical network drivers.
+- Native WPF graph tests verify separate line figures across unavailable samples. Portable, installer and resource-stability checks remain part of CI.
+
 ## [1.25.0] - 2026-10-13
 
 ### Added

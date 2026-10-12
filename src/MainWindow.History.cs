@@ -26,7 +26,7 @@ public partial class MainWindow
     private void RecordHistory(TimeSpan timestamp)
     {
         CheckUsageLimits();
-        _speedHistory.Add(timestamp, _latestSpeed);
+        _speedHistory.Add(timestamp, _latestSpeed, _sampleQuality == SampleQuality.Fresh);
         _historyWindow?.Refresh();
         if (_usageSaveClock.Elapsed >= TimeSpan.FromSeconds(60)) FlushUsage();
     }

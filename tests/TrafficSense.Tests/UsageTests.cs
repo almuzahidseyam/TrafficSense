@@ -17,6 +17,18 @@ public sealed class UsageTests
         Assert.Equal(count, history.Samples.Count);
         history.Add(TimeSpan.FromSeconds(501), new(double.NaN, double.PositiveInfinity));
         Assert.Equal(default, history.Samples.Last().Speed);
+        Assert.False(history.Samples.Last().IsValid);
+    }
+
+    [Fact]
+    public void GraphDistinguishesUnknownIntervalsFromMeasuredIdle()
+    {
+        var history = new SpeedHistory();
+        history.Add(TimeSpan.Zero, default, false);
+        history.Add(TimeSpan.FromSeconds(1), default);
+        history.Add(TimeSpan.FromSeconds(2), new(100, 50), false);
+        Assert.Equal(new[] { false, true, false }, history.Samples.Select(point => point.IsValid));
+        Assert.Equal(default, history.Samples.ElementAt(1).Speed);
     }
 
     [Fact]

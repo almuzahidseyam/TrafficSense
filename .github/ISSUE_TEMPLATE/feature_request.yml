@@ -1,0 +1,23 @@
+name: Feature request / নতুন সুবিধা
+description: Explain a user problem and a useful improvement.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What task is difficult today?
+      description: Describe the situation and who benefits. English and বাংলা are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain a concrete example, expected controls and any reference links. Do not copy third-party code or skins without permission/license.
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Compatibility and alternatives
+      description: Windows version, hardware/provider needs, performance concerns and alternatives tried. Check docs/COMPATIBILITY.md for existing scope and gaps.

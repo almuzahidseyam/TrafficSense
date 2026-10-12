@@ -1,0 +1,38 @@
+name: Bug report / সমস্যা
+description: Report a reproducible monitoring, display or installation problem.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "English and বাংলা are welcome. Review logs before attaching them; remove personal paths, addresses and other private information."
+  - type: input
+    id: version
+    attributes:
+      label: TrafficSense version and package
+      description: About version; Setup or portable; whether an older copy was still running.
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version and display
+      description: Windows build, monitor count and display scale (for display issues).
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Adapter / VPN / settings
+      description: Selected adapter, Auto/manual, VPN/split routing, refresh interval, units and optional metrics/panel/sensor provider. Omit private IPs or identifiers.
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include what happened, what you expected and how often it happens. For speed differences, compare the same interface and units over a timed interval.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or reviewed logs
+      description: Screenshots, exact error and relevant log excerpt. About opens the log folder. Do not paste credentials, full system dumps or private information.
