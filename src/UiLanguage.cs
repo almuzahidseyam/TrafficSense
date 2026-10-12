@@ -11,7 +11,7 @@ internal enum TextKey
     About, Version, LogFolder, OpenLogFolder, LogFolderOpenFailed, Close,
     CheckUpdates, UpdateHint, UpdateChecking, UpdateAvailable, UpdateCurrent, UpdateNoRelease,
     UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed,
-    TextSize, BackgroundTransparency, DefaultAppearance
+    TextSize, BackgroundTransparency, DefaultAppearance, LockPosition
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -42,6 +42,7 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.TextSize] = ("Text size", "লেখার আকার"),
             [TextKey.BackgroundTransparency] = ("Background transparency", "পটভূমির স্বচ্ছতা"),
             [TextKey.DefaultAppearance] = ("Default", "ডিফল্ট"),
+            [TextKey.LockPosition] = ("Lock position", "অবস্থান লক করুন"),
             [TextKey.Language] = ("Language", "ভাষা"),
             [TextKey.HideWidget] = ("Hide widget", "উইজেট লুকান"),
             [TextKey.ShowWidget] = ("Show widget", "উইজেট দেখান"),

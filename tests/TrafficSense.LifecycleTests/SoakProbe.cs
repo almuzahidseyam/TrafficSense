@@ -96,6 +96,7 @@ internal static class SoakProbe
                         // Test native icon/menu ownership repeatedly as well as
                         // the one long-lived production tray controller.
                         using var temporaryTray = new TrayController(window);
+                        window.ChangePositionLock(!window.PositionLocked);
                     }
                     completedIterations++;
                 }

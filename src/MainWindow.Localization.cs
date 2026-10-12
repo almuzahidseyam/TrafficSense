@@ -11,6 +11,8 @@ public partial class MainWindow
     {
         MenuNetworkAdapter.Header = Localization[TextKey.NetworkAdapter];
         MenuAutoStart.Header = Localization[TextKey.StartWithWindows];
+        MenuPositionLock.Header = Localization[TextKey.LockPosition];
+        MenuPositionLock.IsChecked = PositionLocked;
         MenuTheme.Header = Localization[TextKey.SwitchTheme];
         MenuLanguage.Header = Localization[TextKey.Language];
         MenuHide.Header = Localization[TextKey.HideWidget];

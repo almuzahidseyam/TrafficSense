@@ -19,6 +19,7 @@
                     <MenuItem Header="Auto (one connection)" />
                 </MenuItem>
                 <MenuItem Header="Start with Windows" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
+                <MenuItem Header="Lock position" IsCheckable="True" x:Name="MenuPositionLock" Click="MenuPositionLock_Click" />
                 <MenuItem Header="Switch Theme (Light/Dark)" x:Name="MenuTheme" Click="MenuTheme_Click" />
                 <MenuItem Header="Text size" x:Name="MenuFontSize" />
                 <MenuItem Header="Background transparency" x:Name="MenuTransparency" />

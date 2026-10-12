@@ -96,6 +96,8 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 
 ## Settings & Window Position
 
+- In the next release, choose **Lock position / অবস্থান লক করুন** from the widget or tray's right-click menu to prevent accidental dragging. Clear the checkmark to move it again. Both menus stay synchronized, including while the widget is hidden. Locking saves the current position immediately; the lock survives restart. Existing settings default to unlocked, and a failed save leaves the previous state and saved position intact.
+- Position lock affects manual dragging only. Monitor removal, resolution/DPI/work-area changes and enlarging the widget can still move it into a visible work area.
 - Choose **Text size / লেখার আকার** or **Background transparency / পটভূমির স্বচ্ছতা** from the widget's right-click menu. Text sizes are 12, 14 (default), 16, 18, 20 and 24. Transparency offers Default, 0%, 25%, 50%, 75% and 90%; it changes the background only, keeping text, arrows and menus fully visible. Default restores the previous background appearance.
 - Appearance changes apply immediately and persist across restart and light/dark theme changes. Enlarging the widget keeps it within the monitor work area. Failed saves restore the previous style/checkmarks and preserve the settings file. Older or unsupported saved appearance values use the original defaults.
 - Right-click the widget to change its theme or enable **Start with Windows** (at sign-in).
@@ -104,6 +106,8 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 - The widget returns to a visible monitor work area when a monitor is removed, the resolution/DPI changes, or the taskbar work area changes. Existing saved window positions are migrated automatically.
 
 The Windows lifecycle and portable probes exercise appearance changes, screen-edge resizing, bilingual menus, locked-file rollback, hidden monitoring and restart with temporary settings. Run the appearance checks alone with `dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --appearance`. Resource stress checks also cycle text size and transparency.
+
+Position-lock checks also cover widget/tray clicks, the drag guard, immediate position saving, failed-save coordinate rollback, hidden monitoring, display/work-area notifications, edge resizing and second-process locked/unlocked restart. Run them alone with `dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --position-lock`; resource stress also toggles position lock and disposes temporary tray menus.
 
 ## System Tray & Single Instance
 

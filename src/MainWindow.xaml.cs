@@ -26,6 +26,7 @@ namespace TrafficSense
         private readonly Action<string>? _launchLogFolder;
         private readonly UpdateChecker? _updates;
         private readonly Action<Uri>? _openReleasePage;
+        private readonly Action _dragMove;
         private bool _fatalShutdown;
         private NetworkAdapterInfo? _monitoredAdapter;
         private NetworkSpeed _latestSpeed;
@@ -42,7 +43,8 @@ namespace TrafficSense
             Action<string>? reportError = null,
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
-            Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null)
+            Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
+            Action? dragMove = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
@@ -53,6 +55,7 @@ namespace TrafficSense
             _launchLogFolder = launchLogFolder;
             _updates = updates;
             _openReleasePage = openReleasePage;
+            _dragMove = dragMove ?? DragMove;
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             _settings.WidgetFontSize = WidgetAppearance.NormalizeFontSize(_settings.WidgetFontSize);
             _settings.BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(_settings.BackgroundOpacity);
@@ -285,11 +288,7 @@ namespace TrafficSense
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-                NativeWindowPlacement.EnsureVisible(this);
-            }
+            TryMoveByDrag(e.ButtonState);
         }
 
         internal void ShowWidget()
