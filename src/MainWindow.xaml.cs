@@ -23,6 +23,7 @@ namespace TrafficSense
         private readonly Func<AppSettings, SettingsSaveResult> _saveSettings;
         private readonly Action<string>? _reportError;
         private readonly DiagnosticLog? _diagnostics;
+        private readonly Action<string>? _launchLogFolder;
         private bool _fatalShutdown;
         private NetworkAdapterInfo? _monitoredAdapter;
         private NetworkSpeed _latestSpeed;
@@ -38,7 +39,8 @@ namespace TrafficSense
         internal MainWindow(AppSettings settings, Func<AppSettings, SettingsSaveResult> saveSettings,
             Action<string>? reportError = null,
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
-            Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null)
+            Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
+            Action<string>? launchLogFolder = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
@@ -46,6 +48,7 @@ namespace TrafficSense
             _saveSettings = saveSettings;
             _reportError = reportError;
             _diagnostics = diagnostics;
+            _launchLogFolder = launchLogFolder;
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
@@ -91,6 +94,7 @@ namespace TrafficSense
             Closed += (_, _) =>
             {
                 StopMonitoring();
+                CloseAbout();
                 Localization.Changed -= Localization_Changed;
                 _placementReady = false;
                 if (_windowSource is { IsDisposed: false })
@@ -114,6 +118,7 @@ namespace TrafficSense
         {
             _fatalShutdown = true;
             StopMonitoring();
+            CloseAbout();
             IsEnabled = false;
         }
 

@@ -14,6 +14,8 @@ choose a network adapter, show/hide the widget, or exit.
 Settings are stored in %APPDATA%\TrafficSense\settings.json, not beside the EXE.
 This is a portable application, not a portable user-settings directory.
 Error logs are stored in %LOCALAPPDATA%\TrafficSense\logs\errors.jsonl.
+Choose About TrafficSense from the widget or tray menu to check the app version
+and open the log folder. The address can also be copied from the About window.
 Two older logs are retained; no logs are uploaded automatically. On an unexpected
 UI/startup failure, the app saves diagnostics when possible and closes. Start it
 again to resume monitoring. Review logs before including them in an issue report.

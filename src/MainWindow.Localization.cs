@@ -14,6 +14,7 @@ public partial class MainWindow
         MenuTheme.Header = Localization[TextKey.SwitchTheme];
         MenuLanguage.Header = Localization[TextKey.Language];
         MenuHide.Header = Localization[TextKey.HideWidget];
+        MenuAbout.Header = Localization[TextKey.About];
         MenuExit.Header = Localization[TextKey.Exit];
         TxtDownload.ToolTip = Localization[TextKey.DownloadSpeed];
         TxtUpload.ToolTip = Localization[TextKey.UploadSpeed];

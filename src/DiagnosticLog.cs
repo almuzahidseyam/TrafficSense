@@ -13,7 +13,8 @@ internal sealed class DiagnosticLog(string directory)
     private readonly object _sync = new();
     public static DiagnosticLog Default { get; } = new(Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrafficSense", "logs"));
-    public string FilePath => Path.Combine(directory, "errors.jsonl");
+    public string DirectoryPath => directory;
+    public string FilePath => Path.Combine(DirectoryPath, "errors.jsonl");
 
     public string? Write(string eventName, Exception error, bool fatal = false)
     {

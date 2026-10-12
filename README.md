@@ -109,6 +109,7 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 
 ## Error Logs & Recovery
 
+- Choose **About TrafficSense** from the widget or tray menu to see the running app's version and copy the error log folder address. **Open log folder** creates the folder if needed and opens it in File Explorer. Opening About keeps a hidden widget hidden; repeated clicks reuse the same window, which closes when the app exits. About follows English/Bengali language changes immediately.
 - Error details are stored locally in `%LOCALAPPDATA%\TrafficSense\logs\errors.jsonl`. Records include UTC time, process ID, app/runtime version, error category and exception details. Logs are not uploaded automatically; review them before sharing, since Windows diagnostics can include local paths.
 - The logger rotates two older files (`errors.1.jsonl`, `errors.2.jsonl`), keeping three files of up to 256 KiB each. Individual messages are truncated to 16,000 characters. Logging is best effort: a locked/full/unwritable location or a busy logger during termination must not cause another error.
 - Unexpected UI or startup failures show one short English/Bangla message with the saved log path, or explain that the log could not be saved. Monitoring and tray controls stop before the fatal UI message; the app then exits with an error status. Start it again to resume monitoring. Fatal shutdown retains the last saved settings rather than writing potentially invalid in-memory state.
