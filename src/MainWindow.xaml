@@ -29,6 +29,9 @@
                 <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
                 <MenuItem Header="Display metrics" x:Name="MenuMetrics" />
                 <MenuItem Header="System and connection details" x:Name="MenuSystemDetails" Click="MenuSystemDetails_Click" />
+                <MenuItem Header="Taskbar-edge panel" x:Name="MenuTaskbarPanel" IsCheckable="True" Click="MenuTaskbarPanel_Click" />
+                <MenuItem Header="Panel at top" x:Name="MenuPanelTop" IsCheckable="True" Click="MenuPanelTop_Click" />
+                <MenuItem Header="Panel monitor" x:Name="MenuPanelMonitor" SubmenuOpened="MenuPanelMonitor_Opened" />
                 <MenuItem Header="Global shortcut (Ctrl+Alt+T)" x:Name="MenuShortcut" IsCheckable="True" Click="MenuShortcut_Click" />
                 <MenuItem Header="Language" x:Name="MenuLanguage">
                     <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />

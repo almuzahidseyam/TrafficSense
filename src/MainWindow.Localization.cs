@@ -31,6 +31,7 @@ public partial class MainWindow
         ApplyAppearanceLanguage();
         ApplyMonitorLanguage();
         ApplySystemLanguage();
+        ApplyPanelLanguage();
         ApplyKeyboardLanguage();
         ApplyAutoStartStatus(_startupStatus);
         BuildAdapterMenu();

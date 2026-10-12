@@ -19,6 +19,7 @@ internal static class Program
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
         if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.FirstOrDefault() == "--system-metrics") return SystemMetricsProbe.Run();
+        if (args.FirstOrDefault() == "--taskbar-panel") return TaskbarPanelProbe.Run();
         if (args.FirstOrDefault() == "--updates") return UpdateProbe.Run();
         if (args.FirstOrDefault() == "--appearance") return AppearanceProbe.Run();
         if (args.FirstOrDefault() == "--appearance-restart") return AppearanceProbe.VerifyRestart(args[1]);
@@ -37,6 +38,7 @@ internal static class Program
         {
             RunChild("--network-recovery");
             RunChild("--system-metrics");
+            RunChild("--taskbar-panel");
             RunChild("--about");
             RunChild("--about-fatal");
             RunChild("--updates");
