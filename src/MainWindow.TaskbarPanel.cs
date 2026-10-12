@@ -106,12 +106,15 @@ public partial class MainWindow
         }
         finally { _embeddingBusy = false; }
     }
-    private void MenuEmbedTaskbar_Click(object sender, RoutedEventArgs e)
+    internal bool ChangeEmbedding(bool enabled)
     {
-        bool previous = _settings.EmbedTaskbar; _settings.EmbedTaskbar = MenuEmbedTaskbar.IsChecked;
-        var result = _saveSettings(_settings); if (!result.Success) { _settings.EmbedTaskbar = previous; ShowSettingsError(result.Error); }
+        var previous = (_settings.EmbedTaskbar,_settings.TaskbarPanel); _settings.EmbedTaskbar = enabled;
+        if (enabled) _settings.TaskbarPanel = true;
+        var result = _saveSettings(_settings); if (!result.Success) { (_settings.EmbedTaskbar,_settings.TaskbarPanel) = previous; ShowSettingsError(result.Error); }
         _embeddingNext = default; ConfigureTaskbarPanel(); ApplyPanelLanguage();
+        return result.Success;
     }
+    private void MenuEmbedTaskbar_Click(object sender, RoutedEventArgs e) => ChangeEmbedding(MenuEmbedTaskbar.IsChecked);
 
     private void MenuTaskbarPanel_Click(object sender, RoutedEventArgs e) { ChangeTaskbarPanel(MenuTaskbarPanel.IsChecked); e.Handled = true; }
     private void MenuPanelTop_Click(object sender, RoutedEventArgs e) { ChangeTaskbarPanel(_settings.TaskbarPanel, MenuPanelTop.IsChecked); e.Handled = true; }

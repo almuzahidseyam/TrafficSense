@@ -15,9 +15,10 @@ internal static class CompatibilityProbe
         string root = Path.Combine(Path.GetTempPath(), "TrafficSense.Compatibility", Guid.NewGuid().ToString("N")); Directory.CreateDirectory(root);
         var store = new SettingsStore(Path.Combine(root,"settings.json")); bool fail = false; var errors = new List<string>();
         var app = new App(@"Local\TrafficSense.Compatibility." + Guid.NewGuid().ToString("N"), () => new MainWindow(new(),
-            s => fail ? new(false,"blocked") : store.Save(s), errors.Add, usageStore: new(Path.Combine(root,"usage.json")), readAdapters: () => [], sampleTimestamp: () => TimeSpan.Zero));
+            s => fail ? new(false,"blocked") : store.Save(s), errors.Add, usageStore: new(Path.Combine(root,"usage.json")), readAdapters: () => [], sampleTimestamp: () => TimeSpan.Zero, appBarShell: new FakeShell()));
         app.InitializeComponent(); var style = new Style(typeof(MainWindow)); style.Setters.Add(new Setter(UIElement.OpacityProperty, 0d));
         style.Setters.Add(new Setter(Window.ShowActivatedProperty, false)); app.Resources.Add(typeof(MainWindow), style); bool passed = false;
+        var panelStyle = new Style(typeof(TaskbarPanelWindow)); panelStyle.Setters.Add(new Setter(UIElement.OpacityProperty,0d)); app.Resources.Add(typeof(TaskbarPanelWindow),panelStyle);
         app.Startup += (_, _) => app.Dispatcher.BeginInvoke(new Action(() =>
         {
             try
@@ -41,6 +42,10 @@ internal static class CompatibilityProbe
                 app.Dispatcher.Invoke(() => {}, DispatcherPriority.ContextIdle);
                 Check(canvas.Width == 180 && ((StackPanel)window.FindName("LayoutSurface")).Visibility == Visibility.Visible, "Restored layout not applied.");
                 Check(window.ChangeLayoutSkin(null,false) && ((Grid)window.FindName("NormalSurface")).Visibility == Visibility.Visible, "Standard widget fallback failed.");
+                Check(window.ChangeEmbedding(true) && store.Load().TaskbarPanel && store.Load().EmbedTaskbar,"Choosing embedding did not enable a taskbar display.");
+                fail = true; Check(!window.ChangeEmbedding(false) && store.Load().EmbedTaskbar,"Failed embedding save changed preference."); fail = false;
+                Check(window.ChangeEmbedding(false) && store.Load().TaskbarPanel && !store.Load().EmbedTaskbar,"Disabling embedding did not retain edge fallback.");
+                window.ChangeTaskbarPanel(false);
                 using var parent = new Forms.Form { ShowInTaskbar = false, Opacity = 0 }; using var child = new Forms.Form { ShowInTaskbar = false, Opacity = 0 };
                 var rect = parent.RectangleToScreen(new System.Drawing.Rectangle(8,8,230,32));
                 Check(EmbeddedTaskbarWorker.Attach(child.Handle,parent.Handle,new(rect.Left,rect.Top,rect.Right,rect.Bottom)), "Native child attachment failed.");
@@ -54,4 +59,15 @@ internal static class CompatibilityProbe
     }
     private static void Check(bool condition,string message) { if (!condition) throw new InvalidOperationException(message); }
     [DllImport("user32.dll")] private static extern IntPtr GetParent(IntPtr hwnd);
+    private sealed class FakeShell : IAppBarShell
+    {
+        public bool Register(IntPtr w,uint c)=>true;
+        public DockBounds Query(IntPtr w,bool t,DockBounds b)=>b;
+        public DockBounds Set(IntPtr w,bool t,DockBounds b)=>b;
+        public void Move(IntPtr w,DockBounds b){}
+        public void Notify(IntPtr w,uint m){}
+        public void Unregister(IntPtr w){}
+        public void FullScreen(IntPtr w,bool a){}
+        public void Arrange(IntPtr w,bool h){}
+    }
 }
