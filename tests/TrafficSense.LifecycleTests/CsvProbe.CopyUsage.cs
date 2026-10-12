@@ -28,7 +28,8 @@ internal static partial class CsvProbe
             var chart = Field<DailyUsageChart>(window, "_dailyChart");
             Check(!button.IsEnabled && button.ToolTip.ToString() == language[TextKey.CopyDaySelect] &&
                 !window.CopySelectedDay() && copied.Count == 0 && status.Text == "", "No selection enabled copying or changed the clipboard boundary.");
-            Check(button.TabIndex == 5 && Field<Button>(window, "_export").TabIndex == 6 && Field<Button>(window, "_close").TabIndex == 7,
+            var format = Field<ComboBox>(window, "_copyFormat");
+            Check(format.TabIndex == 5 && button.TabIndex == 6 && Field<Button>(window, "_export").TabIndex == 7 && Field<Button>(window, "_close").TabIndex == 8,
                 "Copy/CSV/close keyboard order is wrong.");
             SelectChartDay(window, today); Click(button);
             string english = today.ToString("yyyy-MM-dd") + "\r\nDownload: 120 bytes\r\nUpload: 60 bytes\r\nTotal: 180 bytes";
@@ -48,6 +49,14 @@ internal static partial class CsvProbe
                 copied[^1] == today.ToString("yyyy-MM-dd") + "\r\nডাউনলোড: 128 বাইট\r\nআপলোড: 65 বাইট\r\nসর্বমোট: 193 বাইট" &&
                 status.Text.EndsWith("দিনের হিসাব কপি হয়েছে।"), "Bengali clipboard text/button/status is incorrect.");
             language.Select("en"); Check(status.Text == "", "Language change falsely reported current-language content already copied.");
+            format.SelectedIndex = 1; Click(button);
+            Check(copied[^1] == "Date,DownloadBytes,UploadBytes,TotalBytes\r\n" + today.ToString("yyyy-MM-dd") + ",128,65,193\r\n",
+                "CSV clipboard lacks fixed headers, exact bytes or Windows line breaks.");
+            language.Select("bn"); Click(button);
+            Check(copied[^1] == UsageCsv.CopyDay(ledger.Today(today)) && AutomationProperties.GetName(format) == "কপি করার ফরম্যাট",
+                "CSV changed schema in Bengali or format selector is not accessible.");
+            format.SelectedIndex = 0; Check(status.Text == "", "Changing copy format kept stale success feedback.");
+            language.Select("en");
             grid.SelectedItem = grid.Items.Cast<UsageDayRow>().Single(row => row.Day.Date == older);
             Click(button);
             Check(chart.HighlightedDay == null && button.IsEnabled && copied[^1] == older.ToString("yyyy-MM-dd") +

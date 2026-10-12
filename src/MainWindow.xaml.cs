@@ -15,6 +15,9 @@ namespace TrafficSense
         private readonly NetworkSpeedCalculator _speedCalculator = new();
         private readonly NetworkAdapterSelection _adapterSelection = new();
         private readonly Stopwatch _samplingClock = Stopwatch.StartNew();
+        private readonly bool _backgroundSampling;
+        private NetworkSamplingService? _sampler;
+        private SampleQuality _sampleQuality = SampleQuality.Sampling;
         private readonly Func<IReadOnlyCollection<NetworkAdapterInfo>> _readAdapters;
         private readonly Func<TimeSpan> _sampleTimestamp;
         private int _baselineResetPending;
@@ -50,8 +53,9 @@ namespace TrafficSense
             Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null,
             GlobalShortcut? shortcut = null)
         {
-            _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
+            _readAdapters = readAdapters ?? (() => NetworkSnapshotReader.Read(_sampleTimestamp));
+            _backgroundSampling = readAdapters == null && sampleTimestamp == null;
             _settings = settings;
             _saveSettings = saveSettings;
             _reportError = reportError;
@@ -139,6 +143,8 @@ namespace TrafficSense
             if (Interlocked.Exchange(ref _monitoringClosed, 1) != 0) return;
             NetworkChange.NetworkAddressChanged -= NetworkChanged;
             NetworkChange.NetworkAvailabilityChanged -= NetworkChanged;
+            _sampler?.Dispose();
+            if (_sampler != null) MergeSampledUsage(_sampler.Consume());
             if (_timer != null)
             {
                 _timer.Stop();
@@ -174,7 +180,9 @@ namespace TrafficSense
                 // This hook runs on the UI thread. Clear stale speed immediately;
                 // the next timer sample establishes the new counter baseline.
                 _speedCalculator.Reset();
+                _sampler?.Reset();
                 _latestSpeed = default;
+                _sampleQuality = SampleQuality.Sampling;
                 if (IsVisible) RenderNetworkSpeed();
             }
             // Recheck after display, work-area/taskbar, or DPI changes. Let WPF
@@ -199,6 +207,9 @@ namespace TrafficSense
 
         private void InitializeNetworkMonitor()
         {
+            if (_backgroundSampling)
+                _sampler = new NetworkSamplingService(_readAdapters, _sampleTimestamp, _localTime,
+                    _settings.SelectedAdapterId, _settings.RefreshMilliseconds, _diagnostics);
             RefreshNetworkSpeed();
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(_settings.RefreshMilliseconds);
@@ -216,11 +227,26 @@ namespace TrafficSense
             // NetworkChange callbacks can run on a worker thread. Coalesce them
             // without touching WPF or queueing UI work after the window closes.
             if (Volatile.Read(ref _monitoringClosed) == 0)
+            {
+                _sampler?.Reset();
                 Interlocked.Exchange(ref _baselineResetPending, 1);
+            }
         }
 
         private void RefreshNetworkSpeed()
         {
+            if (_sampler != null)
+            {
+                Interlocked.Exchange(ref _baselineResetPending, 0);
+                var delivery = _sampler.Consume();
+                _latestSpeed = delivery.Speed; _monitoredAdapter = delivery.Adapter; _sampleQuality = delivery.Quality;
+                if (_sampleTimestamp() - delivery.Timestamp > TimeSpan.FromSeconds(5))
+                { _latestSpeed = default; _sampleQuality = SampleQuality.Delayed; }
+                MergeSampledUsage(delivery);
+                RecordHistory(delivery.Timestamp);
+                if (IsVisible) RenderNetworkSpeed();
+                return;
+            }
             var adapters = _readAdapters();
             if (Interlocked.Exchange(ref _baselineResetPending, 0) != 0)
                 _speedCalculator.Reset();
@@ -228,6 +254,7 @@ namespace TrafficSense
             NetworkAdapterSnapshot[] snapshots = adapter?.Snapshot is { } snapshot ? [snapshot] : [];
             var timestamp = _sampleTimestamp();
             _latestSpeed = _speedCalculator.Update(snapshots, timestamp);
+            _sampleQuality = _speedCalculator.Quality;
             _monitoredAdapter = adapter;
             RecordTraffic(timestamp);
             // Hidden transparent WPF windows do not need text/layout updates.
@@ -251,7 +278,12 @@ namespace TrafficSense
                 : _settings.SelectedAdapterId == null
                     ? Localization[TextKey.NoConnectedAdapter]
                     : Localization[TextKey.WaitingForAdapter];
-            ((Border)Content).ToolTip = status + "\n" + Localization[TextKey.ChooseAdapterHint];
+            if (_monitoredAdapter != null)
+                status += "\n" + _monitoredAdapter.Addresses + "\nLink: " + SpeedFormatter.Format(_monitoredAdapter.LinkBitsPerSecond / 8d, true);
+            if (_sampleQuality != SampleQuality.Fresh)
+                status += "\n" + Localization[_sampleQuality == SampleQuality.Unavailable ? TextKey.SampleUnavailable :
+                    _sampleQuality == SampleQuality.Delayed ? TextKey.SampleDelayed : TextKey.Sampling];
+            ((Border)Content).ToolTip = status + "\n" + Localization[TextKey.ChooseAdapterHint] + "\n" + Localization[TextKey.MeasurementHint];
         }
 
         private void MenuNetworkAdapter_Opened(object sender, RoutedEventArgs e)
@@ -310,6 +342,7 @@ namespace TrafficSense
 
             // Even switching Auto/manual on the same ID starts a fresh interval.
             _speedCalculator.Reset();
+            _sampler?.Configure(_settings.SelectedAdapterId, _settings.RefreshMilliseconds, reset: true);
             RefreshNetworkSpeed();
             e.Handled = true;
         }

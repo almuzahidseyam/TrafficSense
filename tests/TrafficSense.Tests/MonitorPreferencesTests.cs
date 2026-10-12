@@ -20,6 +20,7 @@ public class MonitorPreferencesTests
     }
 
     [Theory]
+    [InlineData(250, 250)]
     [InlineData(500, 500)]
     [InlineData(1000, 1000)]
     [InlineData(2000, 2000)]
