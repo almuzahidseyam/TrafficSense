@@ -208,6 +208,12 @@ internal static class Program
     internal static void VerifyBundledRuntime()
     {
         if (Environment.GetEnvironmentVariable("TRAFFICSENSE_VERIFY_BUNDLE") != "1") return;
+        string expectedVersion = Environment.GetEnvironmentVariable("TRAFFICSENSE_EXPECTED_VERSION")!;
+        var appAssembly = typeof(MainWindow).Assembly;
+        string? informationalVersion = appAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        Check(!string.IsNullOrEmpty(expectedVersion) && informationalVersion?.Split('+')[0] == expectedVersion &&
+            appAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version == expectedVersion + ".0",
+            "Bundled app version does not match the release version.");
         string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!) + Path.DirectorySeparatorChar;
         using var process = Process.GetCurrentProcess();
         Check(typeof(object).Assembly.Location.Length == 0, "CoreLib was loaded from an external runtime assembly instead of the bundle.");
@@ -221,7 +227,7 @@ internal static class Program
             Check(module != null, $"{name} was not loaded. Modules: {string.Join(", ", process.Modules.Cast<ProcessModule>().Select(item => item.ModuleName))}");
             Check(module!.FileName.StartsWith(root, StringComparison.OrdinalIgnoreCase), $"{name} was not loaded from the bundled runtime: {module.FileName}");
         }
-        Console.WriteLine("PASS: embedded CoreLib and bundled WPF native libraries, with installed-runtime lookup disabled.");
+        Console.WriteLine($"PASS: app version {expectedVersion}, embedded CoreLib and bundled WPF native libraries, with installed-runtime lookup disabled.");
     }
 
     private static void VerifyPackagedEntryPoint()

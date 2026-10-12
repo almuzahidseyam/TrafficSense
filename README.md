@@ -18,9 +18,11 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
+Version **1.3.0 is being prepared**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions; it is not yet a published release.
+
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download the latest `TrafficSense.zip`.
-3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The portable package includes .NET 8; no separate .NET installation is required.
+3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The prepared 1.3.0 portable package includes .NET 8; older releases may require a separate .NET 8 Desktop Runtime installation.
 
 Exit an older running version from its tray menu before opening the new EXE. Hiding it keeps it running, and a second launch will show that older instance. Settings remain in `%APPDATA%`, and the bundled native runtime is extracted to the Windows temporary folder on first launch.
 
@@ -151,6 +153,20 @@ dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --network-r
 The normal lifecycle and portable checks run it automatically. These simulations verify application behavior; physical sleep, Modern Standby and driver-specific reconnect behavior still need a device test.
 
 ## 🤝 Contributing
+
+### Prepare a release
+
+The application version is set in `src/TrafficSense.csproj`; the same value is used by About, file metadata and diagnostic records. The SDK adds the source commit to the informational version when available.
+
+Before publishing, add or update the matching section in [CHANGELOG.md](CHANGELOG.md), then run:
+
+```powershell
+./scripts/Prepare-Release.ps1 -Tag v1.3.0
+```
+
+This validates that the proposed tag matches the app version and extracts the corresponding notes into `.artifacts/release-notes.md`. It does not create a tag or GitHub release. CI validates the notes on ordinary builds. The portable ZIP includes the changelog and generated `RELEASE-NOTES.md`; packaging checks both the executable metadata and the bundled app's version against the project version.
+
+After approval to publish, replace the changelog's pending status with the release date, update its comparison links and the download status above, merge the release preparation and tag that tested commit. Pushing a `v*` tag runs the release workflow, which rejects a mismatched app version, verifies the portable package and publishes its ZIP/checksum with the extracted changelog notes.
 
 Contributions are always welcome! Feel free to open an issue or submit a pull request.
 

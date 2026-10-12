@@ -5,6 +5,8 @@ TrafficSense - Windows x64 portable edition
 3. Open TrafficSense.exe. No separate .NET installation is needed.
 
 Supports 64-bit Windows 10/11. This package includes the .NET 8 runtime.
+See RELEASE-NOTES.md for this version's changes and upgrade instructions.
+CHANGELOG.md contains the release history and publication status.
 The first launch extracts native runtime files to your Windows temporary folder.
 Keep the license and notice files with the application when redistributing it.
 

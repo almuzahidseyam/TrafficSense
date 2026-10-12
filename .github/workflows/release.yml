@@ -21,6 +21,10 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    - name: Validate tag and prepare release notes
+      shell: pwsh
+      run: ./scripts/Prepare-Release.ps1 -Tag $env:GITHUB_REF_NAME
+
     - name: Run regression tests
       run: dotnet test tests/TrafficSense.Tests/TrafficSense.Tests.csproj -c Release
 
@@ -32,6 +36,7 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
+        body_path: .artifacts/release-notes.md
         fail_on_unmatched_files: true
         files: |
           .artifacts/portable/**/TrafficSense.zip

@@ -13,6 +13,7 @@ $buildDirectory = Join-Path ([IO.Path]::GetFullPath($OutputDirectory)) ([Guid]::
 $applicationDirectory = Join-Path $buildDirectory 'app'
 $probeDirectory = Join-Path $buildDirectory 'probe'
 New-Item -ItemType Directory -Path $buildDirectory -Force | Out-Null
+$release = & (Join-Path $PSScriptRoot 'Prepare-Release.ps1') -OutputPath (Join-Path $buildDirectory 'RELEASE-NOTES.md')
 
 function Publish-Portable([string]$Project, [string]$Destination) {
     & $DotNet publish (Join-Path $repository $Project) -c Release "-p:PublishProfileFullPath=$profile" -o $Destination --nologo | Out-Host
@@ -20,7 +21,13 @@ function Publish-Portable([string]$Project, [string]$Destination) {
 }
 
 Publish-Portable 'src/TrafficSense.csproj' $applicationDirectory
+$metadata = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $applicationDirectory 'TrafficSense.exe'))
+if (($metadata.ProductVersion -split '\+')[0] -ne $release.Version -or $metadata.FileVersion -ne "$($release.Version).0") {
+    throw "Published executable version does not match $($release.Version)."
+}
 Copy-Item -LiteralPath (Join-Path $repository 'LICENSE') -Destination (Join-Path $applicationDirectory 'TrafficSense-LICENSE.txt')
+Copy-Item -LiteralPath (Join-Path $repository 'CHANGELOG.md') -Destination $applicationDirectory
+Copy-Item -LiteralPath $release.NotesPath -Destination $applicationDirectory
 Copy-Item -LiteralPath (Join-Path $repository 'packaging/README.txt') -Destination $applicationDirectory
 Get-ChildItem -LiteralPath (Join-Path $repository 'packaging/licenses') -File |
     Copy-Item -Destination (Join-Path $applicationDirectory 'licenses')
@@ -62,6 +69,7 @@ $start.EnvironmentVariables['DOTNET_ROOT_X64'] = $start.EnvironmentVariables['DO
 $start.EnvironmentVariables['DOTNET_MULTILEVEL_LOOKUP'] = '0'
 $start.EnvironmentVariables['DOTNET_BUNDLE_EXTRACT_BASE_DIR'] = Join-Path $buildDirectory 'bundled-runtime'
 $start.EnvironmentVariables['TRAFFICSENSE_VERIFY_BUNDLE'] = '1'
+$start.EnvironmentVariables['TRAFFICSENSE_EXPECTED_VERSION'] = $release.Version
 $start.EnvironmentVariables['TRAFFICSENSE_PACKAGE_EXE'] = Join-Path $extracted 'TrafficSense.exe'
 # Do not inherit developer diagnostics or startup hooks in a distribution test.
 foreach ($name in @('DOTNET_STARTUP_HOOKS', 'DOTNET_ADDITIONAL_DEPS', 'DOTNET_SHARED_STORE')) {
