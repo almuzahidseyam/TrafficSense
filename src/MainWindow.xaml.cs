@@ -82,6 +82,7 @@ namespace TrafficSense
             InitializeMonitorMenus();
             InitializeSystemMetrics();
             InitializeCustomization();
+            InitializeNavigation();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
             ApplyPendingAppearance();
@@ -155,7 +156,9 @@ namespace TrafficSense
             _sampler?.Dispose();
             _systemService?.Dispose();
             _systemWindow?.Close();
+            _pluginBridge?.Close(); _pluginBridge = null;
             _taskbarPanel?.ReleaseAndClose(); _taskbarPanel = null;
+            _embedded?.Dispose(); _embedded = null;
             if (_sampler != null) MergeSampledUsage(_sampler.Consume());
             if (_timer != null)
             {
@@ -287,6 +290,7 @@ namespace TrafficSense
             TxtSampleState.Visibility = TxtSampleState.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             System.Windows.Automation.AutomationProperties.SetName(TxtSampleState, TxtSampleState.Text);
             ApplyNetworkTooltip();
+            RenderLayoutSkin();
         }
 
         private void ApplyNetworkTooltip()

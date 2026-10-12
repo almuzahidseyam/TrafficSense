@@ -53,6 +53,8 @@ internal static class ScreenshotProbe
                 var history = (HistoryWindow)typeof(MainWindow).GetField("_historyWindow", Private)!.GetValue(window)!;
                 history.SizeToContent = SizeToContent.Manual; history.Width = 620; history.Height = 920;
                 Capture(history, Path.Combine(output, "history-en.png"));
+                string? example = Environment.GetEnvironmentVariable("TRAFFICSENSE_EXAMPLE_SKIN");
+                if (example != null) { window.ChangeLayoutSkin(example,false,Path.Combine(temporary,"skins")); Capture(window,Path.Combine(output,"layout-mint.png")); }
                 window.Close(); result = 0;
             }
             catch (Exception error) { Console.Error.WriteLine(error); app.Shutdown(1); }

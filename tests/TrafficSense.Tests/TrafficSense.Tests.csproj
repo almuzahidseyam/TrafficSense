@@ -21,6 +21,8 @@
     <Compile Include="../../src/ExternalSensorFile.cs" Link="ExternalSensorFile.cs" />
     <Compile Include="../../src/LibreSensorBridge.cs" Link="LibreSensorBridge.cs" />
     <Compile Include="../../src/WidgetSkin.cs" Link="WidgetSkin.cs" />
+    <Compile Include="../../src/LegacySkin.cs" Link="LegacySkin.cs" />
+    <Compile Include="../../src/TaskbarVacancy.cs" Link="TaskbarVacancy.cs" />
     <Compile Include="../../src/UsageAlertPolicy.cs" Link="UsageAlertPolicy.cs" />
     <Compile Include="../../src/NetworkAdapterSelection.cs" Link="NetworkAdapterSelection.cs" />
     <Compile Include="../../src/SpeedFormatter.cs" Link="SpeedFormatter.cs" />

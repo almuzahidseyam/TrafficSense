@@ -4,6 +4,8 @@
 
 [Download](https://github.com/almuzahidseyam/TrafficSense/releases/latest) · [What's new](CHANGELOG.md) · [বাংলা নির্দেশনা](docs/GETTING_STARTED_BN.md) · [Report a problem](https://github.com/almuzahidseyam/TrafficSense/issues/new/choose)
 
+[![Build and Test](https://github.com/almuzahidseyam/TrafficSense/actions/workflows/ci.yml/badge.svg)](https://github.com/almuzahidseyam/TrafficSense/actions/workflows/ci.yml)
+
 <table><tr><td><img src="docs/images/widget-en.png" width="142" alt="English TrafficSense widget with download, upload, CPU and RAM" /></td><td><img src="docs/images/widget-bn.png" width="182" alt="বাংলা TrafficSense widget with download, upload, CPU and RAM" /></td></tr></table>
 
 *Actual app controls rendered with illustrative traffic and system values. These images are demos, not performance benchmarks.*
@@ -11,21 +13,26 @@
 ## What it does
 
 - **Live network rates:** independent background sampling, actual elapsed time, 250 ms / 500 ms / 1 s / 2 s intervals, bytes/s or bits/s, Auto or manual adapter selection. Reconnects and sleep/resume establish a fresh baseline instead of generating a spike.
-- **Widget and taskbar-edge panel:** draggable always-on-top widget, lock/reset position, monitor recovery, separate top/bottom appbar, tray show/hide and single-instance activation.
+- **Widget and taskbar display:** draggable always-on-top widget, lock/reset position, monitor recovery, top/bottom edge panel, tray show/hide and single-instance activation. Experimental embedding uses verified vacant taskbar space with an edge-panel fallback.
 - **System information:** optional CPU, physical RAM, reported CPU frequency, busiest GPU engine, disk activity/read/write and connection details. Disabled optional metrics stop polling. Missing counters show unavailable.
 - **Usage history:** today/month totals, up to 400 retained days, selected date/month totals, daily table and chart, hover details, click-to-select/highlight, exact-byte CSV export and selected-day copying as text or CSV. Optional daily/monthly GiB alerts notify on a newly observed crossing.
-- **Make it yours:** live English/বাংলা switching, light/dark themes, local fonts, item colors, background transparency, appearance presets and JSON skin exchange. Windows high contrast takes precedence. [Skin guide](docs/SKINS.md).
+- **Make it yours:** live English/বাংলা switching, light/dark themes, fonts, colors, transparency, JSON styles and positioned TrafficMonitor INI/XML bitmap skins. Windows high contrast takes precedence. [Skin guide](docs/SKINS.md).
+- **Trusted native plugins:** explicit x64 TrafficMonitor DLL bridge with text, GDI/extended drawing, settings and commands. Separate worker, timeouts and Windows job ownership contain crashes/hangs. [Plugin support and limits](docs/NATIVE-PLUGINS.md).
 - **Optional sensors:** a separate bridge reads Celsius temperatures from an existing local LibreHardwareMonitor server, or use a data-only JSON provider. No hardware driver is installed by TrafficSense. [Sensor guide](docs/EXTENSIONS.md).
 - **Everyday controls:** sign-in startup, keyboard shortcuts, settings backup/restore, About/version/update check and rotating local error logs.
 
 ## Install or run portable
 
-Current version: **[1.26.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.26.0)**. For **64-bit Windows 10/11**.
+Current version: **[1.27.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.27.0)**. For **64-bit Windows 10/11**.
 
 1. Open [Releases](https://github.com/almuzahidseyam/TrafficSense/releases/latest).
 2. Download **TrafficSense-Setup.exe** for a per-user installation, or **TrafficSense.zip** for portable use.
 3. Run Setup, or extract the entire ZIP and open **TrafficSense.exe**. Both include .NET; no separate runtime installation is needed.
-4. Right-click the widget to select your adapter, units, language and optional metrics. Hover it for connection/sample details.
+4. Right-click the widget: **Connection & speed**, **Widget appearance & position**, **System metrics & extensions**, **Taskbar display** and **Preferences** group related settings. Hover the widget for connection/sample details.
+
+<img src="docs/images/layout-mint.png" width="280" alt="Original Mint bitmap layout: download, upload, CPU and RAM" />
+
+*Original [Mint layout example](examples/skins/Mint), rendered by the actual app with illustrative values.*
 
 Before upgrading, choose **Exit** on the older widget's tray menu and close its Sensor bridge. Hiding keeps it running; a second launch shows that existing instance. Setup does not force-close running copies. Verify downloads against the included `.sha256` files with `Get-FileHash <download> -Algorithm SHA256`.
 
@@ -64,11 +71,11 @@ Open **Usage and history** from the widget or tray. Choose all retained days, a 
 - About checks for updates only when requested, then opens the trusted GitHub release page; it does not automatically install updates.
 - Repeated launches: use the existing tray icon, or exit the old copy first. Missing speed: inspect the sample status and adapter menu; try the active physical adapter or your VPN deliberately. Missing system/temperature readings: check [compatibility](docs/COMPATIBILITY.md).
 
-Core sampling/history need no remote service. Manual update checks contact GitHub; the optional Sensor bridge contacts only `127.0.0.1`. No telemetry/upload service is implemented.
+Core sampling/history need no remote service. Manual update checks contact GitHub; the Sensor bridge contacts only `127.0.0.1`. Explicitly selected native plugins run with your permissions and may access networks/files according to their own behavior. No TrafficSense telemetry/upload service is implemented.
 
 ## Build, test and contribute
 
-Built with C#, .NET 8, WPF and WPF-UI. Windows and the .NET 8 SDK are required for native app checks.
+Built with C#, .NET 8, WPF and WPF-UI. Windows and the .NET 8 SDK are required for native app checks. Full portable verification also compiles an independently authored test DLL using Visual Studio C++ Build Tools/Windows SDK or MinGW-w64; end users need neither.
 
 ```powershell
 dotnet build src/TrafficSense.csproj -c Release

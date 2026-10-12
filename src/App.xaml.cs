@@ -36,6 +36,12 @@ namespace TrafficSense
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            if (e.Args.Length == 2 && e.Args[0] == "--plugin-worker")
+            { Shutdown(PluginWorker.Run(e.Args[1])); return; }
+            if (e.Args.Length == 1 && e.Args[0] == "--taskbar-worker")
+            { Shutdown(EmbeddedTaskbarWorker.Run()); return; }
+            if (e.Args.Length == 1 && e.Args[0] == "--taskbar-inspect")
+            { Shutdown(EmbeddedTaskbarWorker.Run(inspectOnly: true)); return; }
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
