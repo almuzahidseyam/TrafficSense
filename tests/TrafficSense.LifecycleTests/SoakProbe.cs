@@ -227,6 +227,7 @@ internal static class SoakProbe
         finally
         {
             File.Delete(Path.Combine(directory, "settings.json"));
+            File.Delete(Path.Combine(directory, "usage.json"));
             Directory.Delete(directory);
         }
     }
