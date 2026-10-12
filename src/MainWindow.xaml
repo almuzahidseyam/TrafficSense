@@ -10,6 +10,7 @@
         WindowStyle="None" AllowsTransparency="True" Background="#01000000"
         Topmost="True" ResizeMode="NoResize" ShowInTaskbar="False"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Focusable="True" PreviewKeyDown="Widget_PreviewKeyDown"
         Closing="Window_Closing">
     
     <Border Background="#60000000" CornerRadius="4" Margin="2" Padding="8,4">
@@ -26,6 +27,7 @@
                 <MenuItem Header="Background transparency" x:Name="MenuTransparency" />
                 <MenuItem Header="Speed unit" x:Name="MenuSpeedUnit" />
                 <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
+                <MenuItem Header="Global shortcut (Ctrl+Alt+T)" x:Name="MenuShortcut" IsCheckable="True" Click="MenuShortcut_Click" />
                 <MenuItem Header="Language" x:Name="MenuLanguage">
                     <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />
                     <MenuItem Header="বাংলা" x:Name="MenuBangla" Tag="bn" IsCheckable="True" Click="MenuLanguage_Click" />

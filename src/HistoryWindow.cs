@@ -13,8 +13,8 @@ internal sealed class HistoryWindow : Window
     private readonly Func<bool> _bits;
     private readonly SpeedGraph _graph = new() { Height = 170, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _legend = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 10) };
-    private readonly TextBlock _today = new() { Margin = new(0, 0, 0, 12) };
-    private readonly TextBlock _month = new() { Margin = new(0, 0, 0, 12) };
+    private readonly TextBlock _today = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
+    private readonly TextBlock _month = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _hint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
     private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true };
 

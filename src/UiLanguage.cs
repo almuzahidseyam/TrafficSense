@@ -13,7 +13,8 @@ internal enum TextKey
     UpdateRateLimited, UpdateCheckFailed, OpenRelease, OpenReleaseFailed,
     TextSize, BackgroundTransparency, DefaultAppearance, LockPosition, ResetPosition,
     SpeedUnit, RefreshInterval, BitsPerSecond, BytesPerSecond, Seconds,
-    History, Today, ThisMonth, UsageHint, Download, Upload, GraphLegend
+    History, Today, ThisMonth, UsageHint, Download, Upload, GraphLegend,
+    GlobalShortcut, ShortcutHelp, ShortcutUnavailable
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -56,6 +57,10 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.Download] = ("Download", "ডাউনলোড"),
             [TextKey.Upload] = ("Upload", "আপলোড"),
             [TextKey.GraphLegend] = ("Last 2 minutes — download: solid green; upload: dashed blue", "শেষ ২ মিনিট — ডাউনলোড: সবুজ অবিচ্ছিন্ন রেখা; আপলোড: নীল ভাঙা রেখা"),
+            [TextKey.GlobalShortcut] = ("Global shortcut (Ctrl+Alt+T)", "সর্বত্র শর্টকাট (Ctrl+Alt+T)"),
+            [TextKey.ShortcutUnavailable] = ("Ctrl+Alt+T is already in use or could not be registered.", "Ctrl+Alt+T ব্যবহৃত হচ্ছে বা চালু করা যায়নি।"),
+            [TextKey.ShortcutHelp] = ("With widget focused: Ctrl+L lock, Ctrl+R reset, Ctrl+H history, F1 About, Escape hide, Shift+F10 menu, arrows move (Shift: 1 px). Optional Ctrl+Alt+T shows/hides from any app.",
+                "উইজেট নির্বাচিত থাকলে: Ctrl+L লক, Ctrl+R অবস্থান ফেরানো, Ctrl+H ইতিহাস, F1 সম্পর্কে, Escape লুকানো, Shift+F10 মেনু, তীর দিয়ে সরানো (Shift: ১ px)। ঐচ্ছিক Ctrl+Alt+T যেকোনো অ্যাপ থেকে দেখায়/লুকায়।"),
             [TextKey.ThisMonth] = ("This month", "এই মাস"),
             [TextKey.UsageHint] = ("Measured traffic while TrafficSense is running, across your selected connections. Gaps during sleep, reconnects or app shutdown are excluded. Totals follow the local date; they are not your provider's billing totals.",
                 "TrafficSense চালু থাকা অবস্থায় নির্বাচিত সংযোগগুলোর মাপা ডেটা। স্লিপ, পুনঃসংযোগ বা অ্যাপ বন্ধের বিরতি বাদ যায়। হিসাব স্থানীয় তারিখ অনুযায়ী; এটি ইন্টারনেট সেবাদাতার বিলের হিসাব নয়।"),

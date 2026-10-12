@@ -4,6 +4,12 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.10.0] - Development milestone
+
+### Added
+
+- Keyboard commands for locking, resetting, history, About, hiding, context menu and moving the focused widget. Optional saved Ctrl+Alt+T global show/hide shortcut detects conflicts and releases registration on exit/fatal shutdown. Screen-reader names/help, standard system colors in history, and text/dashed-line alternatives to graph colors improve accessibility.
+
 ## [1.9.0] - Development milestone
 
 ### Added

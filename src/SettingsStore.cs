@@ -53,6 +53,7 @@ internal sealed class SettingsStore(string filePath, DiagnosticLog? diagnostics 
         ScreenTop = settings.ScreenTop,
         PositionLocked = settings.PositionLocked,
         SpeedInBits = settings.SpeedInBits,
+        GlobalShortcutEnabled = settings.GlobalShortcutEnabled,
         RefreshMilliseconds = MonitorPreferences.NormalizeInterval(settings.RefreshMilliseconds),
         Theme = settings.Theme == "Light" ? "Light" : "Dark",
         Language = UiLanguage.Normalize(settings.Language),

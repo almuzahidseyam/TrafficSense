@@ -27,6 +27,7 @@ namespace TrafficSense
         private readonly UpdateChecker? _updates;
         private readonly Action<Uri>? _openReleasePage;
         private readonly Action _dragMove;
+        private readonly GlobalShortcut _shortcut;
         private bool _fatalShutdown;
         private NetworkAdapterInfo? _monitoredAdapter;
         private NetworkSpeed _latestSpeed;
@@ -46,7 +47,8 @@ namespace TrafficSense
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
             Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
-            Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null)
+            Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null,
+            GlobalShortcut? shortcut = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
@@ -58,6 +60,7 @@ namespace TrafficSense
             _updates = updates;
             _openReleasePage = openReleasePage;
             _dragMove = dragMove ?? DragMove;
+            _shortcut = shortcut ?? new GlobalShortcut();
             _usageStore = usageStore;
             _usage = usageStore?.Load() ?? new();
             _localTime = localTime ?? (() => DateTimeOffset.Now);
@@ -89,6 +92,10 @@ namespace TrafficSense
             {
                 _windowSource = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
                 _windowSource?.AddHook(WindowMessage);
+                _shortcut.Attach(new WindowInteropHelper(this).Handle);
+                if (_settings.GlobalShortcutEnabled && !_shortcut.SetEnabled(true))
+                    _diagnostics?.Write("Shortcut", "Ctrl+Alt+T is unavailable.");
+                ApplyKeyboardLanguage();
             };
             SizeChanged += (_, _) => QueueKeepVisible();
 
@@ -98,6 +105,7 @@ namespace TrafficSense
             Closed += (_, _) =>
             {
                 StopMonitoring();
+                _shortcut.Dispose();
                 CloseAbout();
                 CloseHistory();
                 FlushUsage();
@@ -141,6 +149,7 @@ namespace TrafficSense
         {
             _fatalShutdown = true;
             StopMonitoring();
+            _shortcut.Dispose();
             CloseAbout();
             CloseHistory();
             IsEnabled = false;
@@ -148,6 +157,12 @@ namespace TrafficSense
 
         private IntPtr WindowMessage(IntPtr window, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (message == 0x0312 && wParam.ToInt64() == GlobalShortcut.Id && _shortcut.Enabled && !_fatalShutdown)
+            {
+                if (IsVisible) Hide(); else ShowWidget();
+                handled = true;
+                return IntPtr.Zero;
+            }
             const int WmPowerBroadcast = 0x0218;
             const int PbtApmSuspend = 0x0004;
             const int PbtApmResumeSuspend = 0x0007;
@@ -300,6 +315,7 @@ namespace TrafficSense
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ButtonState == MouseButtonState.Pressed) Focus();
             TryMoveByDrag(e.ButtonState);
         }
 

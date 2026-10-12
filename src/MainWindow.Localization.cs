@@ -25,6 +25,7 @@ public partial class MainWindow
         UpdateLanguageChecks();
         ApplyAppearanceLanguage();
         ApplyMonitorLanguage();
+        ApplyKeyboardLanguage();
         ApplyAutoStartStatus(_startupStatus);
         BuildAdapterMenu();
         ApplyNetworkTooltip();
