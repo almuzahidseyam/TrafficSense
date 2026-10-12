@@ -29,7 +29,8 @@ internal static class SystemMetricsProbe
             {
                 Check(Field<SystemMetricsService?>(window, "_systemService") == null && reads == 0, "Disabled metrics started polling.");
                 Check(window.ChangeDisplayedMetrics(SystemMetric.All), "Metrics save failed.");
-                Check(SpinWait.SpinUntil(() => Volatile.Read(ref reads) > 0, TimeSpan.FromSeconds(3)), "Metrics worker did not run.");
+                Check(SpinWait.SpinUntil(() => Field<SystemMetricsService>(window, "_systemService").Latest == fake,
+                    TimeSpan.FromSeconds(3)), "Metrics worker did not publish a result.");
                 Refresh(window);
                 var text = (TextBlock)window.FindName("TxtMetrics");
                 Check(text.Text.Contains("CPU: 25.0%") && text.Text.Contains("RAM: 25.0%") && text.Text.Contains("2.4 GHz") && text.Text.Contains("60.0%") && text.IsVisible,

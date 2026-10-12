@@ -15,6 +15,7 @@ Published releases carry their publication date. Intermediate development milest
 
 - Added 4,096-sample jitter traces at every supported interval, exact byte conservation beyond 4 GiB, and single-byte deltas above double's exact lifetime-integer range. These verify arithmetic and timing behavior, not comparative accuracy across physical network drivers.
 - Native WPF graph tests verify separate line figures across unavailable samples. Portable, installer and resource-stability checks remain part of CI.
+- Stalled worker deliveries add an unavailable history point even when their old timestamp is unchanged. The optional-metrics UI probe waits for published data rather than racing the beginning of a provider read.
 
 ## [1.25.0] - 2026-10-13
 

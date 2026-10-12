@@ -14,6 +14,7 @@ The network sampler now separates collection from rendering, carries actual nati
 | Extreme skin version could escape import error handling | Medium | Typed envelope validation with bounded integer parsing; malformed/huge-version unit and native rollback tests |
 | Notification shell failure could interrupt monitoring | Medium | Expected notification failures logged without propagating into sampling; throwing-notification native probe |
 | Unknown intervals appeared as measured zero in recent graphs | Medium | Explicit sample validity, broken paths, unavailable legend and native geometry checks |
+| Unchanged stale worker timestamp could leave history's latest legend fresh | Medium | Unknown point uses consumption time when delayed; deterministic stalled-delivery native test |
 | Provider outages/cached files could show stale sensor data | Medium | Bounded loopback HTTP, cancellation, numeric schema validation, atomic publication and reader/UI freshness checks |
 
 Suggestions still open: simplify the growing context menu into grouped settings, validate physical shell/driver combinations, add optional-metric/panel long-duration measurements, plan runtime servicing and signed/ARM64 distribution. These are follow-up work, not hidden claims of completed parity.

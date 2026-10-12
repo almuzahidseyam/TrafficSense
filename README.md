@@ -57,7 +57,7 @@ Open **Usage and history** from the widget or tray. Choose all retained days, a 
 
 ## Data and troubleshooting
 
-- Preferences and usage: `%APPDATA%\TrafficSense\settings.json` and `usage.json`. Usage saves periodically and on normal exit; a crash can lose unsaved recent traffic.
+- Preferences: `%APPDATA%\TrafficSense\settings.json`. Usage: `%LOCALAPPDATA%\TrafficSense\usage.json`; it saves periodically and on normal exit, so a crash can lose unsaved recent traffic.
 - Logs: `%LOCALAPPDATA%\TrafficSense\logs`; open the folder from **About**. Review logs before sharing them.
 - Sensor bridge output: `%LOCALAPPDATA%\TrafficSense\sensors.json`.
 - Settings backup includes appearance, adapter/position, alerts and sensor path, but excludes startup registration, history, logs and third-party sensor programs. Invalid imports and failed saves preserve current preferences.

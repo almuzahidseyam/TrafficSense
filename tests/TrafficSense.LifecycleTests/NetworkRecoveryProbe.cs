@@ -111,6 +111,19 @@ internal static class NetworkRecoveryProbe
                 Tick(window);
                 Check((NetworkSpeed)Field(window, "_latestSpeed")! == new NetworkSpeed(2000, 500), "Recovery double-counted VPN and Wi-Fi.");
 
+                // A stalled background provider keeps its delivery timestamp unchanged.
+                // The UI must still add an unknown point rather than retaining a fresh legend.
+                var sampler = new NetworkSamplingService(() => adapters, () => time, () => DateTimeOffset.Now, null, 1000, start: false);
+                typeof(MainWindow).GetField("_sampler", Private)!.SetValue(window, sampler);
+                time = TimeSpan.FromSeconds(1206); sampler.Sample(); Tick(window);
+                adapters = [Adapter("vpn", 70_004_000, 40_001_000) with { IsPreferredRoute = true }];
+                time = TimeSpan.FromSeconds(1207); sampler.Sample(); Tick(window);
+                var history = (SpeedHistory)Field(window, "_speedHistory")!;
+                Check(history.Samples.Last().IsValid, "Background sample was not fresh.");
+                time = TimeSpan.FromSeconds(1213); Tick(window);
+                Check(!history.Samples.Last().IsValid && history.Samples.Last().Timestamp == time,
+                    "Stalled background delivery retained a fresh history value.");
+
                 timer.Start();
                 result = 0;
                 window.Close();
