@@ -64,6 +64,8 @@ internal sealed partial class HistoryWindow : Window
             _dailyChart.DaySelected -= SelectDailyUsage;
             // Detach the collection view and cell bindings when the window closes.
             _dailyUsage.ItemsSource = null;
+            _dailyUsage.SelectionChanged -= DailyUsageSelectionChanged;
+            _dailyChart.SetSelectedDay(null);
             _dailyRows.Clear();
             _dailyUsage.Columns.Clear();
             _dailyChart.Update(DailyUsageSeries.Empty);
