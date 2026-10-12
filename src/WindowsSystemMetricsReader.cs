@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace TrafficSense;
 
@@ -8,11 +9,12 @@ internal sealed class WindowsSystemMetricsReader : IDisposable
 {
     private IntPtr _query, _cpu, _frequency, _gpu, _diskIdle, _diskRead, _diskWrite;
     private readonly SystemMetric _enabled;
+    private long _lastRead;
 
     internal WindowsSystemMetricsReader(SystemMetric enabled)
     {
         _enabled = enabled;
-        if ((enabled & ~SystemMetric.Memory) == 0 || PdhOpenQueryW(null, UIntPtr.Zero, out _query) != 0) return;
+        if ((enabled & (SystemMetric.Cpu | SystemMetric.Frequency | SystemMetric.Gpu | SystemMetric.Disk)) == 0 || PdhOpenQueryW(null, UIntPtr.Zero, out _query) != 0) return;
         if (enabled.HasFlag(SystemMetric.Cpu)) _cpu = Add(@"\Processor Information(_Total)\% Processor Time");
         if (enabled.HasFlag(SystemMetric.Frequency)) _frequency = Add(@"\Processor Information(_Total)\Processor Frequency");
         if (enabled.HasFlag(SystemMetric.Gpu)) _gpu = Add(@"\GPU Engine(*)\Utilization Percentage");
@@ -23,6 +25,7 @@ internal sealed class WindowsSystemMetricsReader : IDisposable
             _diskWrite = Add(@"\PhysicalDisk(_Total)\Disk Write Bytes/sec");
         }
         PdhCollectQueryData(_query); // Rate counters need two observations.
+        _lastRead = Stopwatch.GetTimestamp();
     }
 
     private IntPtr Add(string path) => PdhAddEnglishCounterW(_query, path, UIntPtr.Zero, out var counter) == 0 ? counter : IntPtr.Zero;
@@ -30,14 +33,18 @@ internal sealed class WindowsSystemMetricsReader : IDisposable
     internal SystemMetrics Read()
     {
         bool collected = _query != IntPtr.Zero && PdhCollectQueryData(_query) == 0;
+        var elapsed = _lastRead == 0 ? TimeSpan.Zero : Stopwatch.GetElapsedTime(_lastRead);
+        _lastRead = Stopwatch.GetTimestamp();
+        // Do not present a sleep/provider stall interval as current utilization.
+        bool rateReady = collected && elapsed >= TimeSpan.FromMilliseconds(100) && elapsed <= TimeSpan.FromSeconds(3);
         var memory = new MemoryStatus { Size = (uint)Marshal.SizeOf<MemoryStatus>() };
         bool hasMemory = _enabled.HasFlag(SystemMetric.Memory) && GlobalMemoryStatusEx(ref memory);
-        double? idle = collected ? ReadValue(_diskIdle) : null;
-        return new(collected ? MetricMath.Percent(ReadValue(_cpu)) : null,
+        double? idle = rateReady ? ReadValue(_diskIdle) : null;
+        return new(rateReady ? MetricMath.Percent(ReadValue(_cpu)) : null,
             hasMemory ? memory.TotalPhysical : null, hasMemory ? memory.AvailablePhysical : null,
-            collected ? ReadValue(_frequency) : null, collected ? ReadGpu() : null,
+            collected ? ReadValue(_frequency) : null, rateReady ? ReadGpu() : null,
             idle.HasValue ? MetricMath.Percent(100 - idle.Value) : null,
-            collected ? ReadValue(_diskRead) : null, collected ? ReadValue(_diskWrite) : null);
+            rateReady ? ReadValue(_diskRead) : null, rateReady ? ReadValue(_diskWrite) : null);
     }
 
     private static double? ReadValue(IntPtr counter)

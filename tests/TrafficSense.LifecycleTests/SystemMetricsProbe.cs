@@ -35,7 +35,7 @@ internal static class SystemMetricsProbe
                 Check(text.Text.Contains("CPU: 25.0%") && text.Text.Contains("RAM: 25.0%") && text.Text.Contains("2.4 GHz") && text.Text.Contains("60.0%") && text.IsVisible,
                     "Optional metrics values or visibility incorrect.");
                 window.ChangeLanguage("bn"); Check(text.Text.Contains("CPU ব্যবহার"), "Metric language did not change.");
-                failSave = true; Check(!window.ChangeDisplayedMetrics(SystemMetric.None) && settings.DisplayMetrics == 31 && errors.Count == 1, "Failed metric save did not roll back.");
+                failSave = true; Check(!window.ChangeDisplayedMetrics(SystemMetric.None) && settings.DisplayMetrics == (int)SystemMetric.All && errors.Count == 1, "Failed metric save did not roll back.");
                 failSave = false;
                 window.ShowSystemDetails(); var details = Field<Window>(window, "_systemWindow");
                 Check(details.Title == "সিস্টেম ও সংযোগের বিস্তারিত", "Details title untranslated.");

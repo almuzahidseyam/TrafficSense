@@ -46,16 +46,25 @@ namespace TrafficSense
                 using var identity = WindowsIdentity.GetCurrent();
                 // Local scopes coordination to the sign-in session; the SID
                 // also keeps different Windows users independent of one another.
-                _instance = new SingleInstanceGate(_instanceName ?? @"Local\TrafficSense." + identity.User!.Value);
+                bool sensorBridge = e.Args.Length == 1 && e.Args[0] == "--sensor-bridge";
+                _instance = new SingleInstanceGate(_instanceName ?? @"Local\TrafficSense." + identity.User!.Value + (sensorBridge ? ".Sensors" : ""));
                 if (!_instance.IsPrimary)
                 {
                     _instance.NotifyPrimary();
                     Shutdown();
                     return;
                 }
-
                 if (_instanceName == null)
                     _installerMutex = new Mutex(false, @"Local\TrafficSense.Installer." + Environment.UserName.ToLowerInvariant());
+                if (sensorBridge)
+                {
+                    _localization = new UiLanguage(SettingsManager.Load().Language);
+                    var bridge = new SensorBridgeWindow(_localization); MainWindow = bridge; bridge.Show();
+                    _instance.Listen(() => Dispatcher.BeginInvoke(new Action(() =>
+                    { if (!_exiting) { if (bridge.WindowState == WindowState.Minimized) bridge.WindowState = WindowState.Normal; bridge.Show(); bridge.Activate(); } })));
+                    return;
+                }
+
                 var window = _createWindow?.Invoke() ?? new MainWindow();
                 _localization = window.Localization;
                 MainWindow = window;

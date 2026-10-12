@@ -51,12 +51,14 @@ namespace TrafficSense
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
             Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
             Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null,
-            GlobalShortcut? shortcut = null, Func<SystemMetric, SystemMetrics>? readSystemMetrics = null, IAppBarShell? appBarShell = null)
+            GlobalShortcut? shortcut = null, Func<SystemMetric, SystemMetrics>? readSystemMetrics = null, IAppBarShell? appBarShell = null,
+            Action<UsageAlertNotification>? usageNotificationSink = null)
         {
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
             _readAdapters = readAdapters ?? (() => NetworkSnapshotReader.Read(_sampleTimestamp));
             _readSystemMetrics = readSystemMetrics;
             _appBarShell = appBarShell;
+            _usageNotificationSink = usageNotificationSink;
             _backgroundSampling = readAdapters == null && sampleTimestamp == null;
             _settings = settings;
             _saveSettings = saveSettings;
@@ -79,6 +81,7 @@ namespace TrafficSense
             InitializeAppearanceMenus();
             InitializeMonitorMenus();
             InitializeSystemMetrics();
+            InitializeCustomization();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
             ApplyPendingAppearance();
@@ -279,6 +282,10 @@ namespace TrafficSense
             if (_fatalShutdown) return;
             TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits);
             TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits);
+            TxtSampleState.Text = _sampleQuality == SampleQuality.Fresh ? "" : Localization[_sampleQuality == SampleQuality.Unavailable ? TextKey.SampleUnavailableShort :
+                _sampleQuality == SampleQuality.Delayed ? TextKey.SampleDelayedShort : TextKey.SamplingShort];
+            TxtSampleState.Visibility = TxtSampleState.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+            System.Windows.Automation.AutomationProperties.SetName(TxtSampleState, TxtSampleState.Text);
             ApplyNetworkTooltip();
         }
 
@@ -453,6 +460,7 @@ namespace TrafficSense
                 TxtUpload.Foreground = System.Windows.Media.Brushes.White;
                 TxtMetrics.Foreground = System.Windows.Media.Brushes.White;
             }
+            ApplyCustomStyle();
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)

@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -55,9 +56,10 @@ internal sealed class TaskbarPanelWindow : Window
         Position(force: true); Show(); return true;
     }
 
-    internal void Update(string speed, string metrics, UiLanguage language, bool top, int fontSize, bool light)
+    internal void Update(string download, string upload, string metrics, UiLanguage language, bool top, WidgetSkin skin, bool light)
     {
-        _speed.Text = speed; _metrics.Text = metrics.Replace("\n", "   ");
+        string speed = "↓ " + download + "   ↑ " + upload;
+        _metrics.Text = metrics.Replace("\n", "   ");
         Title = language[TextKey.TaskbarPanel];
         _history.Content = language[TextKey.History]; _settings.Content = language[TextKey.PanelSettings];
         _close.ToolTip = language[TextKey.ClosePanel]; AutomationProperties.SetName(_close, language[TextKey.ClosePanel]);
@@ -65,7 +67,13 @@ internal sealed class TaskbarPanelWindow : Window
         ToolTip = language[TextKey.PanelHint] + "\n" + language[TextKey.MeasurementHint];
         Background = SystemParameters.HighContrast ? SystemColors.WindowBrush : light ? Brushes.White : Brushes.Black;
         Foreground = SystemParameters.HighContrast ? SystemColors.WindowTextBrush : light ? Brushes.Black : Brushes.White;
-        if (_top != top || _fontSize != fontSize) { _top = top; _fontSize = fontSize; FontSize = fontSize; QueuePosition(); }
+        Brush ColorBrush(string color) => SystemParameters.HighContrast ? SystemColors.WindowTextBrush : color == "Auto" ? Foreground : new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
+        if (!SystemParameters.HighContrast && skin.Background != "Auto") Background = ColorBrush(skin.Background);
+        _speed.Inlines.Clear(); _speed.Inlines.Add(new Run("↓ " + download) { Foreground = ColorBrush(skin.Download) });
+        _speed.Inlines.Add(new Run("   ↑ " + upload) { Foreground = ColorBrush(skin.Upload) });
+        _metrics.Foreground = ColorBrush(skin.Metrics);
+        FontFamily = new FontFamily(skin.FontFamily); FontWeight = skin.Bold ? FontWeights.SemiBold : FontWeights.Normal;
+        if (_top != top || _fontSize != skin.FontSize) { _top = top; _fontSize = skin.FontSize; FontSize = skin.FontSize; QueuePosition(); }
     }
 
     internal void Reposition() => QueuePosition();

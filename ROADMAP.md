@@ -7,7 +7,7 @@ Comparison reviewed on 2026-10-13 against the [TrafficMonitor README](https://gi
 | 1 | Background sampling, actual counter timestamps, 250 ms option, IPv6 route fallback, plain text/CSV clipboard | Deterministic counter/concurrency/midnight tests; Windows recovery, clipboard and resource probes | Implemented in 1.22.0 |
 | 2 | Optional CPU, RAM, CPU frequency, GPU engine load and disk activity; network details | Native API failures show unavailable; disabled metrics stop polling; unit and isolated Windows probes | Implemented in 1.23.0 |
 | 3 | Taskbar-edge appbar, monitor selection, Explorer restart/DPI recovery, independent visibility | Simulated shell boundary and native WPF lifecycle checks; Windows-supported API; in-taskbar embedding remains a gap | Implemented in 1.24.0 with compatibility limits |
-| 4 | Display customization, usage alerts, extension boundary | Settings migration/rollback tests; bounded and optional work | Pending |
+| 4 | Font/item colors, appearance skins, daily/monthly alerts, data-only sensor extensions and separate LHM bridge | Settings migration/rollback, threshold/calendar, file bounds/freshness, provider and isolated UI/cancellation checks | Implemented in 1.25.0 |
 | 5 | Product documentation, demo, issue/contribution templates and release quality | Reproducible packages/checksums, clean CI and honest compatibility matrix | Pending |
 
 ## Measurement contract

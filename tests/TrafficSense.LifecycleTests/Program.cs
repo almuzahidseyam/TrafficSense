@@ -20,6 +20,9 @@ internal static class Program
         if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.FirstOrDefault() == "--system-metrics") return SystemMetricsProbe.Run();
         if (args.FirstOrDefault() == "--taskbar-panel") return TaskbarPanelProbe.Run();
+        if (args.FirstOrDefault() == "--customization") return CustomizationProbe.Run();
+        if (args.FirstOrDefault() == "--sensor-bridge-probe") return SensorBridgeProbe.Run();
+        if (args.FirstOrDefault() == "--sensor-bridge") return SensorBridgeProbe.VerifyEntry();
         if (args.FirstOrDefault() == "--updates") return UpdateProbe.Run();
         if (args.FirstOrDefault() == "--appearance") return AppearanceProbe.Run();
         if (args.FirstOrDefault() == "--appearance-restart") return AppearanceProbe.VerifyRestart(args[1]);
@@ -39,6 +42,9 @@ internal static class Program
             RunChild("--network-recovery");
             RunChild("--system-metrics");
             RunChild("--taskbar-panel");
+            RunChild("--customization");
+            RunChild("--sensor-bridge-probe");
+            RunChild("--sensor-bridge");
             RunChild("--about");
             RunChild("--about-fatal");
             RunChild("--updates");
