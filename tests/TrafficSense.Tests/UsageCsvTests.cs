@@ -102,5 +102,46 @@ public sealed class UsageCsvTests : IDisposable
         Assert.Empty(Directory.GetFiles(_root, "*.tmp"));
     }
 
+    [Fact]
+    public void RangeExportsOnlyInclusiveRecordedDatesWithoutChangingLedger()
+    {
+        var ledger = new UsageLedger([
+            new(new(2025, 12, 30), 1, 1), new(new(2025, 12, 31), 2, 2),
+            new(new(2026, 1, 1), 3, 3), new(new(2026, 1, 2), 4, 4)]);
+        var range = new UsageDateRange(new(2025, 12, 31), new(2026, 1, 1));
+        Assert.True(UsageCsv.Export(FilePath, ledger, range).Success);
+        Assert.Equal(new[] { UsageCsv.Header, "2025-12-31,2,2,4", "2026-01-01,3,3,6" }, File.ReadAllLines(FilePath));
+        Assert.Equal(4, ledger.Days.Count);
+        Assert.False(ledger.Dirty);
+    }
+
+    [Fact]
+    public void MonthExportsLeapDayAndOmitsOtherMonthsAndYears()
+    {
+        var ledger = new UsageLedger([
+            new(new(2023, 2, 28), 1, 1), new(new(2024, 1, 31), 2, 2),
+            new(new(2024, 2, 1), 3, 3), new(new(2024, 2, 29), 4, 4), new(new(2024, 3, 1), 5, 5)]);
+        Assert.True(UsageCsv.Export(FilePath, ledger, UsageDateRange.ForMonth(new(2024, 2, 15))).Success);
+        Assert.Equal(new[] { UsageCsv.Header, "2024-02-01,3,3,6", "2024-02-29,4,4,8" }, File.ReadAllLines(FilePath));
+    }
+
+    [Fact]
+    public void InvalidRangeCannotReplaceExistingFileOrCreateTemporaryFiles()
+    {
+        File.WriteAllText(FilePath, "previous export");
+        Assert.False(UsageCsv.Export(FilePath, new(), new(new(2026, 10, 31), new(2026, 10, 1))).Success);
+        Assert.Equal("previous export", File.ReadAllText(FilePath));
+        Assert.Empty(Directory.GetFiles(_root, "*.tmp"));
+    }
+
+    [Fact]
+    public void NoMatchingRowsProducesHeaderOnlyInWriter()
+    {
+        var ledger = new UsageLedger([new(new(2026, 10, 12), 10, 20)]);
+        Assert.True(UsageCsv.Export(FilePath, ledger, new(new(2025, 1, 1), new(2025, 12, 31))).Success);
+        Assert.Equal(UsageCsv.Header + "\r\n", File.ReadAllText(FilePath));
+        Assert.Single(ledger.Days);
+    }
+
     public void Dispose() => Directory.Delete(_root, true);
 }

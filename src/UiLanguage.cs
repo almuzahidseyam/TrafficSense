@@ -16,7 +16,8 @@ internal enum TextKey
     History, Today, ThisMonth, UsageHint, Download, Upload, GraphLegend,
     GlobalShortcut, ShortcutHelp, ShortcutUnavailable,
     SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed,
-    CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed
+    CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed,
+    CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -63,8 +64,19 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.Seconds] = ("{0} seconds", "{0} সেকেন্ড"),
             [TextKey.History] = ("Usage and history", "ডেটা ব্যবহার ও ইতিহাস"),
             [TextKey.CsvExport] = ("Export CSV…", "CSV সংরক্ষণ করুন…"),
-            [TextKey.CsvExportHint] = ("Export all retained daily totals (up to 400 days), including the latest sampled traffic. Values are exact bytes; dates use the local calendar.",
-                "সর্বশেষ মাপা ডেটাসহ সংরক্ষিত সব দিনের হিসাব (সর্বোচ্চ ৪০০ দিন) নিন। পরিমাণ বাইটে; তারিখ স্থানীয় দিন অনুযায়ী।"),
+            [TextKey.CsvExportHint] = ("Export selected retained daily totals (up to 400 days), including the latest sampled traffic. Values are exact bytes; dates use the local calendar.",
+                "সর্বশেষ মাপা ডেটাসহ নির্বাচিত সময়ের সংরক্ষিত হিসাব (সর্বোচ্চ ৪০০ দিন) নিন। পরিমাণ বাইটে; তারিখ স্থানীয় দিন অনুযায়ী।"),
+            [TextKey.CsvPeriod] = ("CSV period", "CSV সময়সীমা"),
+            [TextKey.CsvAllDays] = ("All retained days", "সব সংরক্ষিত দিন"),
+            [TextKey.CsvMonth] = ("Month", "নির্দিষ্ট মাস"),
+            [TextKey.CsvDateRange] = ("Date range", "তারিখের সীমা"),
+            [TextKey.CsvFrom] = ("From", "শুরুর তারিখ"),
+            [TextKey.CsvTo] = ("To", "শেষের তারিখ"),
+            [TextKey.CsvDatesHint] = ("Use YYYY-MM-DD. Both dates are included.", "YYYY-MM-DD লিখুন। শুরুর ও শেষের দিন দুটিই অন্তর্ভুক্ত।"),
+            [TextKey.CsvInvalidDates] = ("Enter valid dates as YYYY-MM-DD, with From on or before To.",
+                "YYYY-MM-DD অনুযায়ী সঠিক তারিখ দিন। শুরুর তারিখ শেষের তারিখের পরে হতে পারবে না।"),
+            [TextKey.CsvNoMatches] = ("No stored usage in this period. Choose another period.", "এই সময়ে সংরক্ষিত হিসাব নেই। অন্য সময় বাছাই করুন।"),
+            [TextKey.CsvSelectedDays] = ("{0} recorded day(s) selected.", "নির্বাচিত সময়ে {0} দিনের সংরক্ষিত হিসাব আছে।"),
             [TextKey.CsvExportEmpty] = ("No measured usage to export yet.", "সংরক্ষণ করার মতো মাপা ডেটা এখনো নেই।"),
             [TextKey.CsvExportFailed] = ("Could not export usage. Existing files and usage totals were kept.",
                 "ডেটা ব্যবহারের হিসাব সংরক্ষণ করা যায়নি। আগের ফাইল ও হিসাব অক্ষত আছে।"),

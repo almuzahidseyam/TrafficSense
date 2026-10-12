@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using TrafficSense;
 
@@ -105,6 +106,12 @@ internal static class SoakProbe
                         window.ChangeMonitorPreferences(appearanceIndex % 2 == 0,
                             MonitorPreferences.Intervals[appearanceIndex % MonitorPreferences.Intervals.Count]);
                         window.ShowHistory();
+                        var history = app.Windows.OfType<HistoryWindow>().Single();
+                        var period = (ComboBox)typeof(HistoryWindow).GetField("_period", Private)!.GetValue(history)!;
+                        period.SelectedIndex = appearanceIndex % 3;
+                        if (period.SelectedIndex == 2)
+                            ((TextBox)typeof(HistoryWindow).GetField("_fromDate", Private)!.GetValue(history)!).Text =
+                                appearanceIndex % 2 == 0 ? "2026-01-01" : "invalid";
                     }
                     completedIterations++;
                 }
