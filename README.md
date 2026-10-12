@@ -47,10 +47,17 @@ If you want to compile the project yourself:
    dotnet run --project src/TrafficSense.csproj
    ```
 
-5. Run the automated network speed regression tests:
+5. Run the automated regression tests:
    ```bash
    dotnet test tests/TrafficSense.Tests/TrafficSense.Tests.csproj -c Release
    ```
+
+## Settings & Window Position
+
+- Right-click the widget to change its theme or enable **Start with Windows** (at sign-in).
+- Settings are stored in `%APPDATA%\TrafficSense\settings.json`. Corrupt settings fall back to defaults; failed saves show an error and preserve the previous file.
+- Startup registration is updated only when you change **Start with Windows**. Its checkbox reflects the registration for the current executable, independently of the settings file. After moving the app, enable it again from its new location.
+- The widget returns to a visible monitor work area when a monitor is removed, the resolution/DPI changes, or the taskbar work area changes. Existing saved window positions are migrated automatically.
 
 ## 🤝 Contributing
 
