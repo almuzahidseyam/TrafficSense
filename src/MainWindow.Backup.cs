@@ -48,6 +48,7 @@ public partial class MainWindow
         if (_timer != null) _timer.Interval = TimeSpan.FromMilliseconds(candidate.RefreshMilliseconds);
         _sampler?.Configure(candidate.SelectedAdapterId, candidate.RefreshMilliseconds, adapterChanged);
         ConfigureSystemMetrics();
+        ConfigureTaskbarPanel();
         _appearancePending = true;
         _restorePlacementPending = true;
         if (adapterChanged) { _speedCalculator.Reset(); _latestSpeed = default; _monitoredAdapter = null; }

@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.23.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.23.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
+Version **[1.24.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.24.0)**. See [CHANGELOG.md](CHANGELOG.md) for changes and [ROADMAP.md](ROADMAP.md) for the feature comparison and measurement contract.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -239,3 +239,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Choose **Copy format / কপি করার ফরম্যাট** above the daily copy button: **Plain text** uses the current language; **CSV** includes the fixed English header and exact byte values shared with file export. The format defaults to plain text each time history opens.
 
 Optional system information: right-click → **Display system metrics / সিস্টেমের তথ্য দেখান** to select CPU, physical RAM, reported frequency, busiest GPU engine or disk activity. Default is off. **System and connection details** temporarily collects all these counters and shows IP/link/interface data. Polling stops when no items or details window need it. Windows counters refresh once a second independently of network sampling. Unsupported/stale counters show **Unavailable**. GPU is the busiest physical engine after combining its process contributions; disk is 100 minus total idle time. These are not temperature sensors, and reported CPU frequency may be nominal.
+
+**Taskbar-edge panel / টাস্কবারের পাশে প্যানেল** uses Windows' documented [appbar API](https://learn.microsoft.com/en-us/windows/win32/shell/application-desktop-toolbars) to reserve a thin strip adjacent to the taskbar. It provides network/system values and History/Settings/Disable controls. Select top/bottom and a monitor from the widget menu; missing named monitors fall back to the primary monitor. Hide/show the floating widget separately using the tray. This panel does not embed inside Explorer's taskbar buttons. Shell callbacks and cleanup are tested through an isolated fake API to avoid rearranging the user's desktop; direct Windows 10/11, Explorer restart and mixed-DPI device testing remains part of the compatibility matrix.

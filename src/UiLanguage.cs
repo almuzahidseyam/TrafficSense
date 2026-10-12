@@ -23,7 +23,8 @@ internal enum TextKey
     DailyChartSelection, DailyChartSelectionOutside,
     CopyDay, CopyDaySelect, CopyDayHint, CopyDayDone, CopyDayFailed,
     CopyFormat, CopyPlainText, CopyCsv, CopyCsvHint, Sampling, SampleUnavailable, SampleDelayed, MeasurementHint,
-    DisplayMetrics, SystemDetails, Cpu, Memory, CpuFrequency, Gpu, Disk, NotAvailable, MetricsHint, LinkSpeed, InterfaceCounters
+    DisplayMetrics, SystemDetails, Cpu, Memory, CpuFrequency, Gpu, Disk, NotAvailable, MetricsHint, LinkSpeed, InterfaceCounters,
+    TaskbarPanel, PanelSettings, ClosePanel, PanelHint, PanelTop, PanelMonitor, PanelFollowWidget, PanelUnavailable
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -48,6 +49,15 @@ internal sealed class UiLanguage(string? code = "en")
     private static readonly IReadOnlyDictionary<TextKey, (string English, string Bangla)> Messages =
         new Dictionary<TextKey, (string, string)>
         {
+            [TextKey.TaskbarPanel] = ("Taskbar-edge panel", "টাস্কবারের পাশে প্যানেল"),
+            [TextKey.PanelSettings] = ("Settings", "সেটিংস"),
+            [TextKey.ClosePanel] = ("Disable taskbar-edge panel", "টাস্কবারের পাশের প্যানেল বন্ধ করুন"),
+            [TextKey.PanelTop] = ("Panel at top of screen", "স্ক্রিনের উপরে প্যানেল"),
+            [TextKey.PanelMonitor] = ("Panel monitor", "প্যানেলের মনিটর"),
+            [TextKey.PanelFollowWidget] = ("Widget's monitor", "উইজেটের মনিটর"),
+            [TextKey.PanelUnavailable] = ("Windows could not register the desktop panel. The floating widget remains available.", "Windows-এ ডেস্কটপ প্যানেল চালু করা যায়নি। ভাসমান উইজেট ব্যবহার করতে পারবেন।"),
+            [TextKey.PanelHint] = ("A supported Windows desktop appbar reserves a thin strip beside the taskbar, at the top or bottom of a selected monitor. It is separate from taskbar buttons. The floating widget may be hidden independently. Explorer restart, display/DPI changes and full-screen notifications are handled.",
+                "Windows-এর সমর্থিত desktop appbar নির্বাচিত মনিটরের উপরে বা নিচে টাস্কবারের পাশে জায়গা রাখে। এটি টাস্কবারের বোতামগুলোর থেকে আলাদা। ভাসমান উইজেট আলাদাভাবে লুকাতে পারবেন। Explorer restart, স্ক্রিন/DPI পরিবর্তন ও full-screen বার্তা সামলানো হয়।"),
             [TextKey.DisplayMetrics] = ("Display system metrics", "সিস্টেমের তথ্য দেখান"),
             [TextKey.SystemDetails] = ("System and connection details", "সিস্টেম ও সংযোগের বিস্তারিত"),
             [TextKey.Cpu] = ("CPU", "CPU ব্যবহার"),

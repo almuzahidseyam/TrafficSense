@@ -10,6 +10,9 @@ public class AppSettings
     public bool PositionLocked { get; set; }
     public bool SpeedInBits { get; set; }
     public int DisplayMetrics { get; set; }
+    public bool TaskbarPanel { get; set; }
+    public bool PanelAtTop { get; set; }
+    public string? PanelMonitor { get; set; }
     public int RefreshMilliseconds { get; set; } = 1000;
     public bool GlobalShortcutEnabled { get; set; }
     public string Theme { get; set; } = "Dark";

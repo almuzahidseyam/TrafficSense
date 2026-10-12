@@ -51,11 +51,12 @@ namespace TrafficSense
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
             Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
             Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null,
-            GlobalShortcut? shortcut = null, Func<SystemMetric, SystemMetrics>? readSystemMetrics = null)
+            GlobalShortcut? shortcut = null, Func<SystemMetric, SystemMetrics>? readSystemMetrics = null, IAppBarShell? appBarShell = null)
         {
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
             _readAdapters = readAdapters ?? (() => NetworkSnapshotReader.Read(_sampleTimestamp));
             _readSystemMetrics = readSystemMetrics;
+            _appBarShell = appBarShell;
             _backgroundSampling = readAdapters == null && sampleTimestamp == null;
             _settings = settings;
             _saveSettings = saveSettings;
@@ -90,6 +91,7 @@ namespace TrafficSense
                     NativeWindowPlacement.EnsureVisible(this);
                 _placementReady = true;
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
+                ConfigureTaskbarPanel();
             };
 
             IsVisibleChanged += (_, _) => QueueWidgetRender();
@@ -104,6 +106,7 @@ namespace TrafficSense
                 ApplyKeyboardLanguage();
             };
             SizeChanged += (_, _) => QueueKeepVisible();
+            LocationChanged += (_, _) => _taskbarPanel?.Reposition();
 
             NetworkChange.NetworkAddressChanged += NetworkChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChanged;
@@ -149,6 +152,7 @@ namespace TrafficSense
             _sampler?.Dispose();
             _systemService?.Dispose();
             _systemWindow?.Close();
+            _taskbarPanel?.ReleaseAndClose(); _taskbarPanel = null;
             if (_sampler != null) MergeSampledUsage(_sampler.Consume());
             if (_timer != null)
             {
@@ -226,6 +230,7 @@ namespace TrafficSense
         {
             RefreshNetworkSpeed();
             RefreshSystemMetrics();
+            RefreshTaskbarPanel();
         }
 
         private void NetworkChanged(object? sender, EventArgs e)

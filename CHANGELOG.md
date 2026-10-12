@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.24.0] - 2026-10-13
+
+### Added
+
+- Optional **Taskbar-edge panel** using the documented Windows appbar API. It reserves a strip next to the existing taskbar and displays the same network rates/selected system metrics, with History, Settings and Disable controls. The floating widget can be hidden independently. This is a separate desktop panel, not a child injected into Explorer's taskbar buttons.
+- Top/bottom edge and monitor selection, with the widget's monitor as default and primary-monitor fallback for disconnected named monitors. Position follows shell work-area/display/DPI notifications; Explorer's TaskbarCreated broadcast registers the appbar again. Full-screen and window-arrangement notifications adjust panel visibility/z-order.
+- Immediate saved preferences with rollback, registration-failure fallback to the floating widget, compatible older backups, and reservation/hook cleanup on Disable and Exit.
+- Isolated native WPF probes exercise a simulated shell API boundary for top/bottom positioning, independent visibility, bilingual controls, Explorer/DPI/fullscreen callbacks, save/registration failure, repeated cycles and cleanup. These tests do not reserve or rearrange the user's real desktop; direct Windows 10/11 shell compatibility still needs manual device coverage.
+
+### Upgrading from 1.23.0
+
+- Exit the old widget before upgrading. The panel defaults to off. Enable it from the widget's right-click menu; use the tray to hide/show the floating widget separately.
+
 ## [1.23.0] - 2026-10-13
 
 ### Added
