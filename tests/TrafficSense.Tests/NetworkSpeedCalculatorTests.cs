@@ -4,6 +4,20 @@ namespace TrafficSense.Tests;
 
 public class NetworkSpeedCalculatorTests
 {
+    [Theory]
+    [InlineData(6)]
+    [InlineData(600)]
+    public void LongSamplingGapStartsFreshInterval(double gapSeconds)
+    {
+        var calculator = new NetworkSpeedCalculator();
+        calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 1000, 500) }, TimeSpan.Zero);
+        var resumed = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 9_000_000, 6_000_000) }, TimeSpan.FromSeconds(gapSeconds));
+        var next = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 9_002_000, 6_000_500) }, TimeSpan.FromSeconds(gapSeconds + 1));
+
+        Assert.Equal(default, resumed);
+        Assert.Equal(new NetworkSpeed(2000, 500), next);
+    }
+
     [Fact]
     public void FirstSampleDoesNotCountLifetimeTraffic()
     {
@@ -13,16 +27,44 @@ public class NetworkSpeedCalculatorTests
         Assert.Equal(default, speed);
     }
 
-    [Fact]
-    public void DelayedTickUsesActualElapsedTime()
+    [Theory]
+    [InlineData(2)]
+    [InlineData(5)]
+    public void DelayedTickUsesActualElapsedTime(double seconds)
     {
         var calculator = new NetworkSpeedCalculator();
         calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 1000, 500) }, TimeSpan.Zero);
 
-        var speed = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 5000, 1500) }, TimeSpan.FromSeconds(2));
+        var speed = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 5000, 1500) }, TimeSpan.FromSeconds(seconds));
 
-        Assert.Equal(2000, speed.DownloadBytesPerSecond);
-        Assert.Equal(500, speed.UploadBytesPerSecond);
+        Assert.Equal(4000 / seconds, speed.DownloadBytesPerSecond);
+        Assert.Equal(1000 / seconds, speed.UploadBytesPerSecond);
+    }
+
+    [Fact]
+    public void ResetBetweenTicksDoesNotCountFastReconnectTraffic()
+    {
+        var calculator = new NetworkSpeedCalculator();
+        calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 1000, 500) }, TimeSpan.Zero);
+        calculator.Reset();
+        calculator.Reset(); // Address/availability/resume notifications can overlap.
+        var reconnected = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 9_000_000, 6_000_000) }, TimeSpan.FromSeconds(1));
+        var next = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 9_002_000, 6_000_500) }, TimeSpan.FromSeconds(2));
+
+        Assert.Equal(default, reconnected);
+        Assert.Equal(new NetworkSpeed(2000, 500), next);
+    }
+
+    [Fact]
+    public void BackwardClockStartsFreshInterval()
+    {
+        var calculator = new NetworkSpeedCalculator();
+        calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 1000, 500) }, TimeSpan.FromSeconds(10));
+        var reset = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 9000, 6000) }, TimeSpan.FromSeconds(5));
+        var next = calculator.Update(new[] { new NetworkAdapterSnapshot("wifi", 11_000, 6500) }, TimeSpan.FromSeconds(6));
+
+        Assert.Equal(default, reset);
+        Assert.Equal(new NetworkSpeed(2000, 500), next);
     }
 
     [Fact]

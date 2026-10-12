@@ -16,8 +16,11 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
+        if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.Length == 0) VerifyPackagedEntryPoint();
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
+        if (args.Length == 0) RunChild("--network-recovery");
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         string path = Path.Combine(directory, "settings.json");
@@ -106,11 +109,19 @@ internal static class Program
                 double left = window.Left, top = window.Top;
                 show.PerformClick();
                 Check(!window.IsVisible && !show.Checked && timer.IsEnabled, "Hide stopped monitoring or left the widget visible.");
+                download.Text = "hidden sample sentinel";
+                TimeSpan? hiddenBaseline = (TimeSpan?)baselineField.GetValue(calculator);
+                typeof(MainWindow).GetMethod("RefreshNetworkSpeed", Private)!.Invoke(window, null);
+                Check(download.Text == "hidden sample sentinel" && !Equals(hiddenBaseline, baselineField.GetValue(calculator)),
+                    "Hidden sampling stopped or updated the hidden text/layout.");
                 trayBangla.PerformClick();
                 Check(!window.IsVisible && timer.IsEnabled && bangla.IsChecked && show.Text == "উইজেট দেখান",
                     "Language change while hidden showed/stopped the widget or failed to translate.");
                 typeof(Forms.NotifyIcon).GetMethod("OnDoubleClick", Private)!.Invoke(notify, new object[] { EventArgs.Empty });
+                window.Dispatcher.Invoke(() => { }, DispatcherPriority.Loaded);
                 Check(window.IsVisible && show.Checked, "Tray double-click did not show widget.");
+                var latestSpeed = (NetworkSpeed)typeof(MainWindow).GetField("_latestSpeed", Private)!.GetValue(window)!;
+                Check(download.Text == SpeedFormatter.Format(latestSpeed.DownloadBytesPerSecond), "Showing the widget did not render the latest sampled speed.");
                 Check(Math.Abs(window.Left - left) < 1 && Math.Abs(window.Top - top) < 1, "Hide/show changed the dragged position.");
 
                 typeof(MainWindow).GetMethod("MenuHide_Click", Private)!.Invoke(window, new object[] { window, new RoutedEventArgs() });
@@ -162,22 +173,30 @@ internal static class Program
 
     private static void RunChild(params string[] args)
     {
-        var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false, CreateNoWindow = true };
+        var start = new ProcessStartInfo(Environment.ProcessPath!)
+        {
+            UseShellExecute = false, CreateNoWindow = true,
+            RedirectStandardOutput = true, RedirectStandardError = true
+        };
         if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase))
             start.ArgumentList.Add(Path.Combine(AppContext.BaseDirectory, "TrafficSense.LifecycleTests.dll"));
         foreach (string arg in args) start.ArgumentList.Add(arg);
         using var child = Process.Start(start)!;
+        var output = child.StandardOutput.ReadToEndAsync();
+        var errors = child.StandardError.ReadToEndAsync();
         if (!child.WaitForExit(10000))
         {
             child.Kill();
             throw new InvalidOperationException("Child process did not exit.");
         }
+        Console.Write(output.GetAwaiter().GetResult());
+        Console.Error.Write(errors.GetAwaiter().GetResult());
         Check(child.ExitCode == 0, "Child process failed.");
     }
 
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("SingleFile", "IL3000",
         Justification = "This probe deliberately verifies that CoreLib has no external assembly file in the single-file bundle.")]
-    private static void VerifyBundledRuntime()
+    internal static void VerifyBundledRuntime()
     {
         if (Environment.GetEnvironmentVariable("TRAFFICSENSE_VERIFY_BUNDLE") != "1") return;
         string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!) + Path.DirectorySeparatorChar;

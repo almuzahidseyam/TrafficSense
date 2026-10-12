@@ -78,6 +78,20 @@ Before reporting success, it checks the ZIP's extracted files against the publis
 
 CI uploads the verified ZIP and checksum as `TrafficSense-win-x64-portable`. The release workflow runs the same checks and attaches both files when a `v*` tag is pushed. Ordinary builds and pull requests do not publish a release. Rebuild packages with an updated SDK/runtime for .NET security servicing; the bundled runtime does not automatically use an installed runtime update.
 
+### Measure CPU, memory and long-running stability
+
+```powershell
+./scripts/Test-Stability.ps1 -Seconds 600 -StressIterations 10000
+# A one-hour visible/hidden run (plus warmup and stress):
+./scripts/Test-Stability.ps1 -Seconds 3600 -StressIterations 10000
+```
+
+Use `-DotNet 'C:/path/to/dotnet.exe'` for a custom SDK location. The script publishes the probe with the portable profile and prints a JSON report path in `.artifacts/stability/<run-id>`. It uses an isolated instance gate and temporary settings, without changing the running user's widget or startup registration. A separate test widget and tray icon appear; stress show/hide cycles do not activate the window.
+
+After a 20-second warmup, it measures the real one-second monitor for half the requested duration with the widget shown and half hidden. Reports include process CPU (both one-core and whole-machine percentages), working set, private memory, managed allocations, process/GDI/USER handles, actual sampling ticks and UI heartbeat delays. Working set includes shared runtime pages and is not the same as private memory. The measurements include probe overhead and depend on Windows, hardware, network traffic and whether other windows cover the widget.
+
+The stress phase repeatedly samples live adapters, rebuilds menus, switches language/theme, shows/hides the window, and creates/disposes temporary tray controllers. Stress iterations are accelerated operations, **not equivalent to hours of elapsed time**. After cleanup/GC, the probe checks retained managed/private memory and native resources against generous regression budgets; CPU is recorded rather than gated by a hardware-specific threshold. A bounded parent-process timeout catches a stalled UI. CI runs a shorter 60-second/1,500-iteration check and uploads its JSON report, including on a resource-check failure. Passing a finite run does not guarantee leak-free behavior over days or every Windows/driver combination.
+
 ## Settings & Window Position
 
 - Right-click the widget to change its theme or enable **Start with Windows** (at sign-in).
@@ -90,6 +104,7 @@ CI uploads the verified ZIP and checksum as `TrafficSense-win-x64-portable`. The
 - Only one instance runs per Windows user in the current sign-in session, even when launched from different folders. Starting it again shows the existing widget, including when it was hidden.
 - The system tray icon uses green download and blue upload arrows. Right-click it to toggle **Show widget** or choose **Exit**. Double-click the icon to show the widget.
 - The widget's own right-click menu also has **Hide widget**. Hiding keeps monitoring active and preserves the current position; use Exit to save settings and close the app.
+- Hidden monitoring continues reading counters and calculating speeds, while text/layout rendering waits until the widget is shown again. Showing it renders the latest sample without resetting the monitoring baseline.
 - After a normal exit or crash, another launch can take ownership. Older versions without single-instance support should be closed before running this version.
 
 ## Language / ভাষা
@@ -107,6 +122,16 @@ CI uploads the verified ZIP and checksum as `TrafficSense-win-x64-portable`. The
 - VPN traffic and the underlying Ethernet/Wi-Fi traffic are never summed. To measure only the VPN tunnel, select its adapter explicitly. An underlying connection also includes VPN overhead and traffic outside the tunnel; their readings can differ.
 - Manual selection is remembered across restarts. If that adapter disconnects or disappears, the widget shows zero and waits for it to reconnect. Choose Auto to allow automatic failover.
 - Connecting, disconnecting, or switching adapters starts a fresh speed baseline. Auto does not report a combined total across simultaneous connections. With split tunneling or destination-specific routes, select the adapter whose traffic you want to measure.
+- Sleep/resume clears the previous speed and counter baseline. Address/availability notifications also reset the baseline at the next sample, so a quick reconnect between timer ticks does not count traffic across the interruption. The first sample establishes the new baseline at zero; the following one-second interval reports current speed.
+- A sampling gap longer than five seconds also starts a fresh interval, covering missed power notifications and long UI stalls. Shorter delayed ticks still use their actual elapsed time. These transitions preserve the selected adapter, language, position, and hidden state.
+
+The lifecycle probe includes an isolated recovery check using controlled adapter counters and timestamps. It sends suspend/resume messages only to its test window and calls the production network notification handler from a worker thread; it never sleeps the computer or disconnects a real adapter. It covers manual reconnect, Auto VPN route changes, hidden recovery, repeated notifications and callbacks after Exit. Run it alone with:
+
+```powershell
+dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --network-recovery
+```
+
+The normal lifecycle and portable checks run it automatically. These simulations verify application behavior; physical sleep, Modern Standby and driver-specific reconnect behavior still need a device test.
 
 ## 🤝 Contributing
 
