@@ -7,6 +7,7 @@ namespace TrafficSense
     public partial class App : Application
     {
         private SingleInstanceGate? _instance;
+        private Mutex? _installerMutex;
         private TrayController? _tray;
         private volatile bool _exiting;
         private readonly string? _instanceName;
@@ -53,6 +54,8 @@ namespace TrafficSense
                     return;
                 }
 
+                if (_instanceName == null)
+                    _installerMutex = new Mutex(false, @"Local\TrafficSense.Installer." + Environment.UserName.ToLowerInvariant());
                 var window = _createWindow?.Invoke() ?? new MainWindow();
                 _localization = window.Localization;
                 MainWindow = window;
@@ -78,6 +81,7 @@ namespace TrafficSense
             _exiting = true;
             DisposeResource(_tray, "TrayCleanup");
             DisposeResource(_instance, "InstanceCleanup");
+            DisposeResource(_installerMutex, "InstallerMutexCleanup");
             DispatcherUnhandledException -= App_DispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;

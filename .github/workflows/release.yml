@@ -33,6 +33,13 @@ jobs:
       shell: pwsh
       run: ./scripts/Build-Portable.ps1
 
+    - name: Build and verify per-user installer
+      timeout-minutes: 10
+      shell: pwsh
+      run: |
+        $source = (Get-ChildItem '.artifacts/portable/*/app/TrafficSense.exe' | Select-Object -First 1).DirectoryName
+        ./scripts/Build-Installer.ps1 -SourceDirectory $source -VerifyInstall
+
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
@@ -41,5 +48,7 @@ jobs:
         files: |
           .artifacts/portable/**/TrafficSense.zip
           .artifacts/portable/**/TrafficSense.zip.sha256
+          .artifacts/installer/**/TrafficSense-Setup.exe
+          .artifacts/installer/**/TrafficSense-Setup.exe.sha256
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

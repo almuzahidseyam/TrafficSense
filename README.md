@@ -18,15 +18,17 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.5.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.5.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.11.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.11.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
-2. Download the latest `TrafficSense.zip`.
-3. Extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. The portable package includes .NET 8; releases before 1.3.0 may require a separate .NET 8 Desktop Runtime installation.
+2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
+3. Run Setup to install for your Windows account (no administrator rights required), or extract the entire ZIP and run `TrafficSense.exe` on **64-bit Windows 10/11**. Both packages include .NET 8; releases before 1.3.0 may require a separate .NET 8 Desktop Runtime installation.
+
+Setup creates Start menu shortcuts and an optional desktop shortcut. Remove it through Windows **Installed apps → TrafficSense → Uninstall**. Exit the widget before upgrading/uninstalling; Setup does not close it for you. Settings, usage history and error logs are retained. Uninstall removes the startup entry only when it points to that installed copy. Portable use remains available without installation.
 
 Exit an older running version from its tray menu before opening the new EXE. Hiding it keeps it running, and a second launch will show that older instance. Settings remain in `%APPDATA%`, and the bundled native runtime is extracted to the Windows temporary folder on first launch.
 
-Releases also include `TrafficSense.zip.sha256`. To check a download, compare the result of `Get-FileHash ./TrafficSense.zip -Algorithm SHA256` with that file.
+Releases also include `TrafficSense.zip.sha256` and `TrafficSense-Setup.exe.sha256`. To check a download, compare `Get-FileHash <download> -Algorithm SHA256` with its checksum file.
 
 ## 🛠️ Built With
 
@@ -78,7 +80,7 @@ The script prints paths to `TrafficSense.zip`, its SHA-256 checksum, and the ext
 
 Before reporting success, it checks the ZIP's extracted files against the publish output, publishes the lifecycle probe with the same profile, and exercises its real widget/tray/language/restart behavior with installed-runtime lookup disabled. It verifies embedded CoreLib and WPF native libraries loaded from the bundle's extraction directory, rejecting an external CoreCLR if one is loaded (Windows single-file hosts can link CoreCLR internally). When no user widget is running, it also launches the distributed EXE from the extracted ZIP, confirms bundled/internal CoreCLR in the host trace, and checks secondary-instance activation while holding its instance gate so user settings are untouched. That entry-point check is skipped if a user widget already owns the gate; CI runs it on a fresh Windows runner.
 
-CI uploads the verified ZIP and checksum as `TrafficSense-win-x64-portable`. The release workflow runs the same checks and attaches both files when a `v*` tag is pushed. Ordinary builds and pull requests do not publish a release. Rebuild packages with an updated SDK/runtime for .NET security servicing; the bundled runtime does not automatically use an installed runtime update.
+CI uploads verified ZIP/installer packages and checksums as `TrafficSense-win-x64`. The release workflow runs the same checks and attaches all four files when a `v*` tag is pushed. Ordinary builds and pull requests do not publish a release. Rebuild packages with an updated SDK/runtime for .NET security servicing; the bundled runtime does not automatically use an installed runtime update.
 
 ### Measure CPU, memory and long-running stability
 
@@ -96,7 +98,9 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 
 ## Settings & Window Position
 
-- In the next release, choose **Lock position / অবস্থান লক করুন** from the widget or tray's right-click menu to prevent accidental dragging. Clear the checkmark to move it again. Both menus stay synchronized, including while the widget is hidden. Locking saves the current position immediately; the lock survives restart. Existing settings default to unlocked, and a failed save leaves the previous state and saved position intact.
+- Choose **Reset position / অবস্থান ফিরিয়ে আনুন** from the widget or tray to return to the primary monitor's bottom-right work area. This preserves the lock, visibility and other settings. Failed saves restore the previous position.
+- **Speed unit / গতির একক** selects bytes per second (binary KB/s/MB/s/GB/s, preserving the original display) or decimal bits per second (Kbps/Mbps/Gbps). **Refresh interval / গতি আপডেটের ব্যবধান** offers 0.5, 1 (default) or 2 seconds. Both are saved; speed always uses actual elapsed time. Failed saves restore the previous unit, interval and checkmarks.
+- Choose **Lock position / অবস্থান লক করুন** from the widget or tray's right-click menu to prevent accidental dragging. Clear the checkmark to move it again. Both menus stay synchronized, including while the widget is hidden. Locking saves the current position immediately; the lock survives restart. Existing settings default to unlocked, and a failed save leaves the previous state and saved position intact.
 - Position lock affects manual dragging only. Monitor removal, resolution/DPI/work-area changes and enlarging the widget can still move it into a visible work area.
 - Choose **Text size / লেখার আকার** or **Background transparency / পটভূমির স্বচ্ছতা** from the widget's right-click menu. Text sizes are 12, 14 (default), 16, 18, 20 and 24. Transparency offers Default, 0%, 25%, 50%, 75% and 90%; it changes the background only, keeping text, arrows and menus fully visible. Default restores the previous background appearance.
 - Appearance changes apply immediately and persist across restart and light/dark theme changes. Enlarging the widget keeps it within the monitor work area. Failed saves restore the previous style/checkmarks and preserve the settings file. Older or unsupported saved appearance values use the original defaults.
@@ -135,7 +139,27 @@ dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --error-han
 
 Unit checks cover valid diagnostic records, concurrent writers, bounded rotation, Unicode/oversized details, locked paths and corrupt-settings fallback. The normal lifecycle and portable verification run the error probes automatically. Hard process kills, power loss, stack overflow and other failures that bypass managed handlers may leave no log.
 
-## Check for updates
+## Usage, graph and keyboard controls
+
+Open **Usage and history / ডেটা ব্যবহার ও ইতিহাস** from the widget or tray (or Ctrl+H while the widget is focused). It shows today's and this month's measured upload/download, plus the last two minutes of speed. The graph uses solid download and dashed upload lines, a text summary, and the selected speed unit. It stays independent of widget visibility; repeated opening reuses the same window and exiting closes it.
+
+Totals cover valid sampled intervals while TrafficSense runs, across whichever single connection is selected. Initial/reconnected/reset counters and sleep/stalled/app-off gaps do not count; this avoids counting lifetime counters or VPN/underlying traffic twice. An interval crossing midnight is assigned to its ending local date. Clock/date changes follow the current local date. These are measured totals, not ISP billing figures. The latest 400 days are stored atomically in `%LOCALAPPDATA%\TrafficSense\usage.json`, every minute and on normal exit. A crash/hard shutdown can lose the last unsaved minute. Failed writes retain pending data for retry and log the error without repeated dialogs. Corrupt/unreadable files fall back to an empty ledger.
+
+With the widget focused: **Ctrl+L** lock/unlock, **Ctrl+R** reset position, **Ctrl+H** usage/history, **F1** About, **Escape** hide, **Shift+F10** or the Menu key open the context menu, and **arrow keys** move it by 10 logical pixels (**Shift+arrow** by 1). Position lock blocks keyboard movement too. Menus support standard keyboard navigation. The optional **Global shortcut (Ctrl+Alt+T)** setting shows/hides the widget from any app; it is off by default, is saved when enabled and reports a conflict if the key is unavailable. Registration is released on exit. If a saved shortcut cannot register at startup, its checkbox stays off and the log records the failure; turn it off/on to retry.
+
+Localized screen-reader names/help identify speeds and keyboard commands. History uses Windows system colors, and graph line styles/text complement colors. These improvements are not a claim of a complete accessibility audit. Run isolated checks with `dotnet run --project tests/TrafficSense.LifecycleTests -c Release -- --features`.
+
+### Build and verify Setup
+
+After `Build-Portable.ps1`, use its `app` directory:
+
+```powershell
+./scripts/Build-Installer.ps1 -SourceDirectory '.artifacts/portable/<build-id>/app' -VerifyInstall
+```
+
+This uses the pinned, SHA-256-verified official Inno Setup 7.1.0 compiler in portable mode under `.artifacts/tools`, or an explicit `-Compiler` path. Verification compiles a separate test identity, installs only into a checked temporary workspace directory, verifies payload hashes and repair/upgrade, tests the running-app guard and startup-entry ownership, uninstalls, and checks that user-created files survive. It never launches the installed widget or modifies the real TrafficSense startup value. CI runs these checks before publishing installer assets.
+
+## Manual update checks
 
 Choose **About TrafficSense → Check for updates**. The app contacts GitHub only when you click, compares the latest published stable release with the running version, and offers **View release and download** when a newer version is available. The button opens this project's release page in your default browser; it does not download or install software automatically. A copyable page address remains available if the browser cannot open.
 

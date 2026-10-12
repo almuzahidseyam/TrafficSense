@@ -15,6 +15,19 @@ choose a network adapter, show/hide the widget, or exit.
 
 Settings are stored in %APPDATA%\TrafficSense\settings.json, not beside the EXE.
 This is a portable application, not a portable user-settings directory.
+Right-click for Lock position, Reset position, Usage and history, speed units,
+refresh interval, or optional Ctrl+Alt+T show/hide. With the widget focused:
+Ctrl+L lock, Ctrl+R reset, Ctrl+H history, F1 About, Escape hide, Shift+F10 menu,
+arrow keys move (Shift for fine movement). Lock blocks keyboard movement too.
+Usage totals cover valid intervals while the app runs; sleep/reconnect/app-off
+gaps are excluded. They are not ISP billing totals. Data is saved every minute
+and on normal exit to %LOCALAPPDATA%\TrafficSense\usage.json (latest 400 days).
+The graph shows two minutes of in-memory speed history with solid download and
+dashed upload lines. A hard shutdown can lose the last unsaved minute of usage.
+
+An optional TrafficSense-Setup.exe is available alongside the ZIP on GitHub.
+It installs per user; uninstall through Windows Installed apps. Settings,
+usage and logs are retained. Exit TrafficSense before upgrading/uninstalling.
 Error logs are stored in %LOCALAPPDATA%\TrafficSense\logs\errors.jsonl.
 Choose About TrafficSense from the widget or tray menu to check the app version
 and open the log folder. The address can also be copied from the About window.

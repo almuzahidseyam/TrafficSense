@@ -100,6 +100,21 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Equal(-1, loaded.WindowTop);
     }
 
+    [Fact]
+    public void NewMonitorAndShortcutPreferencesRoundTripAndInvalidIntervalDefaults()
+    {
+        var store = new SettingsStore(FilePath);
+        Assert.True(store.Save(new AppSettings { SpeedInBits = true, RefreshMilliseconds = 500, GlobalShortcutEnabled = true }).Success);
+        var loaded = store.Load();
+        Assert.True(loaded.SpeedInBits);
+        Assert.True(loaded.GlobalShortcutEnabled);
+        Assert.Equal(500, loaded.RefreshMilliseconds);
+        loaded.RefreshMilliseconds = 10000;
+        Assert.True(store.Save(loaded).Success);
+        Assert.Equal(1000, store.Load().RefreshMilliseconds);
+        Assert.True(store.Load().GlobalShortcutEnabled);
+    }
+
     [Theory]
     [InlineData(12, 255, 12, 255)]
     [InlineData(14, 120, 14, 120)]

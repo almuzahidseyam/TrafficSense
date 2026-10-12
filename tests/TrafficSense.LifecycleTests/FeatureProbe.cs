@@ -120,9 +120,15 @@ internal static class FeatureProbe
     { window.UpdateLayout(); window.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle); }
     private static void Render(HistoryWindow history)
     {
+        Drain(history);
         var content = (FrameworkElement)history.Content;
-        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(content.ActualWidth), (int)Math.Ceiling(content.ActualHeight), 96, 96, PixelFormats.Pbgra32);
-        bitmap.Render(content);
+        var dpi = VisualTreeHelper.GetDpi(content);
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(content.ActualWidth * dpi.DpiScaleX),
+            (int)Math.Ceiling(content.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+        var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+            drawing.DrawRectangle(new VisualBrush(content), null, new Rect(0, 0, content.ActualWidth, content.ActualHeight));
+        bitmap.Render(visual);
         string? path = Environment.GetEnvironmentVariable("TRAFFICSENSE_FEATURE_SCREENSHOT");
         if (string.IsNullOrEmpty(path)) return;
         var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));

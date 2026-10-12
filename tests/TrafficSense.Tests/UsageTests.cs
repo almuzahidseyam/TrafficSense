@@ -20,6 +20,16 @@ public sealed class UsageTests
     }
 
     [Fact]
+    public void InvalidLedgerEntriesAreIgnoredAndDuplicateDaysCombine()
+    {
+        var date = new DateOnly(2026, 10, 12);
+        var ledger = new UsageLedger([null!, new(date, -1, 0), new(date, 100, 20), new(date, 200, 40)]);
+        Assert.Single(ledger.Days);
+        Assert.Equal(300, ledger.Today(date).Received);
+        Assert.Equal(60, ledger.Today(date).Sent);
+    }
+
+    [Fact]
     public void DailyAndMonthlyTotalsFollowLocalDateAndSurviveSerialization()
     {
         var ledger = new UsageLedger();

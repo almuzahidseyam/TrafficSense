@@ -16,7 +16,8 @@ internal sealed class HistoryWindow : Window
     private readonly TextBlock _today = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _month = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _hint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
-    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true };
+    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true,
+        Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
 
     internal HistoryWindow(UiLanguage language, UsageLedger usage, Func<DateTimeOffset> localTime, SpeedHistory history, Func<bool> bits)
     {
@@ -26,7 +27,7 @@ internal sealed class HistoryWindow : Window
         ResizeMode = ResizeMode.CanMinimize; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         FontFamily = new FontFamily("Segoe UI, Nirmala UI, Kalpurush"); FontSize = 14;
         Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
-        var panel = new StackPanel { Margin = new Thickness(20) };
+        var panel = new StackPanel { Margin = new Thickness(20), Background = SystemColors.WindowBrush };
         panel.Children.Add(_today); panel.Children.Add(_month); panel.Children.Add(_legend); panel.Children.Add(_graph);
         panel.Children.Add(_hint); panel.Children.Add(_close);
         Content = panel;
