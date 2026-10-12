@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.14.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.14.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.15.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.15.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download `TrafficSense-Setup.exe` for installation, or `TrafficSense.zip` for the portable edition.
@@ -147,7 +147,7 @@ Unit checks cover valid diagnostic records, concurrent writers, bounded rotation
 
 Open **Usage and history / ডেটা ব্যবহার ও ইতিহাস** from the widget or tray (or Ctrl+H while the widget is focused). It shows today's and this month's measured upload/download, plus the last two minutes of speed. The graph uses solid download and dashed upload lines, a text summary, and the selected speed unit. It stays independent of widget visibility; repeated opening reuses the same window and exiting closes it.
 
-Choose **CSV period / CSV সময়সীমা** in that window: **All retained days** (default, up to 400 recorded days), **Month** (current/retained months), or **Date range**. Enter custom boundaries as `YYYY-MM-DD`; both days are included. The selected recorded-day count updates live. Missing/invalid/reversed dates or no matching records disable export with an inline explanation. Choices remain intact during live refresh, language changes and month rollover; reopening the window defaults to all retained days. On smaller screens, scroll to reach the controls.
+Choose **CSV period / CSV সময়সীমা** in that window: **All retained days** (default, up to 400 recorded days), **Month** (current/retained months), or **Date range**. Enter custom boundaries as `YYYY-MM-DD`; both days are included. The selected recorded-day count and **Selected period usage / নির্বাচিত সময়ের ডেটা ব্যবহার** update live with download, upload and combined totals. These summaries use rounded B/KB/MB/GB amounts (1024 bytes per KB); CSV keeps exact bytes. Totals cover the same retained records as the export, including the latest measured traffic. Empty periods show zero with an explanation; invalid dates hide totals until corrected. Missing/invalid/reversed dates or no matching records disable export. Choices remain intact during live refresh, language changes and month rollover; reopening the window defaults to all retained days. On smaller screens, scroll to reach the controls.
 
 Choose **Export CSV… / CSV সংরক্ষণ করুন…** to save those records, including the most recent sampled traffic. The file has stable English columns `Date,DownloadBytes,UploadBytes,TotalBytes`, ascending `yyyy-MM-dd` local dates, and exact integer byte counts regardless of UI language or speed units. It uses comma separators, UTF-8 with BOM and CRLF lines for spreadsheet import. Convert bytes to MiB by dividing by 1,048,576. Days without retained records are omitted. Cancel and failed writes preserve the previous file and local usage; exporting does not clear pending persistence or reset totals.
 

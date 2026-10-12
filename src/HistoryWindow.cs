@@ -93,8 +93,8 @@ internal sealed partial class HistoryWindow : Window
 
     internal bool ExportUsage(string path)
     {
-        if (!TryGetExportRange(out var range)) { UpdateExportFilter(); return false; }
-        if (!_usage.Days.Any(day => range == null || range.Value.Contains(day.Date))) { UpdateExportFilter(); return false; }
+        UpdateExportFilter();
+        if (!_export.IsEnabled || !TryGetExportRange(out var range)) return false;
         var result = UsageCsv.Export(path, _usage, range);
         if (result.Success) return true;
         _diagnostics?.Write("UsageExport", result.Error);
@@ -108,11 +108,11 @@ internal sealed partial class HistoryWindow : Window
     private string Summary(TextKey key, UsageDay day) => _language[key] + "\n" +
         _language[TextKey.Download] + ": " + FormatBytes(day.Received) + "    " +
         _language[TextKey.Upload] + ": " + FormatBytes(day.Sent);
-    internal static string FormatBytes(long bytes)
+    internal static string FormatBytes(decimal bytes)
     {
-        if (bytes >= 1024L * 1024 * 1024) return $"{bytes / (1024d * 1024 * 1024):F2} GB";
-        if (bytes >= 1024 * 1024) return $"{bytes / (1024d * 1024):F2} MB";
-        if (bytes >= 1024) return $"{bytes / 1024d:F2} KB";
+        if (bytes >= 1024L * 1024 * 1024) return $"{bytes / (1024m * 1024 * 1024):F2} GB";
+        if (bytes >= 1024 * 1024) return $"{bytes / (1024m * 1024):F2} MB";
+        if (bytes >= 1024) return $"{bytes / 1024m:F2} KB";
         return $"{bytes} B";
     }
 }
