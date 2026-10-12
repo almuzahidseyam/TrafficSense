@@ -19,6 +19,8 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Null(settings.ScreenLeft);
         Assert.Null(settings.SelectedAdapterId);
         Assert.Equal("en", settings.Language);
+        Assert.Equal(14, settings.WidgetFontSize);
+        Assert.Equal(120, settings.BackgroundOpacity);
     }
 
     [Theory]
@@ -53,6 +55,8 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Equal(100, settings.WindowLeft);
         Assert.Equal(200, settings.WindowTop);
         Assert.Equal("en", settings.Language);
+        Assert.Equal(14, settings.WidgetFontSize);
+        Assert.Equal(120, settings.BackgroundOpacity);
         Assert.True(store.Save(settings).Success);
         using var document = JsonDocument.Parse(File.ReadAllText(FilePath));
         Assert.False(document.RootElement.TryGetProperty("AutoStart", out _));
@@ -66,6 +70,51 @@ public sealed class SettingsStoreTests : IDisposable
         var loaded = store.Load();
         Assert.Equal(-1, loaded.WindowLeft);
         Assert.Equal(-1, loaded.WindowTop);
+    }
+
+    [Theory]
+    [InlineData(12, 255, 12, 255)]
+    [InlineData(14, 120, 14, 120)]
+    [InlineData(16, 191, 16, 191)]
+    [InlineData(18, 128, 18, 128)]
+    [InlineData(20, 64, 20, 64)]
+    [InlineData(24, 26, 24, 26)]
+    [InlineData(13, 200, 14, 120)]
+    [InlineData(0, 0, 14, 120)]
+    [InlineData(-1, -1, 14, 120)]
+    [InlineData(int.MaxValue, int.MaxValue, 14, 120)]
+    public void AppearanceNormalizesAndRoundTripsWithoutLosingOtherSettings(int size, int opacity, int expectedSize, int expectedOpacity)
+    {
+        File.WriteAllText(FilePath, JsonSerializer.Serialize(new AppSettings
+        {
+            WidgetFontSize = size, BackgroundOpacity = opacity, Language = "bn", Theme = "Light",
+            SelectedAdapterId = "manual-id", ScreenLeft = -400
+        }));
+        var store = new SettingsStore(FilePath);
+        var loaded = store.Load();
+        Assert.Equal(expectedSize, loaded.WidgetFontSize);
+        Assert.Equal(expectedOpacity, loaded.BackgroundOpacity);
+        Assert.True(store.Save(loaded).Success);
+        var reopened = store.Load();
+        Assert.Equal(expectedSize, reopened.WidgetFontSize);
+        Assert.Equal(expectedOpacity, reopened.BackgroundOpacity);
+        Assert.Equal("bn", reopened.Language);
+        Assert.Equal("Light", reopened.Theme);
+        Assert.Equal("manual-id", reopened.SelectedAdapterId);
+        Assert.Equal(-400, reopened.ScreenLeft);
+    }
+
+    [Fact]
+    public void InvalidAppearanceIsSanitizedBeforeSavingWithoutChangingCaller()
+    {
+        var settings = new AppSettings { WidgetFontSize = -100, BackgroundOpacity = 999, Language = "bn" };
+        var store = new SettingsStore(FilePath);
+        Assert.True(store.Save(settings).Success);
+        Assert.Equal(-100, settings.WidgetFontSize);
+        Assert.Equal(999, settings.BackgroundOpacity);
+        Assert.Equal(14, store.Load().WidgetFontSize);
+        Assert.Equal(120, store.Load().BackgroundOpacity);
+        Assert.Equal("bn", store.Load().Language);
     }
 
     [Fact]

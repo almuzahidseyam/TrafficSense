@@ -54,10 +54,14 @@ namespace TrafficSense
             _updates = updates;
             _openReleasePage = openReleasePage;
             _settings.Language = UiLanguage.Normalize(_settings.Language);
+            _settings.WidgetFontSize = WidgetAppearance.NormalizeFontSize(_settings.WidgetFontSize);
+            _settings.BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(_settings.BackgroundOpacity);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
+            InitializeAppearanceMenus();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
+            ApplyPendingAppearance();
             
             this.Loaded += (s, e) => 
             {
@@ -67,23 +71,9 @@ namespace TrafficSense
                     NativeWindowPlacement.EnsureVisible(this);
                 _placementReady = true;
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
-                ApplyTheme();
             };
 
-            IsVisibleChanged += (_, _) =>
-            {
-                if (!IsVisible || _renderQueued) return;
-                _renderQueued = true;
-                // A second launch or tray command can show and hide again in
-                // one dispatcher turn. Do not mutate a view that will never
-                // render: transparent-window resources otherwise accumulate.
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
-                {
-                    _renderQueued = false;
-                    if (IsVisible)
-                        RenderNetworkSpeed();
-                }));
-            };
+            IsVisibleChanged += (_, _) => QueueWidgetRender();
 
             SourceInitialized += (_, _) =>
             {
@@ -104,6 +94,23 @@ namespace TrafficSense
                 if (_windowSource is { IsDisposed: false })
                     _windowSource.RemoveHook(WindowMessage);
             };
+        }
+
+        private void QueueWidgetRender()
+        {
+            if (!IsVisible || _renderQueued || _fatalShutdown) return;
+            _renderQueued = true;
+            // Coalesce show/hide and appearance changes into a visible frame.
+            // Resizing a hidden transparent HWND can retain drawing resources.
+            Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+            {
+                _renderQueued = false;
+                if (IsVisible && !_fatalShutdown)
+                {
+                    ApplyPendingAppearance();
+                    RenderNetworkSpeed();
+                }
+            }));
         }
 
         private void StopMonitoring()
@@ -362,13 +369,13 @@ namespace TrafficSense
             var border = (System.Windows.Controls.Border)this.Content;
             if (_settings.Theme == "Light")
             {
-                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(120, 255, 255, 255));
+                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)_settings.BackgroundOpacity, 255, 255, 255));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.Black;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.Black;
             }
             else
             {
-                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(120, 0, 0, 0));
+                border.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)_settings.BackgroundOpacity, 0, 0, 0));
                 TxtDownload.Foreground = System.Windows.Media.Brushes.White;
                 TxtUpload.Foreground = System.Windows.Media.Brushes.White;
             }

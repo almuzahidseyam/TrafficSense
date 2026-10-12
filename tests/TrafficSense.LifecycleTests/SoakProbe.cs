@@ -53,6 +53,7 @@ internal static class SoakProbe
         MethodInfo refresh = typeof(MainWindow).GetMethod("RefreshNetworkSpeed", Private)!;
         MethodInfo adapterMenu = typeof(MainWindow).GetMethod("BuildAdapterMenu", Private)!;
         MethodInfo theme = typeof(MainWindow).GetMethod("MenuTheme_Click", Private)!;
+        MethodInfo appearance = typeof(MainWindow).GetMethod("ChangeAppearance", Private)!;
 
         void Finish()
         {
@@ -66,6 +67,8 @@ internal static class SoakProbe
         {
             try
             {
+                // The previous batch allowed a visible frame with its new size.
+                if (window!.IsVisible) window.Hide();
                 // Yield to rendering/input/timer work between small batches.
                 int end = Math.Min(completedIterations + 10, iterations);
                 while (completedIterations < end)
@@ -76,11 +79,20 @@ internal static class SoakProbe
                     {
                         window!.ChangeLanguage(window.Localization.Code == "en" ? "bn" : "en");
                         theme.Invoke(window, new object[] { window, new RoutedEventArgs() });
+                        int appearanceIndex = completedIterations / 50;
+                        appearance.Invoke(window, new object[]
+                        {
+                            WidgetAppearance.FontSizes[appearanceIndex % WidgetAppearance.FontSizes.Count],
+                            WidgetAppearance.BackgroundOpacities[appearanceIndex % WidgetAppearance.BackgroundOpacities.Count]
+                        });
                         // ShowActivated=false keeps stress cycles from taking
                         // focus away from the user. Activation is covered by
                         // the separate lifecycle probe.
                         window.Show();
                         window.Hide();
+                        // Exercise both rapid unrendered toggles and a rendered
+                        // size change before the next background batch hides it.
+                        window.Show();
                         // Test native icon/menu ownership repeatedly as well as
                         // the one long-lived production tray controller.
                         using var temporaryTray = new TrayController(window);

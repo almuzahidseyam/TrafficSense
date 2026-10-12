@@ -19,6 +19,8 @@ internal static class Program
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
         if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.FirstOrDefault() == "--updates") return UpdateProbe.Run();
+        if (args.FirstOrDefault() == "--appearance") return AppearanceProbe.Run();
+        if (args.FirstOrDefault() == "--appearance-restart") return AppearanceProbe.VerifyRestart(args[1]);
         if (args.FirstOrDefault() == "--update-live") return UpdateProbe.CheckLive();
         if (args.FirstOrDefault() is "--about" or "--about-fatal") return AboutProbe.Run(args[0] == "--about-fatal");
         if (args.FirstOrDefault() == "--error-case") return ErrorHandlingProbe.RunCase(args[1], args[2]);
@@ -31,6 +33,7 @@ internal static class Program
             RunChild("--about");
             RunChild("--about-fatal");
             RunChild("--updates");
+            RunChild("--appearance");
             ErrorHandlingProbe.RunAll();
         }
         string directory = Path.Combine(Path.GetTempPath(), "TrafficSense.Lifecycle", Guid.NewGuid().ToString("N"));
@@ -183,7 +186,7 @@ internal static class Program
         app.Resources.Add(typeof(MainWindow), style);
     }
 
-    private static void RunChild(params string[] args)
+    internal static void RunChild(params string[] args)
     {
         var start = new ProcessStartInfo(Environment.ProcessPath!)
         {

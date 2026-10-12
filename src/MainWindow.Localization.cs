@@ -19,6 +19,7 @@ public partial class MainWindow
         TxtDownload.ToolTip = Localization[TextKey.DownloadSpeed];
         TxtUpload.ToolTip = Localization[TextKey.UploadSpeed];
         UpdateLanguageChecks();
+        ApplyAppearanceLanguage();
         ApplyAutoStartStatus(_startupStatus);
         BuildAdapterMenu();
         ApplyNetworkTooltip();
