@@ -4,9 +4,20 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-12
+
 ### Added
 
 - Saved widget text-size and background-transparency choices in the widget's English/Bengali context menu. Changes apply immediately, resize/clamp the widget to its monitor work area and preserve readable text/arrows. Failed saves keep the previous appearance and selections; older settings retain the original appearance.
+
+### Fixed
+
+- Rapid appearance changes while the transparent widget is hidden no longer retain native drawing resources. Appearance updates are combined into the next visible frame; hidden monitoring continues normally.
+
+### Upgrading from 1.4.0
+
+- Exit the current widget from its tray menu, extract the new ZIP and run `TrafficSense.exe`. Existing settings are preserved. The Windows x64 portable package includes .NET 8.
+- Right-click the widget to choose **Text size** or **Background transparency**. Text size 14 and Default transparency retain the original appearance; text and arrows keep full opacity.
 
 ## [1.4.0] - 2026-10-12
 
@@ -57,7 +68,8 @@ Changes are grouped by release. Release dates use the publication date.
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.2.0
