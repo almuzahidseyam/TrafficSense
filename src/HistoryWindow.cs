@@ -21,9 +21,9 @@ internal sealed partial class HistoryWindow : Window
     private readonly TextBlock _today = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _month = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _hint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
-    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 5, Style = null,
+    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 6, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
-    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 4, Style = null,
+    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 5, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
 
     internal HistoryWindow(UiLanguage language, UsageLedger usage, Func<DateTimeOffset> localTime, SpeedHistory history, Func<bool> bits,
@@ -41,6 +41,7 @@ internal sealed partial class HistoryWindow : Window
         panel.Children.Add(_today); panel.Children.Add(_month); panel.Children.Add(_legend); panel.Children.Add(_graph);
         panel.Children.Add(_hint);
         InitializeExportFilter(panel);
+        InitializeDailyUsage(panel);
         var buttons = new DockPanel { LastChildFill = false };
         DockPanel.SetDock(_close, Dock.Right); DockPanel.SetDock(_export, Dock.Left);
         buttons.Children.Add(_close); buttons.Children.Add(_export); panel.Children.Add(buttons);
@@ -57,7 +58,14 @@ internal sealed partial class HistoryWindow : Window
         };
         SizeChanged += (_, _) => QueueHistoryPlacement();
         _language.Changed += LanguageChanged;
-        Closed += (_, _) => _language.Changed -= LanguageChanged;
+        Closed += (_, _) =>
+        {
+            _language.Changed -= LanguageChanged;
+            // Detach the collection view and cell bindings when the window closes.
+            _dailyUsage.ItemsSource = null;
+            _dailyRows.Clear();
+            _dailyUsage.Columns.Clear();
+        };
         Refresh();
     }
 
