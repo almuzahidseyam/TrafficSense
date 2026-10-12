@@ -11,15 +11,21 @@ public partial class MainWindow
     {
         MenuNetworkAdapter.Header = Localization[TextKey.NetworkAdapter];
         MenuAutoStart.Header = Localization[TextKey.StartWithWindows];
+        MenuPositionLock.Header = Localization[TextKey.LockPosition];
+        MenuPositionLock.IsChecked = PositionLocked;
+        MenuResetPosition.Header = Localization[TextKey.ResetPosition];
         MenuTheme.Header = Localization[TextKey.SwitchTheme];
         MenuLanguage.Header = Localization[TextKey.Language];
         MenuHide.Header = Localization[TextKey.HideWidget];
         MenuAbout.Header = Localization[TextKey.About];
+        MenuHistory.Header = Localization[TextKey.History];
         MenuExit.Header = Localization[TextKey.Exit];
         TxtDownload.ToolTip = Localization[TextKey.DownloadSpeed];
         TxtUpload.ToolTip = Localization[TextKey.UploadSpeed];
         UpdateLanguageChecks();
         ApplyAppearanceLanguage();
+        ApplyMonitorLanguage();
+        ApplyKeyboardLanguage();
         ApplyAutoStartStatus(_startupStatus);
         BuildAdapterMenu();
         ApplyNetworkTooltip();

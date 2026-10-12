@@ -1,8 +1,55 @@
 # Changelog
 
-Changes are grouped by release. Release dates use the publication date.
+Published releases carry their publication date. Intermediate development milestones below 1.11.0 were bundled into 1.11.0 rather than published separately.
 
 ## [Unreleased]
+
+## [1.11.0] - 2026-10-12
+
+### Added
+
+- Saved position lock/unlock and one-click position reset from widget/tray menus.
+- Saved byte/bit speed units and 0.5/1/2-second refresh intervals.
+- Daily/monthly measured upload/download totals with bounded, atomic local persistence, and a two-minute speed graph in Usage and history.
+- Keyboard controls, optional Ctrl+Alt+T global show/hide shortcut, screen-reader names/help and graph line/text alternatives to color.
+- Per-user Windows installer/uninstaller alongside the self-contained portable ZIP. In-use upgrades are blocked, uninstall removes only startup entries pointing to that installed copy, and settings/usage/logs are preserved.
+
+### Upgrading from 1.5.0
+
+- Exit the old widget from its tray menu. Run `TrafficSense-Setup.exe`, or extract `TrafficSense.zip` and run `TrafficSense.exe`. Both include .NET 8 and support Windows 10/11 x64. Settings remain compatible.
+- Usage totals cover valid intervals measured while the app runs, across selected connections; sleep/reconnect/app-off gaps are excluded. Totals use local dates and are not ISP billing figures. Normally up to one minute of unsaved usage can be lost on a crash or hard shutdown; failed writes can leave more pending data.
+- Right-click the widget or tray for position controls and Usage and history. Widget menus also offer units, refresh interval and an optional global shortcut (off by default). With the widget focused: Ctrl+L lock, Ctrl+R reset, Ctrl+H history, F1 About, Escape hide, Shift+F10 menu, arrows move (Shift for fine movement).
+
+## [1.10.0] - Development milestone
+
+### Added
+
+- Keyboard commands for locking, resetting, history, About, hiding, context menu and moving the focused widget. Optional saved Ctrl+Alt+T global show/hide shortcut detects conflicts and releases registration on exit/fatal shutdown. Screen-reader names/help, standard system colors in history, and text/dashed-line alternatives to graph colors improve accessibility.
+
+## [1.9.0] - Development milestone
+
+### Added
+
+- Bounded, in-memory two-minute download/upload graph in Usage and history. It follows the selected speed unit, uses distinct solid/dashed lines and a textual current-speed summary, and leaves gaps across suspended sampling. Hidden widget monitoring continues; history is not collected outside the app's runtime.
+
+## [1.8.0] - Development milestone
+
+### Added
+
+- Local daily/monthly upload/download totals for valid measured intervals on the selected connection. Bounded history (400 days) is atomically saved every minute and on normal exit in `%LOCALAPPDATA%/TrafficSense/usage.json`. Sleep/reconnect/app-off gaps and initial counter baselines do not inflate totals. Usage/history opens from the widget or tray and follows the UI language.
+
+## [1.7.0] - Development milestone
+
+### Added
+
+- Saved byte/bit speed units (legacy binary KB/s–GB/s or decimal Kbps–Gbps) and 0.5/1/2-second refresh intervals. Changes preserve the measurement baseline; actual elapsed time determines speed. Failed saves restore the menu/timer state.
+
+## [1.6.0] - Development milestone
+
+### Added
+
+- Saved **Lock position** setting in the widget and tray menus, with English/Bengali labels and synchronized checkmarks. Locking saves the current position and prevents manual dragging; unlocking restores dragging. Monitor/work-area recovery and appearance resizing still keep the widget visible. Failed saves restore the previous state and coordinates. Existing settings remain unlocked.
+- One-click **Reset position** from widget/tray menus returns to the primary monitor's bottom-right work area, keeps the lock/visibility and other preferences, and rolls back on save failure.
 
 ## [1.5.0] - 2026-10-12
 
@@ -68,7 +115,8 @@ Changes are grouped by release. Release dates use the publication date.
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.5.0...v1.11.0
 [1.5.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.2.0...v1.3.0

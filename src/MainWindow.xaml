@@ -10,6 +10,7 @@
         WindowStyle="None" AllowsTransparency="True" Background="#01000000"
         Topmost="True" ResizeMode="NoResize" ShowInTaskbar="False"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Focusable="True" PreviewKeyDown="Widget_PreviewKeyDown"
         Closing="Window_Closing">
     
     <Border Background="#60000000" CornerRadius="4" Margin="2" Padding="8,4">
@@ -19,15 +20,21 @@
                     <MenuItem Header="Auto (one connection)" />
                 </MenuItem>
                 <MenuItem Header="Start with Windows" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
+                <MenuItem Header="Lock position" IsCheckable="True" x:Name="MenuPositionLock" Click="MenuPositionLock_Click" />
+                <MenuItem Header="Reset position" x:Name="MenuResetPosition" Click="MenuResetPosition_Click" />
                 <MenuItem Header="Switch Theme (Light/Dark)" x:Name="MenuTheme" Click="MenuTheme_Click" />
                 <MenuItem Header="Text size" x:Name="MenuFontSize" />
                 <MenuItem Header="Background transparency" x:Name="MenuTransparency" />
+                <MenuItem Header="Speed unit" x:Name="MenuSpeedUnit" />
+                <MenuItem Header="Refresh interval" x:Name="MenuRefreshInterval" />
+                <MenuItem Header="Global shortcut (Ctrl+Alt+T)" x:Name="MenuShortcut" IsCheckable="True" Click="MenuShortcut_Click" />
                 <MenuItem Header="Language" x:Name="MenuLanguage">
                     <MenuItem Header="English" x:Name="MenuEnglish" Tag="en" IsCheckable="True" Click="MenuLanguage_Click" />
                     <MenuItem Header="বাংলা" x:Name="MenuBangla" Tag="bn" IsCheckable="True" Click="MenuLanguage_Click" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="About TrafficSense" x:Name="MenuAbout" Click="MenuAbout_Click" />
+                <MenuItem Header="Usage and history" x:Name="MenuHistory" Click="MenuHistory_Click" />
                 <MenuItem Header="Hide widget" x:Name="MenuHide" Click="MenuHide_Click" />
                 <MenuItem Header="Exit" x:Name="MenuExit" Click="MenuExit_Click" />
             </ContextMenu>

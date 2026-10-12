@@ -17,6 +17,7 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Equal("Dark", settings.Theme);
         Assert.Equal(-1, settings.WindowLeft);
         Assert.Null(settings.ScreenLeft);
+        Assert.False(settings.PositionLocked);
         Assert.Null(settings.SelectedAdapterId);
         Assert.Equal("en", settings.Language);
         Assert.Equal(14, settings.WidgetFontSize);
@@ -54,12 +55,39 @@ public sealed class SettingsStoreTests : IDisposable
         var settings = store.Load();
         Assert.Equal(100, settings.WindowLeft);
         Assert.Equal(200, settings.WindowTop);
+        Assert.False(settings.PositionLocked);
         Assert.Equal("en", settings.Language);
         Assert.Equal(14, settings.WidgetFontSize);
         Assert.Equal(120, settings.BackgroundOpacity);
         Assert.True(store.Save(settings).Success);
         using var document = JsonDocument.Parse(File.ReadAllText(FilePath));
         Assert.False(document.RootElement.TryGetProperty("AutoStart", out _));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void PositionLockRoundTripsWithoutLosingOtherPreferences(bool locked)
+    {
+        var store = new SettingsStore(FilePath);
+        var settings = new AppSettings
+        {
+            PositionLocked = locked, ScreenLeft = -1200, ScreenTop = 100,
+            WindowLeft = -800, WindowTop = 66, Theme = "Light", Language = "bn",
+            SelectedAdapterId = "manual", WidgetFontSize = 18, BackgroundOpacity = 64
+        };
+        Assert.True(store.Save(settings).Success);
+        var loaded = store.Load();
+        Assert.Equal(locked, loaded.PositionLocked);
+        Assert.Equal(-1200, loaded.ScreenLeft);
+        Assert.Equal(100, loaded.ScreenTop);
+        Assert.Equal(-800, loaded.WindowLeft);
+        Assert.Equal(66, loaded.WindowTop);
+        Assert.Equal("Light", loaded.Theme);
+        Assert.Equal("bn", loaded.Language);
+        Assert.Equal("manual", loaded.SelectedAdapterId);
+        Assert.Equal(18, loaded.WidgetFontSize);
+        Assert.Equal(64, loaded.BackgroundOpacity);
     }
 
     [Fact]
@@ -70,6 +98,21 @@ public sealed class SettingsStoreTests : IDisposable
         var loaded = store.Load();
         Assert.Equal(-1, loaded.WindowLeft);
         Assert.Equal(-1, loaded.WindowTop);
+    }
+
+    [Fact]
+    public void NewMonitorAndShortcutPreferencesRoundTripAndInvalidIntervalDefaults()
+    {
+        var store = new SettingsStore(FilePath);
+        Assert.True(store.Save(new AppSettings { SpeedInBits = true, RefreshMilliseconds = 500, GlobalShortcutEnabled = true }).Success);
+        var loaded = store.Load();
+        Assert.True(loaded.SpeedInBits);
+        Assert.True(loaded.GlobalShortcutEnabled);
+        Assert.Equal(500, loaded.RefreshMilliseconds);
+        loaded.RefreshMilliseconds = 10000;
+        Assert.True(store.Save(loaded).Success);
+        Assert.Equal(1000, store.Load().RefreshMilliseconds);
+        Assert.True(store.Load().GlobalShortcutEnabled);
     }
 
     [Theory]

@@ -26,6 +26,8 @@ namespace TrafficSense
         private readonly Action<string>? _launchLogFolder;
         private readonly UpdateChecker? _updates;
         private readonly Action<Uri>? _openReleasePage;
+        private readonly Action _dragMove;
+        private readonly GlobalShortcut _shortcut;
         private bool _fatalShutdown;
         private NetworkAdapterInfo? _monitoredAdapter;
         private NetworkSpeed _latestSpeed;
@@ -36,13 +38,17 @@ namespace TrafficSense
         private bool _placementQueued;
         private bool _renderQueued;
 
-        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save, diagnostics: DiagnosticLog.Default) { }
+        public MainWindow() : this(SettingsManager.Load(), SettingsManager.Save, diagnostics: DiagnosticLog.Default,
+            usageStore: new UsageStore(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "TrafficSense", "usage.json"), DiagnosticLog.Default)) { }
 
         internal MainWindow(AppSettings settings, Func<AppSettings, SettingsSaveResult> saveSettings,
             Action<string>? reportError = null,
             Func<IReadOnlyCollection<NetworkAdapterInfo>>? readAdapters = null,
             Func<TimeSpan>? sampleTimestamp = null, DiagnosticLog? diagnostics = null,
-            Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null)
+            Action<string>? launchLogFolder = null, UpdateChecker? updates = null, Action<Uri>? openReleasePage = null,
+            Action? dragMove = null, UsageStore? usageStore = null, Func<DateTimeOffset>? localTime = null,
+            GlobalShortcut? shortcut = null)
         {
             _readAdapters = readAdapters ?? NetworkSnapshotReader.Read;
             _sampleTimestamp = sampleTimestamp ?? (() => _samplingClock.Elapsed);
@@ -53,12 +59,19 @@ namespace TrafficSense
             _launchLogFolder = launchLogFolder;
             _updates = updates;
             _openReleasePage = openReleasePage;
+            _dragMove = dragMove ?? DragMove;
+            _shortcut = shortcut ?? new GlobalShortcut();
+            _usageStore = usageStore;
+            _usage = usageStore?.Load() ?? new();
+            _localTime = localTime ?? (() => DateTimeOffset.Now);
             _settings.Language = UiLanguage.Normalize(_settings.Language);
             _settings.WidgetFontSize = WidgetAppearance.NormalizeFontSize(_settings.WidgetFontSize);
             _settings.BackgroundOpacity = WidgetAppearance.NormalizeBackgroundOpacity(_settings.BackgroundOpacity);
+            _settings.RefreshMilliseconds = MonitorPreferences.NormalizeInterval(_settings.RefreshMilliseconds);
             Localization = new UiLanguage(_settings.Language);
             InitializeComponent();
             InitializeAppearanceMenus();
+            InitializeMonitorMenus();
             Localization.Changed += Localization_Changed;
             ApplyLanguage();
             ApplyPendingAppearance();
@@ -79,6 +92,10 @@ namespace TrafficSense
             {
                 _windowSource = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
                 _windowSource?.AddHook(WindowMessage);
+                _shortcut.Attach(new WindowInteropHelper(this).Handle);
+                if (_settings.GlobalShortcutEnabled && !_shortcut.SetEnabled(true))
+                    _diagnostics?.Write("Shortcut", "Ctrl+Alt+T is unavailable.");
+                ApplyKeyboardLanguage();
             };
             SizeChanged += (_, _) => QueueKeepVisible();
 
@@ -88,7 +105,10 @@ namespace TrafficSense
             Closed += (_, _) =>
             {
                 StopMonitoring();
+                _shortcut.Dispose();
                 CloseAbout();
+                CloseHistory();
+                FlushUsage();
                 Localization.Changed -= Localization_Changed;
                 _placementReady = false;
                 if (_windowSource is { IsDisposed: false })
@@ -129,12 +149,20 @@ namespace TrafficSense
         {
             _fatalShutdown = true;
             StopMonitoring();
+            _shortcut.Dispose();
             CloseAbout();
+            CloseHistory();
             IsEnabled = false;
         }
 
         private IntPtr WindowMessage(IntPtr window, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (message == 0x0312 && wParam.ToInt64() == GlobalShortcut.Id && _shortcut.Enabled && !_fatalShutdown)
+            {
+                if (IsVisible) Hide(); else ShowWidget();
+                handled = true;
+                return IntPtr.Zero;
+            }
             const int WmPowerBroadcast = 0x0218;
             const int PbtApmSuspend = 0x0004;
             const int PbtApmResumeSuspend = 0x0007;
@@ -172,7 +200,7 @@ namespace TrafficSense
         {
             RefreshNetworkSpeed();
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Interval = TimeSpan.FromMilliseconds(_settings.RefreshMilliseconds);
             _timer.Tick += Timer_Tick;
             _timer.Start();
         }
@@ -197,8 +225,10 @@ namespace TrafficSense
                 _speedCalculator.Reset();
             var adapter = _adapterSelection.Select(adapters, _settings.SelectedAdapterId);
             NetworkAdapterSnapshot[] snapshots = adapter?.Snapshot is { } snapshot ? [snapshot] : [];
-            _latestSpeed = _speedCalculator.Update(snapshots, _sampleTimestamp());
+            var timestamp = _sampleTimestamp();
+            _latestSpeed = _speedCalculator.Update(snapshots, timestamp);
             _monitoredAdapter = adapter;
+            RecordTraffic(timestamp);
             // Hidden transparent WPF windows do not need text/layout updates.
             // Keep sampling so showing the widget uses the latest interval.
             if (IsVisible)
@@ -208,8 +238,8 @@ namespace TrafficSense
         private void RenderNetworkSpeed()
         {
             if (_fatalShutdown) return;
-            TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond);
-            TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond);
+            TxtDownload.Text = SpeedFormatter.Format(_latestSpeed.DownloadBytesPerSecond, _settings.SpeedInBits);
+            TxtUpload.Text = SpeedFormatter.Format(_latestSpeed.UploadBytesPerSecond, _settings.SpeedInBits);
             ApplyNetworkTooltip();
         }
 
@@ -285,11 +315,8 @@ namespace TrafficSense
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-                NativeWindowPlacement.EnsureVisible(this);
-            }
+            if (e.ButtonState == MouseButtonState.Pressed) Focus();
+            TryMoveByDrag(e.ButtonState);
         }
 
         internal void ShowWidget()

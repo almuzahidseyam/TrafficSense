@@ -40,6 +40,10 @@ internal static class SoakProbe
             () => new MainWindow(new AppSettings { WindowLeft = 30, WindowTop = 150 }, store.Save, errors.Add)
                 { ShowActivated = false, Topmost = false });
         app.InitializeComponent();
+        var historyStyle = new Style(typeof(HistoryWindow));
+        historyStyle.Setters.Add(new Setter(Window.ShowActivatedProperty, false));
+        historyStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0d));
+        app.Resources.Add(typeof(HistoryWindow), historyStyle);
         using var process = Process.GetCurrentProcess();
         MainWindow? window = null;
         DispatcherTimer? monitor = null, sampler = null;
@@ -69,6 +73,7 @@ internal static class SoakProbe
             {
                 // The previous batch allowed a visible frame with its new size.
                 if (window!.IsVisible) window.Hide();
+                foreach (var history in app.Windows.OfType<HistoryWindow>().ToArray()) history.Close();
                 // Yield to rendering/input/timer work between small batches.
                 int end = Math.Min(completedIterations + 10, iterations);
                 while (completedIterations < end)
@@ -96,6 +101,10 @@ internal static class SoakProbe
                         // Test native icon/menu ownership repeatedly as well as
                         // the one long-lived production tray controller.
                         using var temporaryTray = new TrayController(window);
+                        window.ChangePositionLock(!window.PositionLocked);
+                        window.ChangeMonitorPreferences(appearanceIndex % 2 == 0,
+                            MonitorPreferences.Intervals[appearanceIndex % MonitorPreferences.Intervals.Count]);
+                        window.ShowHistory();
                     }
                     completedIterations++;
                 }
@@ -118,6 +127,9 @@ internal static class SoakProbe
         app.Startup += (_, _) => app.Dispatcher.BeginInvoke(new Action(() =>
         {
             window = (MainWindow)app.MainWindow;
+            window.ShowHistory();
+            app.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            { foreach (var history in app.Windows.OfType<HistoryWindow>().ToArray()) history.Close(); }));
             Program.VerifyBundledRuntime();
             monitor = (DispatcherTimer)typeof(MainWindow).GetField("_timer", Private)!.GetValue(window)!;
             monitor.Tick += (_, _) =>
