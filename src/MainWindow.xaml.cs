@@ -26,7 +26,10 @@ namespace TrafficSense
             
             this.Loaded += (s, e) => 
             {
-                NativeWindowPlacement.Restore(this, _settings);
+                if (!_placementReady)
+                    NativeWindowPlacement.Restore(this, _settings);
+                else
+                    NativeWindowPlacement.EnsureVisible(this);
                 _placementReady = true;
                 ApplyAutoStartStatus(SettingsManager.GetAutoStart());
                 ApplyTheme();
@@ -169,6 +172,16 @@ namespace TrafficSense
                 NativeWindowPlacement.EnsureVisible(this);
             }
         }
+
+        internal void ShowWidget()
+        {
+            if (WindowState == WindowState.Minimized) WindowState = WindowState.Normal;
+            Show();
+            NativeWindowPlacement.EnsureVisible(this);
+            Activate();
+        }
+
+        private void MenuHide_Click(object sender, RoutedEventArgs e) => Hide();
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

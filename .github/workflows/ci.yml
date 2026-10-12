@@ -19,3 +19,6 @@ jobs:
         run: dotnet build src/TrafficSense.csproj -c Release
       - name: Run regression tests
         run: dotnet test tests/TrafficSense.Tests/TrafficSense.Tests.csproj -c Release
+      - name: Verify Windows tray and process lifecycle
+        timeout-minutes: 2
+        run: dotnet run --project tests/TrafficSense.LifecycleTests/TrafficSense.LifecycleTests.csproj -c Release
