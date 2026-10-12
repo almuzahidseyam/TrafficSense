@@ -18,7 +18,7 @@ TrafficSense is a lightweight real-time network speed monitor for Windows. Built
 
 ## 📥 Download & Installation
 
-Version **[1.4.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.4.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
+Version **[1.5.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.5.0)**. See [CHANGELOG.md](CHANGELOG.md) for the changes and upgrade instructions.
 
 1. Go to the [Releases](https://github.com/almuzahidseyam/TrafficSense/releases) page.
 2. Download the latest `TrafficSense.zip`.
@@ -96,8 +96,8 @@ The stress phase repeatedly samples live adapters, rebuilds menus, switches lang
 
 ## Settings & Window Position
 
-- Development builds add **Text size / লেখার আকার** and **Background transparency / পটভূমির স্বচ্ছতা** to the widget's right-click menu. Text sizes are 12, 14 (default), 16, 18, 20 and 24. Transparency offers Default, 0%, 25%, 50%, 75% and 90%; it changes the background only, keeping text, arrows and menus fully visible. Default restores the previous background appearance.
-- Appearance changes apply immediately and persist across restart and light/dark theme changes. Enlarging the widget keeps it within the monitor work area. Failed saves restore the previous style/checkmarks and preserve the settings file. Older or unsupported saved appearance values use the original defaults. This feature is listed under Unreleased in the changelog.
+- Choose **Text size / লেখার আকার** or **Background transparency / পটভূমির স্বচ্ছতা** from the widget's right-click menu. Text sizes are 12, 14 (default), 16, 18, 20 and 24. Transparency offers Default, 0%, 25%, 50%, 75% and 90%; it changes the background only, keeping text, arrows and menus fully visible. Default restores the previous background appearance.
+- Appearance changes apply immediately and persist across restart and light/dark theme changes. Enlarging the widget keeps it within the monitor work area. Failed saves restore the previous style/checkmarks and preserve the settings file. Older or unsupported saved appearance values use the original defaults.
 - Right-click the widget to change its theme or enable **Start with Windows** (at sign-in).
 - Settings are stored in `%APPDATA%\TrafficSense\settings.json`. Corrupt settings fall back to defaults; failed saves show an error and preserve the previous file.
 - Startup registration is updated only when you change **Start with Windows**. Its checkbox reflects the registration for the current executable, independently of the settings file. After moving the app, enable it again from its new location.
@@ -174,7 +174,7 @@ The application version is set in `src/TrafficSense.csproj`; the same value is u
 Before publishing, add or update the matching section in [CHANGELOG.md](CHANGELOG.md), then run:
 
 ```powershell
-./scripts/Prepare-Release.ps1 -Tag v1.4.0
+./scripts/Prepare-Release.ps1 -Tag v1.5.0
 ```
 
 This validates that the proposed tag matches the app version and extracts the corresponding notes into `.artifacts/release-notes.md`. It does not create a tag or GitHub release. CI validates the notes on ordinary builds. The portable ZIP includes the changelog and generated `RELEASE-NOTES.md`; packaging checks both the executable metadata and the bundled app's version against the project version.
