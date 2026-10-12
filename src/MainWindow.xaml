@@ -15,7 +15,10 @@
     <Border Background="#60000000" CornerRadius="4" Margin="2" Padding="8,4">
         <Border.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Auto Start on Boot" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
+                <MenuItem Header="Network adapter" x:Name="MenuNetworkAdapter" SubmenuOpened="MenuNetworkAdapter_Opened">
+                    <MenuItem Header="Auto (one connection)" />
+                </MenuItem>
+                <MenuItem Header="Start with Windows" IsCheckable="True" x:Name="MenuAutoStart" Click="MenuAutoStart_Click" />
                 <MenuItem Header="Switch Theme (Light/Dark)" Click="MenuTheme_Click" />
                 <Separator />
                 <MenuItem Header="Exit" Click="MenuExit_Click" />
