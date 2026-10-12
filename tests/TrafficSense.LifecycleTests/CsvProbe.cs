@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TrafficSense;
 
-internal static class CsvProbe
+internal static partial class CsvProbe
 {
     private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
     internal static int Run()
@@ -224,6 +224,7 @@ internal static class CsvProbe
                 }
                 VerifyLargeDailyList(language, now);
                 VerifyZeroChart(language, now);
+                VerifyCopyUsage(language, now, root);
                 main.Close(); passed = true;
             }
             catch (Exception error) { Console.Error.WriteLine(error); app.Shutdown(1); }

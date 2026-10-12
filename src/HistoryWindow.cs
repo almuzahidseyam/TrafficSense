@@ -16,22 +16,24 @@ internal sealed partial class HistoryWindow : Window
     private readonly DiagnosticLog? _diagnostics;
     private readonly Action<string>? _reportError;
     private readonly Func<string?> _chooseExportPath;
+    private readonly Action<string> _copyText;
     private readonly SpeedGraph _graph = new() { Height = 170, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _legend = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 10) };
     private readonly TextBlock _today = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _month = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _hint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
-    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 6, Style = null,
+    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 7, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
-    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 5, Style = null,
+    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 6, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
 
     internal HistoryWindow(UiLanguage language, UsageLedger usage, Func<DateTimeOffset> localTime, SpeedHistory history, Func<bool> bits,
-        DiagnosticLog? diagnostics = null, Action<string>? reportError = null, Func<string?>? chooseExportPath = null)
+        DiagnosticLog? diagnostics = null, Action<string>? reportError = null, Func<string?>? chooseExportPath = null, Action<string>? copyText = null)
     {
         _language = language; _usage = usage; _localTime = localTime;
         _history = history; _bits = bits;
         _diagnostics = diagnostics; _reportError = reportError; _chooseExportPath = chooseExportPath ?? ChooseExportPath;
+        _copyText = copyText ?? Clipboard.SetText;
         Width = 480; MinWidth = 360; SizeToContent = SizeToContent.Height;
         MaxHeight = SystemParameters.WorkArea.Height;
         ResizeMode = ResizeMode.CanMinimize; WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -42,6 +44,7 @@ internal sealed partial class HistoryWindow : Window
         panel.Children.Add(_hint);
         InitializeExportFilter(panel);
         InitializeDailyUsage(panel);
+        InitializeCopyUsage(panel);
         var buttons = new DockPanel { LastChildFill = false };
         DockPanel.SetDock(_close, Dock.Right); DockPanel.SetDock(_export, Dock.Left);
         buttons.Children.Add(_close); buttons.Children.Add(_export); panel.Children.Add(buttons);
