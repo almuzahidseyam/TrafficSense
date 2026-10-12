@@ -10,14 +10,15 @@ internal static class UsageCsv
 {
     internal const string Header = "Date,DownloadBytes,UploadBytes,TotalBytes";
 
-    internal static UsageExportResult Export(string path, UsageLedger ledger)
+    internal static UsageExportResult Export(string path, UsageLedger ledger, UsageDateRange? range = null)
     {
+        if (range is { IsValid: false }) return new(false, "Invalid date range.");
         string temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
             // Called on the UI thread after the file dialog closes: include the
             // latest sampled totals without marking pending usage as persisted.
-            var days = ledger.Days.ToArray();
+            var days = ledger.Days.Where(day => range == null || range.Value.Contains(day.Date)).ToArray();
             using (var writer = new StreamWriter(temporary, false, new UTF8Encoding(true)))
             {
                 writer.NewLine = "\r\n";

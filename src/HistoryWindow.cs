@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 namespace TrafficSense;
 
-internal sealed class HistoryWindow : Window
+internal sealed partial class HistoryWindow : Window
 {
     private readonly UiLanguage _language;
     private readonly UsageLedger _usage;
@@ -21,9 +21,9 @@ internal sealed class HistoryWindow : Window
     private readonly TextBlock _today = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _month = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     private readonly TextBlock _hint = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
-    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 1,
+    private readonly Button _close = new() { MinWidth = 90, HorizontalAlignment = HorizontalAlignment.Right, IsCancel = true, TabIndex = 5, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
-    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0),
+    private readonly Button _export = new() { MinWidth = 120, Margin = new(0, 0, 12, 0), TabIndex = 4, Style = null,
         Background = SystemColors.ControlBrush, Foreground = SystemColors.ControlTextBrush, BorderBrush = SystemColors.ActiveBorderBrush };
 
     internal HistoryWindow(UiLanguage language, UsageLedger usage, Func<DateTimeOffset> localTime, SpeedHistory history, Func<bool> bits,
@@ -33,23 +33,29 @@ internal sealed class HistoryWindow : Window
         _history = history; _bits = bits;
         _diagnostics = diagnostics; _reportError = reportError; _chooseExportPath = chooseExportPath ?? ChooseExportPath;
         Width = 480; MinWidth = 360; SizeToContent = SizeToContent.Height;
+        MaxHeight = SystemParameters.WorkArea.Height;
         ResizeMode = ResizeMode.CanMinimize; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         FontFamily = new FontFamily("Segoe UI, Nirmala UI, Kalpurush"); FontSize = 14;
         Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
         var panel = new StackPanel { Margin = new Thickness(20), Background = SystemColors.WindowBrush };
         panel.Children.Add(_today); panel.Children.Add(_month); panel.Children.Add(_legend); panel.Children.Add(_graph);
         panel.Children.Add(_hint);
+        InitializeExportFilter(panel);
         var buttons = new DockPanel { LastChildFill = false };
         DockPanel.SetDock(_close, Dock.Right); DockPanel.SetDock(_export, Dock.Left);
         buttons.Children.Add(_close); buttons.Children.Add(_export); panel.Children.Add(buttons);
-        Content = panel;
+        Content = new ScrollViewer { Content = panel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
         _close.Click += (_, _) => Close();
         ToolTipService.SetShowOnDisabled(_export, true);
         _export.Click += (_, _) =>
         {
+            UpdateExportFilter();
+            if (!_export.IsEnabled) return;
             string? path = _chooseExportPath();
             if (path != null) ExportUsage(path);
         };
+        SizeChanged += (_, _) => QueueHistoryPlacement();
         _language.Changed += LanguageChanged;
         Closed += (_, _) => _language.Changed -= LanguageChanged;
         Refresh();
@@ -71,9 +77,7 @@ internal sealed class HistoryWindow : Window
         _graph.Update(_history.Samples, _bits());
         _close.Content = _language[TextKey.Close];
         _export.Content = _language[TextKey.CsvExport];
-        _export.IsEnabled = _usage.Days.Count > 0;
-        _export.ToolTip = _language[_export.IsEnabled ? TextKey.CsvExportHint : TextKey.CsvExportEmpty];
-        System.Windows.Automation.AutomationProperties.SetHelpText(_export, _export.ToolTip.ToString());
+        RefreshExportFilter(date);
     }
 
     private string? ChooseExportPath()
@@ -89,7 +93,9 @@ internal sealed class HistoryWindow : Window
 
     internal bool ExportUsage(string path)
     {
-        var result = UsageCsv.Export(path, _usage);
+        if (!TryGetExportRange(out var range)) { UpdateExportFilter(); return false; }
+        if (!_usage.Days.Any(day => range == null || range.Value.Contains(day.Date))) { UpdateExportFilter(); return false; }
+        var result = UsageCsv.Export(path, _usage, range);
         if (result.Success) return true;
         _diagnostics?.Write("UsageExport", result.Error);
         string message = _language[TextKey.CsvExportFailed]

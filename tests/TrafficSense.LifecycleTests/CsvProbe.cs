@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using TrafficSense;
 
 internal static class CsvProbe
@@ -69,7 +71,47 @@ internal static class CsvProbe
                     var closeBounds = close.TransformToAncestor(panel).TransformBounds(new Rect(close.RenderSize));
                     Check(exportBounds.Width > 100 && exportBounds.Right <= closeBounds.Left && closeBounds.Right <= panel.ActualWidth + 1,
                         "Export/close controls overlap or clip at minimum width.");
-                    Check(!main.IsVisible && history.IsVisible && ledger.Today(new(2026, 10, 12)).Received == 120,
+                    var period = Field<ComboBox>(history, "_period");
+                    var months = Field<ComboBox>(history, "_months");
+                    var first = Field<TextBox>(history, "_fromDate"); var last = Field<TextBox>(history, "_toDate");
+                    var status = Field<TextBlock>(history, "_filterStatus");
+                    ledger.Record(new(1000, 500), now.AddDays(-12)); // September 30
+                    ledger.Record(new(30, 15), now.AddDays(-1));
+                    ledger.Record(new(40, 20), now.AddDays(1));
+                    history.Refresh();
+                    Select(period, TextKey.CsvMonth);
+                    months.SelectedItem = months.Items.OfType<ComboBoxItem>().Single(item => (DateOnly)item.Tag == new DateOnly(2026, 9, 1));
+                    Click(export);
+                    Check(File.ReadAllLines(destination).SequenceEqual(new[] { UsageCsv.Header, "2026-09-30,1000,500,1500" }), "Month export included another month.");
+                    Render(history, "month");
+                    Select(period, TextKey.CsvDateRange); first.Text = "2026-10-11"; last.Text = "2026-10-12";
+                    Click(export);
+                    Check(File.ReadAllLines(destination).SequenceEqual(new[] { UsageCsv.Header, "2026-10-11,30,15,45", "2026-10-12,120,60,180" }), "Range boundaries are not inclusive or included outside dates.");
+                    Render(history, "range");
+                    string before = File.ReadAllText(destination); int choicesBefore = chooses;
+                    foreach (string invalid in new[] { "bad", "2026-02-29", "2026-10-13", "" })
+                    {
+                        first.Text = invalid; Click(export);
+                        Check(!export.IsEnabled && status.Text == language[TextKey.CsvInvalidDates] && chooses == choicesBefore && File.ReadAllText(destination) == before,
+                            "Invalid dates allowed export or changed the destination.");
+                    }
+                    Render(history, "invalid");
+                    first.Text = "2020-01-01"; last.Text = "2020-12-31"; Click(export);
+                    Check(!export.IsEnabled && status.Text == language[TextKey.CsvNoMatches] && chooses == choicesBefore && !history.ExportUsage(destination), "Empty period was not blocked.");
+                    first.Text = last.Text = "2026-10-12";
+                    language.Select("en"); history.Refresh();
+                    Check((TextKey)((ComboBoxItem)period.SelectedItem).Tag == TextKey.CsvDateRange && first.Text == "2026-10-12" && last.Text == first.Text && export.IsEnabled,
+                        "Language/refresh discarded entered dates or period.");
+                    addWhileChoosing = true; Click(export);
+                    Check(File.ReadAllLines(destination).SequenceEqual(new[] { UsageCsv.Header, "2026-10-12,140,70,210" }) && ledger.Dirty, "Single-day filtered export missed latest traffic.");
+                    Select(period, TextKey.CsvMonth); now = now.AddMonths(1); history.Refresh();
+                    Check((DateOnly)((ComboBoxItem)months.SelectedItem).Tag == new DateOnly(2026, 9, 1) && export.IsEnabled, "New month discarded selection.");
+                    Select(period, TextKey.CsvAllDays); Click(export);
+                    Check(File.ReadAllLines(destination).Length == 5, "All-days mode did not restore all recorded dates.");
+                    Select(period, TextKey.CsvDateRange); language.Select("bn"); history.MaxHeight = 360; Drain(history);
+                    Check(((ScrollViewer)history.Content).ComputedVerticalScrollBarVisibility == Visibility.Visible && history.ActualHeight <= 361,
+                        "Small screen cannot scroll to export controls.");
+                    Check(!main.IsVisible && history.IsVisible && ledger.Today(new(2026, 10, 12)).Received == 140,
                         "CSV actions changed widget visibility or usage.");
                     Check(Directory.GetFiles(root, "*.tmp").Length == 0, "Export left temporary files.");
                 }
@@ -81,7 +123,7 @@ internal static class CsvProbe
         try
         {
             Check(app.Run() == 0 && passed, "CSV lifecycle failed.");
-            Console.WriteLine("PASS: bilingual CSV button/help, empty-to-active state, cancel, latest unsaved totals, blocked-file rollback, minimum-width layout and hidden widget preservation.");
+            Console.WriteLine("PASS: bilingual CSV controls, all/month/inclusive dates, invalid/empty range guard, live/language/month-rollover selection retention, latest unsaved totals, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
             return 0;
         }
         finally
@@ -91,6 +133,24 @@ internal static class CsvProbe
         }
     }
     private static void Click(Button button) => button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    private static T Field<T>(HistoryWindow window, string name) => (T)typeof(HistoryWindow).GetField(name, Private)!.GetValue(window)!;
+    private static void Select(ComboBox combo, TextKey key) => combo.SelectedItem = combo.Items.OfType<ComboBoxItem>().Single(item => (TextKey)item.Tag == key);
+    private static void Render(HistoryWindow history, string name)
+    {
+        string? directory = Environment.GetEnvironmentVariable("TRAFFICSENSE_CSV_SCREENSHOTS");
+        if (string.IsNullOrWhiteSpace(directory)) return;
+        Drain(history);
+        var content = (FrameworkElement)history.Content;
+        var dpi = VisualTreeHelper.GetDpi(content);
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(content.ActualWidth * dpi.DpiScaleX),
+            (int)Math.Ceiling(content.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+        var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen()) drawing.DrawRectangle(new VisualBrush(content), null, new Rect(content.RenderSize));
+        bitmap.Render(visual);
+        Directory.CreateDirectory(directory);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(Path.Combine(directory, name + ".png")); encoder.Save(stream);
+    }
     private static void Drain(Window window) { window.UpdateLayout(); window.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle); }
     private static void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
 }

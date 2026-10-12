@@ -4,6 +4,20 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.14.0] - 2026-10-12
+
+### Added
+
+- CSV period selection in Usage and history: all retained days (the default), a recorded/current month, or an inclusive custom date range entered as `YYYY-MM-DD`.
+- English/Bengali labels, selected recorded-day count, inline validation for missing/invalid/reversed dates and an explanation when no stored records match. Invalid/empty selections cannot open the save dialog or replace an existing file.
+- Month/date choices survive live refresh, language changes and month rollover while the history window remains open. Exports still include the latest sampled traffic, preserve local totals/pending persistence and use the same exact-byte CSV format.
+- Scrollable history content and screen-bound height/placement keep the new controls reachable on smaller displays; filter controls use native templates, system colors and accessible names/help.
+
+### Upgrading from 1.13.0
+
+- Exit the old widget, then install Setup or extract the portable ZIP. Settings, backups and usage stay compatible.
+- Open **Usage and history**, choose **CSV period**, and select **Export CSV…**. Both date boundaries are included. Only retained records are exported; missing days are not reconstructed. Reopening the history window defaults to all retained days.
+
 ## [1.13.0] - 2026-10-12
 
 ### Added
@@ -141,7 +155,8 @@ Published releases carry their publication date. Intermediate development milest
 
 - Previous published release with a Windows ZIP. Its original GitHub release has no written release notes; this changelog does not reconstruct undocumented changes in older releases.
 
-[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/almuzahidseyam/TrafficSense/compare/v1.5.0...v1.11.0
