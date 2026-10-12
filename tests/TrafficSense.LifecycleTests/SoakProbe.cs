@@ -68,10 +68,16 @@ internal static class SoakProbe
 
         void Finish()
         {
-            Collect();
-            retainedAfter = Capture(process, watch.Elapsed.TotalSeconds, "retained-after", ticks);
-            sampler!.Stop();
-            window!.Close();
+            foreach (var history in app.Windows.OfType<HistoryWindow>().ToArray()) history.Close();
+            // Measure after the final history window and its deferred WPF work close,
+            // matching the warmup snapshot where history is also closed.
+            app.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
+            {
+                Collect();
+                retainedAfter = Capture(process, watch.Elapsed.TotalSeconds, "retained-after", ticks);
+                sampler!.Stop();
+                window!.Close();
+            }));
         }
 
         void StressBatch()
@@ -242,9 +248,11 @@ internal static class SoakProbe
     private static Sample Capture(Process process, double seconds, string phase, int ticks)
     {
         process.Refresh();
+        var heap = GC.GetGCMemoryInfo();
         return new(seconds, phase, ticks, process.TotalProcessorTime.TotalSeconds,
             process.WorkingSet64, process.PrivateMemorySize64, GC.GetTotalMemory(false), GC.GetTotalAllocatedBytes(),
-            process.HandleCount, checked((int)GetGuiResources(process.Handle, 0)), checked((int)GetGuiResources(process.Handle, 1)));
+            process.HandleCount, checked((int)GetGuiResources(process.Handle, 0)), checked((int)GetGuiResources(process.Handle, 1)),
+            heap.TotalCommittedBytes, heap.FragmentedBytes);
     }
 
     private static object Summarize(List<Sample> samples, string phase)
@@ -268,7 +276,8 @@ internal static class SoakProbe
     }
 
     private sealed record Sample(double Seconds, string Phase, int Ticks, double CpuSeconds,
-        long WorkingSetBytes, long PrivateBytes, long ManagedBytes, long AllocatedBytes, int Handles, int GdiObjects, int UserObjects);
+        long WorkingSetBytes, long PrivateBytes, long ManagedBytes, long AllocatedBytes, int Handles, int GdiObjects, int UserObjects,
+        long HeapCommittedBytes, long HeapFragmentedBytes);
 
     [DllImport("user32.dll")]
     private static extern uint GetGuiResources(IntPtr process, uint flags);

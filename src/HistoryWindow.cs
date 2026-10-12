@@ -58,7 +58,14 @@ internal sealed partial class HistoryWindow : Window
         };
         SizeChanged += (_, _) => QueueHistoryPlacement();
         _language.Changed += LanguageChanged;
-        Closed += (_, _) => _language.Changed -= LanguageChanged;
+        Closed += (_, _) =>
+        {
+            _language.Changed -= LanguageChanged;
+            // Detach the collection view and cell bindings when the window closes.
+            _dailyUsage.ItemsSource = null;
+            _dailyRows.Clear();
+            _dailyUsage.Columns.Clear();
+        };
         Refresh();
     }
 

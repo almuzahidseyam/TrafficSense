@@ -144,7 +144,12 @@ internal static class CsvProbe
                         "CSV actions changed widget visibility or usage.");
                     Check(Directory.GetFiles(root, "*.tmp").Length == 0, "Export left temporary files.");
                 }
-                finally { history.Close(); }
+                finally
+                {
+                    history.Close();
+                    var closedGrid = Field<DataGrid>(history, "_dailyUsage");
+                    Check(closedGrid.ItemsSource == null && closedGrid.Columns.Count == 0, "Closing history retained daily view/cell bindings.");
+                }
                 VerifyLargeDailyList(language, now);
                 main.Close(); passed = true;
             }
