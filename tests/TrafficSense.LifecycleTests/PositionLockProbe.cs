@@ -107,6 +107,18 @@ internal static class PositionLockProbe
                 CheckInsideWorkArea(widget);
                 Check(widget.PositionLocked && store.Load().SelectedAdapterId == "lock-manual" && store.Load().Theme == "Light",
                     "Lock or recovery changed other preferences.");
+                widget.Hide();
+                menu.Items.OfType<Forms.ToolStripMenuItem>().Single(i => i.Tag as string == "reset-position").PerformClick();
+                Check(!widget.IsVisible && widget.PositionLocked, "Reset changed visibility or lock.");
+                widget.Show();
+                Drain(widget);
+                CheckInsideWorkArea(widget);
+                var resetBounds = Bounds(widget);
+                saved = File.ReadAllBytes(path);
+                using (var blocked = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+                    Check(!widget.ResetPosition(), "Blocked reset reported success.");
+                Check(Bounds(widget).Left == resetBounds.Left && Bounds(widget).Top == resetBounds.Top &&
+                    saved.SequenceEqual(File.ReadAllBytes(path)), "Failed reset changed position or settings.");
                 // Verify exact restart coordinates away from an edge: startup's
                 // placeholder speed can be wider and legitimately require clamping.
                 Check(SetWindowPos(handle, IntPtr.Zero, work.Left + 50, work.Top + 50, 0, 0,

@@ -8,6 +8,21 @@ public partial class MainWindow
     internal bool PositionLocked => _settings.PositionLocked;
     internal event EventHandler? PositionLockChanged;
 
+    internal bool ResetPosition()
+    {
+        var previous = (_settings.WindowLeft, _settings.WindowTop, _settings.ScreenLeft, _settings.ScreenTop);
+        NativeWindowPlacement.Restore(this, new AppSettings());
+        NativeWindowPlacement.Capture(this, _settings);
+        var result = _saveSettings(_settings);
+        if (result.Success) return true;
+        (_settings.WindowLeft, _settings.WindowTop, _settings.ScreenLeft, _settings.ScreenTop) = previous;
+        NativeWindowPlacement.Restore(this, _settings);
+        ShowSettingsError(result.Error);
+        return false;
+    }
+
+    private void MenuResetPosition_Click(object sender, RoutedEventArgs e) => ResetPosition();
+
     internal bool ChangePositionLock(bool locked)
     {
         if (PositionLocked == locked)

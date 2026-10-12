@@ -13,6 +13,7 @@ public partial class MainWindow
         MenuAutoStart.Header = Localization[TextKey.StartWithWindows];
         MenuPositionLock.Header = Localization[TextKey.LockPosition];
         MenuPositionLock.IsChecked = PositionLocked;
+        MenuResetPosition.Header = Localization[TextKey.ResetPosition];
         MenuTheme.Header = Localization[TextKey.SwitchTheme];
         MenuLanguage.Header = Localization[TextKey.Language];
         MenuHide.Header = Localization[TextKey.HideWidget];

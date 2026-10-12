@@ -12,6 +12,7 @@ internal sealed class TrayController : IDisposable
     private readonly Forms.ContextMenuStrip _menu;
     private readonly Forms.ToolStripMenuItem _showWidget;
     private readonly Forms.ToolStripMenuItem _positionLock;
+    private readonly Forms.ToolStripMenuItem _resetPosition;
     private readonly Forms.ToolStripMenuItem _languageMenu;
     private readonly Forms.ToolStripMenuItem _english;
     private readonly Forms.ToolStripMenuItem _bangla;
@@ -30,6 +31,8 @@ internal sealed class TrayController : IDisposable
         _positionLock = new Forms.ToolStripMenuItem("", null,
             (_, _) => _window.ChangePositionLock(!_window.PositionLocked)) { Tag = "position-lock" };
         _menu.Items.Add(_positionLock);
+        _resetPosition = new Forms.ToolStripMenuItem("", null, (_, _) => _window.ResetPosition()) { Tag = "reset-position" };
+        _menu.Items.Add(_resetPosition);
         _languageMenu = new Forms.ToolStripMenuItem { Tag = "language" };
         _english = new Forms.ToolStripMenuItem("English", null, (_, _) => _window.ChangeLanguage("en"));
         _bangla = new Forms.ToolStripMenuItem("বাংলা", null, (_, _) => _window.ChangeLanguage("bn"));
@@ -63,6 +66,7 @@ internal sealed class TrayController : IDisposable
     {
         _showWidget.Text = _window.Localization[TextKey.ShowWidget];
         _positionLock.Text = _window.Localization[TextKey.LockPosition];
+        _resetPosition.Text = _window.Localization[TextKey.ResetPosition];
         _languageMenu.Text = _window.Localization[TextKey.Language];
         _exit.Text = _window.Localization[TextKey.Exit];
         _about.Text = _window.Localization[TextKey.About];

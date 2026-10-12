@@ -4,9 +4,12 @@ Changes are grouped by release. Release dates use the publication date.
 
 ## [Unreleased]
 
+## [1.6.0] - Development milestone
+
 ### Added
 
 - Saved **Lock position** setting in the widget and tray menus, with English/Bengali labels and synchronized checkmarks. Locking saves the current position and prevents manual dragging; unlocking restores dragging. Monitor/work-area recovery and appearance resizing still keep the widget visible. Failed saves restore the previous state and coordinates. Existing settings remain unlocked.
+- One-click **Reset position** from widget/tray menus returns to the primary monitor's bottom-right work area, keeps the lock/visibility and other preferences, and rolls back on save failure.
 
 ## [1.5.0] - 2026-10-12
 
