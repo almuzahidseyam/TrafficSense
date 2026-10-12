@@ -18,7 +18,8 @@ internal enum TextKey
     SettingsBackup, BackupSettings, RestoreSettings, BackupHint, BackupFailed, RestoreFailed,
     CsvExport, CsvExportHint, CsvExportEmpty, CsvExportFailed,
     CsvPeriod, CsvAllDays, CsvMonth, CsvDateRange, CsvFrom, CsvTo, CsvDatesHint, CsvInvalidDates, CsvNoMatches, CsvSelectedDays,
-    SelectedUsage, TotalUsage, DailyUsage, DailyUsageHint, UsageDate, ExactBytes
+    SelectedUsage, TotalUsage, DailyUsage, DailyUsageHint, UsageDate, ExactBytes,
+    DailyChart, DailyChartLegend, DailyChartRange, DailyChartHint
 }
 
 internal sealed class UiLanguage(string? code = "en")
@@ -85,6 +86,12 @@ internal sealed class UiLanguage(string? code = "en")
                 "নির্বাচিত সময়ের সংরক্ষিত দিন, সাম্প্রতিক দিন আগে। তীর চিহ্নের কী দিয়ে বাছাই করুন; ঘরে মাউস রাখলে সঠিক বাইট দেখাবে। রেকর্ড না থাকা দিন বাদ যায়।"),
             [TextKey.UsageDate] = ("Date", "তারিখ"),
             [TextKey.ExactBytes] = ("{0} bytes", "{0} বাইট"),
+            [TextKey.DailyChart] = ("Daily usage chart (up to 30 days)", "দিনভিত্তিক চার্ট (সর্বোচ্চ ৩০ দিন)"),
+            [TextKey.DailyChartLegend] = ("Download: filled; upload: outlined. Gaps: no record; baseline mark: zero.",
+                "ডাউনলোড: ভরাট; আপলোড: খালি bar। ফাঁকা: রেকর্ড নেই; নিচের চিহ্ন: শূন্য।"),
+            [TextKey.DailyChartHint] = ("Up to 30 calendar days ending at the latest record in the selected period, oldest to newest. Missing records leave gaps. Full selected totals and all recorded days remain in the summary and table.",
+                "নির্বাচিত সময়ের সর্বশেষ রেকর্ড পর্যন্ত সর্বোচ্চ ৩০ দিন, পুরোনো থেকে নতুন। রেকর্ড না থাকা দিন ফাঁকা থাকে। সারাংশ ও তালিকায় নির্বাচিত সময়ের পুরো হিসাব আছে।"),
+            [TextKey.DailyChartRange] = ("{0:yyyy-MM-dd} to {1:yyyy-MM-dd}; {2} recorded day(s).", "{0:yyyy-MM-dd} থেকে {1:yyyy-MM-dd}; {2} দিনের সংরক্ষিত হিসাব।"),
             [TextKey.CsvExportEmpty] = ("No measured usage to export yet.", "সংরক্ষণ করার মতো মাপা ডেটা এখনো নেই।"),
             [TextKey.CsvExportFailed] = ("Could not export usage. Existing files and usage totals were kept.",
                 "ডেটা ব্যবহারের হিসাব সংরক্ষণ করা যায়নি। আগের ফাইল ও হিসাব অক্ষত আছে।"),

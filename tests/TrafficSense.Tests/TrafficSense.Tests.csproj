@@ -23,6 +23,7 @@
     <Compile Include="../../src/UsageStore.cs" Link="UsageStore.cs" />
     <Compile Include="../../src/UsageCsv.cs" Link="UsageCsv.cs" />
     <Compile Include="../../src/UsageDateRange.cs" Link="UsageDateRange.cs" />
+    <Compile Include="../../src/DailyUsageSeries.cs" Link="DailyUsageSeries.cs" />
     <Compile Include="../../src/SpeedHistory.cs" Link="SpeedHistory.cs" />
     <Compile Include="../../src/AppSettings.cs" Link="AppSettings.cs" />
     <Compile Include="../../src/WidgetAppearance.cs" Link="WidgetAppearance.cs" />

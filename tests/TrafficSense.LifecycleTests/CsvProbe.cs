@@ -2,6 +2,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows.Media;
@@ -50,6 +51,8 @@ internal static class CsvProbe
                     var close = (Button)typeof(HistoryWindow).GetField("_close", Private)!.GetValue(history)!;
                     var selectedUsage = Field<TextBlock>(history, "_selectedUsage");
                     var daily = Field<DataGrid>(history, "_dailyUsage");
+                    var chart = Field<DailyUsageChart>(history, "_dailyChart");
+                    Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed, "Empty chart retained visible records.");
                     Check(daily.IsReadOnly && !daily.CanUserAddRows && daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Empty daily list is editable or has stale rows.");
                     Check(selectedUsage.Text == "Selected period usage\nDownload: 0 B\nUpload: 0 B\nTotal: 0 B", "Empty selected totals are not zero.");
                     Check(!export.IsEnabled && export.ToolTip.ToString() == language[TextKey.CsvExportEmpty], "Empty usage export is not explained.");
@@ -65,6 +68,12 @@ internal static class CsvProbe
                     Check(selectedUsage.Text == "নির্বাচিত সময়ের ডেটা ব্যবহার\nডাউনলোড: 120 B\nআপলোড: 60 B\nসর্বমোট: 180 B" &&
                         AutomationProperties.GetName(selectedUsage) == selectedUsage.Text, "Bengali totals missed latest traffic or accessible text.");
                     var dayRow = (UsageDayRow)daily.Items[0];
+                    Check(chart.Series.Days.SequenceEqual(new[] { dayRow.Day }) && chart.Visibility == Visibility.Visible &&
+                        AutomationProperties.GetName(chart).Contains("দিনভিত্তিক") && AutomationProperties.GetName(chart).Contains("2026-10-12"),
+                        "Bengali chart missed latest traffic, date or accessible description.");
+                    var peer = UIElementAutomationPeer.CreatePeerForElement(chart)!;
+                    Check(peer.GetAutomationControlType() == AutomationControlType.Image && peer.GetName() == AutomationProperties.GetName(chart) &&
+                        peer.GetHelpText().Contains("রেকর্ড"), "Chart has no accessible image peer/name/help.");
                     Check(daily.Items.Count == 1 && dayRow.Date == "2026-10-12" && dayRow.Download == "120 B" && dayRow.Upload == "60 B" && dayRow.Total == "180 B" &&
                         dayRow.Details.EndsWith("সর্বমোট: 180 বাইট") && ((TextBlock)daily.Columns[0].Header).Text == "তারিখ" &&
                         AutomationProperties.GetName(daily).Contains("দিনভিত্তিক"), "Bengali daily list/header/exact-byte accessibility failed.");
@@ -95,6 +104,8 @@ internal static class CsvProbe
                     Check(File.ReadAllLines(destination).SequenceEqual(new[] { UsageCsv.Header, "2026-09-30,1000,500,1500" }), "Month export included another month.");
                     Check(selectedUsage.Text.Contains("ডাউনলোড: 1000 B\nআপলোড: 500 B\nসর্বমোট: " + HistoryWindow.FormatBytes(1500)), "Month totals include other months.");
                     Check(daily.Items.Count == 1 && ((UsageDayRow)daily.Items[0]).Date == "2026-09-30", "Daily list did not filter month.");
+                    Check(chart.Series.Days.Count == 1 && chart.Series.Start == new DateOnly(2026, 9, 30) && chart.Series.PeakBytes == 1000,
+                        "Month chart included other dates or used the wrong scale.");
                     Render(history, "month");
                     Select(period, TextKey.CsvDateRange); first.Text = "2026-10-11"; last.Text = "2026-10-12";
                     Click(export);
@@ -103,6 +114,8 @@ internal static class CsvProbe
                     Check(daily.Items.Cast<UsageDayRow>().Select(row => row.Date).SequenceEqual(new[] { "2026-10-12", "2026-10-11" }) &&
                         daily.Items.Cast<UsageDayRow>().Sum(row => (decimal)row.Day.Received + row.Day.Sent) == 225, "Daily list disagrees with inclusive CSV or newest-first ordering.");
                     Render(history, "range");
+                    Check(chart.Series.Days.Select(day => day.Date).SequenceEqual(new[] { new DateOnly(2026, 10, 11), new DateOnly(2026, 10, 12) }) &&
+                        chart.Series.Days.Sum(day => (decimal)day.Received + day.Sent) == 225, "Range chart disagrees with daily rows/CSV or chronological order.");
                     string before = File.ReadAllText(destination); int choicesBefore = chooses;
                     foreach (string invalid in new[] { "bad", "2026-02-29", "2026-10-13", "" })
                     {
@@ -112,12 +125,15 @@ internal static class CsvProbe
                         Check(selectedUsage.Visibility == Visibility.Collapsed && selectedUsage.Text == "" && AutomationProperties.GetName(selectedUsage) == "",
                             "Invalid dates left stale totals visible or accessible.");
                         Check(daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Invalid dates left stale daily rows.");
+                        Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed && AutomationProperties.GetName(chart) == "",
+                            "Invalid dates left stale chart records or accessible values.");
                     }
                     Render(history, "invalid");
                     first.Text = "2020-01-01"; last.Text = "2020-12-31"; Click(export);
                     Check(!export.IsEnabled && status.Text == language[TextKey.CsvNoMatches] && chooses == choicesBefore && !history.ExportUsage(destination), "Empty period was not blocked.");
                     Check(selectedUsage.Visibility == Visibility.Visible && selectedUsage.Text.EndsWith("ডাউনলোড: 0 B\nআপলোড: 0 B\nসর্বমোট: 0 B"), "Empty period retained previous totals.");
                     Check(daily.Items.Count == 0 && daily.Visibility == Visibility.Collapsed, "Empty period retained previous daily rows.");
+                    Check(chart.Series.Days.Count == 0 && chart.Visibility == Visibility.Collapsed, "Empty period retained previous chart.");
                     first.Text = last.Text = "2026-10-12";
                     language.Select("en"); history.Refresh();
                     Check((TextKey)((ComboBoxItem)period.SelectedItem).Tag == TextKey.CsvDateRange && first.Text == "2026-10-12" && last.Text == first.Text && export.IsEnabled,
@@ -125,9 +141,14 @@ internal static class CsvProbe
                     addWhileChoosing = true; Click(export);
                     Check(File.ReadAllLines(destination).SequenceEqual(new[] { UsageCsv.Header, "2026-10-12,140,70,210" }) && ledger.Dirty, "Single-day filtered export missed latest traffic.");
                     Check(selectedUsage.Text == "Selected period usage\nDownload: 140 B\nUpload: 70 B\nTotal: 210 B", "English single-day live totals are incorrect.");
+                    Check(chart.Series.Days.Single().Received == 140 && peer.GetName().StartsWith("Daily usage chart") && peer.GetHelpText().Contains("Missing records"),
+                        "English chart translation/live sample failed.");
                     var retainedRow = (UsageDayRow)daily.Items[0]; daily.SelectedItem = retainedRow;
                     ledger.Record(new(10, 5), now); history.Refresh();
                     Check(selectedUsage.Text.EndsWith("Download: 150 B\nUpload: 75 B\nTotal: 225 B"), "Live refresh did not update selected totals.");
+                    Check(chart.Series.Days.Single().Received == 150 && chart.Series.Days.Single().Sent == 75, "Live chart values stayed stale.");
+                    var unchangedSeries = chart.Series; history.Refresh();
+                    Check(ReferenceEquals(chart.Series, unchangedSeries), "Unchanged refresh replaced the chart snapshot.");
                     Check(ReferenceEquals(daily.SelectedItem, retainedRow) && ReferenceEquals(daily.Items[0], retainedRow) && retainedRow.Download == "150 B" &&
                         retainedRow.Details.EndsWith("Total: 225 bytes") && ((TextBlock)daily.Columns[0].Header).Text == "Date", "Live daily refresh replaced selection or missed English amounts/headers.");
                     Select(period, TextKey.CsvMonth); now = now.AddMonths(1); history.Refresh();
@@ -135,6 +156,9 @@ internal static class CsvProbe
                     Select(period, TextKey.CsvAllDays); Click(export);
                     Check(File.ReadAllLines(destination).Length == 5, "All-days mode did not restore all recorded dates.");
                     Check(daily.Items.Cast<UsageDayRow>().Select(row => row.Date).SequenceEqual(new[] { "2026-10-13", "2026-10-12", "2026-10-11", "2026-09-30" }), "All-days list missed or duplicated records.");
+                    Check(chart.Series.Days.Count == 4 && chart.Series.CalendarDays == 14 && chart.Series.Days.Select(day => day.Date).SequenceEqual(
+                        daily.Items.Cast<UsageDayRow>().Select(row => row.Day.Date).Reverse()), "All-days chart invented missing records or disagrees with the table.");
+                    Render(history, "gaps");
                     Check(selectedUsage.Text.Contains("Download: " + HistoryWindow.FormatBytes(1220)) && selectedUsage.Text.EndsWith("Total: " + HistoryWindow.FormatBytes(1830)),
                         "All-days totals did not include every retained record.");
                     Select(period, TextKey.CsvDateRange); language.Select("bn"); history.MaxHeight = 360; Drain(history);
@@ -149,8 +173,10 @@ internal static class CsvProbe
                     history.Close();
                     var closedGrid = Field<DataGrid>(history, "_dailyUsage");
                     Check(closedGrid.ItemsSource == null && closedGrid.Columns.Count == 0, "Closing history retained daily view/cell bindings.");
+                    Check(Field<DailyUsageChart>(history, "_dailyChart").Series.Days.Count == 0, "Closed history retained chart records.");
                 }
                 VerifyLargeDailyList(language, now);
+                VerifyZeroChart(language, now);
                 main.Close(); passed = true;
             }
             catch (Exception error) { Console.Error.WriteLine(error); app.Shutdown(1); }
@@ -158,7 +184,7 @@ internal static class CsvProbe
         try
         {
             Check(app.Run() == 0 && passed, "CSV lifecycle failed.");
-            Console.WriteLine("PASS: bilingual CSV controls, selected totals and read-only daily rows, inclusive filtering/ordering, exact-byte details, stable live selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
+            Console.WriteLine("PASS: bilingual CSV controls, totals/daily rows and accessible 30-calendar-day chart, inclusive filtering/ordering/gaps, exact-byte details, stable live updates/selection/scroll, 400-row virtualization/retention, invalid/empty guards, latest unsaved traffic, cancel/blocked-file rollback, scrolling and hidden widget preservation.");
             return 0;
         }
         finally
@@ -176,6 +202,9 @@ internal static class CsvProbe
         {
             window.Show(); Drain(window);
             var grid = Field<DataGrid>(window, "_dailyUsage");
+            var chart = Field<DailyUsageChart>(window, "_dailyChart");
+            Check(chart.Series.Days.Count == 30 && chart.Series.CalendarDays == 30 && chart.Series.Start == today.AddDays(-29) &&
+                chart.Series.End == today && chart.Series.PeakBytes == long.MaxValue, "Large chart exceeded 30 calendar days or overflowed its scale.");
             var outer = (ScrollViewer)window.Content;
             outer.ScrollToBottom(); Drain(window);
             var first = (UsageDayRow)grid.Items[0];
@@ -185,11 +214,16 @@ internal static class CsvProbe
             var selected = grid.Items[200]; grid.SelectedItem = selected; grid.ScrollIntoView(selected); Drain(window);
             var scroll = Descendants(grid).OfType<ScrollViewer>().First();
             double offset = scroll.VerticalOffset;
+            var initialSeries = chart.Series;
             window.Refresh(); Drain(window);
+            Check(ReferenceEquals(chart.Series, initialSeries), "Unchanged large chart snapshot was replaced.");
             Check(ReferenceEquals(grid.SelectedItem, selected) && Math.Abs(scroll.VerticalOffset - offset) < 0.01, "Unchanged refresh lost daily selection or scroll.");
             language.Select("en"); Drain(window);
+            Check(ReferenceEquals(chart.Series, initialSeries) && AutomationProperties.GetName(chart).StartsWith("Daily usage chart"), "Chart translation changed its records.");
             Check(ReferenceEquals(grid.SelectedItem, selected) && first.Details.EndsWith("Total: 18446744073709551614 bytes"), "Translation replaced daily rows or missed exact bytes.");
             ledger.Record(new(1, 2), now.AddDays(1)); now = now.AddDays(1); window.Refresh(); Drain(window);
+            Check(chart.Series.Days.Count == 30 && chart.Series.End == today.AddDays(1) && chart.Series.Start == today.AddDays(-28) &&
+                chart.Series.Days[^1].Received == 1 && chart.Series.Days[^1].Sent == 2, "Chart rollover retained expired days or missed new samples.");
             Check(grid.Items.Count == 400 && ((UsageDayRow)grid.Items[0]).Date == DateOnly.FromDateTime(now.Date).ToString("yyyy-MM-dd") &&
                 grid.Items.Cast<UsageDayRow>().Last().Day.Date == today.AddDays(-398) && ReferenceEquals(grid.SelectedItem, selected),
                 "Daily rollover/retention changed selection, duplicated rows or kept an expired record.");
@@ -203,6 +237,23 @@ internal static class CsvProbe
         }
         finally { window.Close(); }
     }
+    private static void VerifyZeroChart(UiLanguage language, DateTimeOffset now)
+    {
+        var today = DateOnly.FromDateTime(now.Date);
+        var ledger = new UsageLedger([new(today.AddDays(-2), 0, 0), new(today, 0, 0)]);
+        var window = new HistoryWindow(language, ledger, () => now, new(), () => false);
+        try
+        {
+            window.Width = window.MinWidth; window.Show(); Drain(window);
+            var chart = Field<DailyUsageChart>(window, "_dailyChart");
+            Check(chart.Series.PeakBytes == 0 && chart.Series.Days.Count == 2 && chart.Series.CalendarDays == 3 &&
+                chart.Visibility == Visibility.Visible && chart.ActualWidth >= 100, "Zero chart collapsed, invented a missing day or lost its scale.");
+            Render(window, "zero-gaps");
+            Check(!ledger.Dirty, "Viewing zero records changed stored usage.");
+        }
+        finally { window.Close(); }
+    }
+
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
     {
         for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
@@ -229,6 +280,19 @@ internal static class CsvProbe
         Directory.CreateDirectory(directory);
         var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
         using var stream = File.Create(Path.Combine(directory, name + ".png")); encoder.Save(stream);
+        var chart = Field<DailyUsageChart>(history, "_dailyChart");
+        if (chart.Visibility != Visibility.Visible) return;
+        var chartImage = new RenderTargetBitmap((int)Math.Ceiling(chart.ActualWidth * dpi.DpiScaleX),
+            (int)Math.Ceiling(chart.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+        var chartVisual = new DrawingVisual();
+        using (var drawing = chartVisual.RenderOpen())
+        {
+            drawing.DrawRectangle(SystemColors.WindowBrush, null, new Rect(chart.RenderSize));
+            drawing.DrawRectangle(new VisualBrush(chart), null, new Rect(chart.RenderSize));
+        }
+        chartImage.Render(chartVisual);
+        var chartEncoder = new PngBitmapEncoder(); chartEncoder.Frames.Add(BitmapFrame.Create(chartImage));
+        using var chartStream = File.Create(Path.Combine(directory, name + "-chart.png")); chartEncoder.Save(chartStream);
     }
     private static void Drain(Window window) { window.UpdateLayout(); window.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle); }
     private static void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
