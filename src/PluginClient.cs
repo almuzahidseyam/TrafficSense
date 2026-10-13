@@ -15,6 +15,8 @@ internal sealed class PluginClient : IDisposable
 {
     private readonly Process _process;
     private readonly WorkerJob _job;
+    private readonly PluginHealthMonitor _health;
+    private long _lastResponse;
     private int _disposed, _busy;
     internal int WorkerId => _process.Id;
     internal PluginClient(string executable, string dll, string? configRoot = null)
@@ -25,7 +27,9 @@ internal sealed class PluginClient : IDisposable
         if (configRoot != null) start.Environment["TRAFFICSENSE_PLUGIN_CONFIG_ROOT"] = configRoot;
         _process = Process.Start(start) ?? throw new IOException("Could not start plugin worker.");
         try { _job = new(_process); } catch { try { _process.Kill(); } finally { _process.Dispose(); } throw; }
+        _health=new(_process.Id);
     }
+    internal PluginWorkerHealth ReadHealth()=>_health.Read(Interlocked.Read(ref _lastResponse));
     internal async Task<PluginSample> Request(PluginRequest request, TimeSpan? timeout = null)
     {
         if (Volatile.Read(ref _disposed) != 0) throw new ObjectDisposedException(nameof(PluginClient));
@@ -57,6 +61,7 @@ internal sealed class PluginClient : IDisposable
                 DisposeCore(graceful:true);
                 throw new PluginResourceLimitException();
             }
+            Interlocked.Exchange(ref _lastResponse,Stopwatch.GetTimestamp());
             return sample;
         }
         catch { Dispose(); throw; }
@@ -66,6 +71,7 @@ internal sealed class PluginClient : IDisposable
     private void DisposeCore(bool graceful)
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        _health.Dispose();
         // Idle plugins and completed responses may persist DLL destructor
         // settings. Bound the EOF/unload path; stuck/faulted callbacks use the
         // immediate job-termination path instead.
@@ -77,6 +83,13 @@ internal sealed class PluginClient : IDisposable
         _job.Dispose();
         try { if (!_process.HasExited) _process.Kill(entireProcessTree: true); }
         catch (Exception e) when (e is InvalidOperationException or System.ComponentModel.Win32Exception) { }
+        // Process.Dispose leaves directly accessed redirected streams owned by
+        // the caller. Close them explicitly after terminating the worker so
+        // repeated Reload does not retain pipe handles until finalization.
+        try { _process.StandardInput.Dispose(); }
+        catch(Exception e) when(e is IOException or InvalidOperationException) { }
+        try { _process.StandardOutput.Dispose(); }
+        catch(Exception e) when(e is IOException or InvalidOperationException) { }
         _process.Dispose();
     }
     [DllImport("user32.dll")] private static extern uint GetGuiResources(IntPtr process,uint flags);

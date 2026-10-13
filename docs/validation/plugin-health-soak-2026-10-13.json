@@ -1,0 +1,105 @@
+{
+  "Format": "TrafficSense.PluginHealthSoak",
+  "Version": 1,
+  "AppVersion": "1.30.0",
+  "TestedAt": "2026-10-13T10:38:29.8540708+00:00",
+  "TotalSeconds": 84.2424419,
+  "WarmupSeconds": 19.4082364,
+  "MeasuredSeconds": 64.83420609999999,
+  "Reads": 650,
+  "Reloads": 13,
+  "ColdHandles": 234,
+  "WarmHandles": 317,
+  "HandleGrowth": 3,
+  "PrivateGrowthMiB": 3.05078125,
+  "Resources": [
+    {
+      "Reload": 1,
+      "Seconds": 6.4789862,
+      "Handles": 314,
+      "PrivateBytes": 17379328
+    },
+    {
+      "Reload": 2,
+      "Seconds": 12.9423368,
+      "Handles": 317,
+      "PrivateBytes": 17494016
+    },
+    {
+      "Reload": 3,
+      "Seconds": 19.4034482,
+      "Handles": 317,
+      "PrivateBytes": 18272256
+    },
+    {
+      "Reload": 4,
+      "Seconds": 25.8656167,
+      "Handles": 314,
+      "PrivateBytes": 19443712
+    },
+    {
+      "Reload": 5,
+      "Seconds": 32.341412,
+      "Handles": 318,
+      "PrivateBytes": 21016576
+    },
+    {
+      "Reload": 6,
+      "Seconds": 38.8036663,
+      "Handles": 318,
+      "PrivateBytes": 21131264
+    },
+    {
+      "Reload": 7,
+      "Seconds": 45.4033978,
+      "Handles": 315,
+      "PrivateBytes": 20828160
+    },
+    {
+      "Reload": 8,
+      "Seconds": 51.9155102,
+      "Handles": 316,
+      "PrivateBytes": 20922368
+    },
+    {
+      "Reload": 9,
+      "Seconds": 58.3870476,
+      "Handles": 316,
+      "PrivateBytes": 20856832
+    },
+    {
+      "Reload": 10,
+      "Seconds": 64.8473725,
+      "Handles": 309,
+      "PrivateBytes": 21188608
+    },
+    {
+      "Reload": 11,
+      "Seconds": 71.3049582,
+      "Handles": 314,
+      "PrivateBytes": 21880832
+    },
+    {
+      "Reload": 12,
+      "Seconds": 77.7701545,
+      "Handles": 311,
+      "PrivateBytes": 21200896
+    },
+    {
+      "Reload": 13,
+      "Seconds": 84.2293337,
+      "Handles": 320,
+      "PrivateBytes": 21471232
+    }
+  ],
+  "Last": {
+    "Availability": 0,
+    "CpuPercent": 0,
+    "WorkingSetBytes": 59498496,
+    "PrivateBytes": 17485824,
+    "Uptime": "00:00:06.3193039",
+    "LastResponseAge": "00:00:00.0001226"
+  },
+  "Errors": [],
+  "Passed": true
+}

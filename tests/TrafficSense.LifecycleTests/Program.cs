@@ -20,6 +20,8 @@ internal static class Program
         if (args.FirstOrDefault()=="--community-interactions" && args.Length==3) return CommunityInteractionProbe.Run(args[1],args[2]);
         if (args.FirstOrDefault()=="--plugin-dialog-resources" && args.Length==3) return CommunityInteractionProbe.TraceDialogResources(args[1],args[2]);
         if (args.FirstOrDefault()=="--plugin-soak" && args.Length==4) return PluginSoakProbe.Run(args[1],int.Parse(args[2]),args[3]);
+        if (args.FirstOrDefault()=="--plugin-health-soak" && args.Length==4) return PluginHealthProbe.Soak(args[1],int.Parse(args[2]),args[3]);
+        if (args.FirstOrDefault()=="--plugin-health" && args.Length==2) return PluginHealthProbe.Run(args[1]);
         if (args.FirstOrDefault()=="--plugin-soak-interactive" && args.Length==4) return PluginSoakProbe.Run(args[1],int.Parse(args[2]),args[3],interactive:true);
         if (args.FirstOrDefault()=="--vpn-environment" && args.Length==3) return VpnEnvironmentProbe.Run(args[1],args[2]);
         if (args.FirstOrDefault()=="--display-topology" && args.Length==2) return DisplayTopologyProbe.Run(args[1]);
@@ -59,7 +61,7 @@ internal static class Program
         if (args.Length == 2) return VerifyRestart(args[0], args[1]);
         if (args.Length == 0)
         {
-            if (Environment.GetEnvironmentVariable("TRAFFICSENSE_PLUGIN_FIXTURE") is { } fixture) { PluginProbe.Run(fixture); PluginInteractionProbe.Run(fixture); RunChild("--plugin-bridge-ui",fixture); RunChild("--plugin-private-desktop",fixture); }
+            if (Environment.GetEnvironmentVariable("TRAFFICSENSE_PLUGIN_FIXTURE") is { } fixture) { PluginProbe.Run(fixture); PluginInteractionProbe.Run(fixture); RunChild("--plugin-bridge-ui",fixture); RunChild("--plugin-health",fixture); RunChild("--plugin-private-desktop",fixture); }
             RunChild("--network-recovery");
             RunChild("--graph-quality");
             RunChild("--system-metrics");

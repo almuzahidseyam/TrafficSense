@@ -4,6 +4,19 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.30.0] - 2026-10-13
+
+### Added
+
+- Native plugin bridge health panel: worker CPU percentage, resident RAM, time since the last successful response and bilingual starting/responding/waiting/settings/command/stopped/error/resource-limit states. The tooltip explains private allocated memory, uptime and measurement scope.
+- CPU uses monotonic interval deltas normalized across all active logical processors. Initial, reset, failed or delayed observations show unavailable instead of a fabricated zero. RAM is the worker's resident working set, including shared pages; child processes are excluded.
+- Independent one-second background health reads continue while plugin settings/commands are busy. Reads coalesce, never terminate a working plugin on telemetry failure, and discard results from a worker replaced by Stop/Reload. Closing the bridge releases its observer, timer and language subscription.
+- Scrollable bridge content for short windows, live bilingual controls and accessible health values/status. Added CPU arithmetic regression cases, real native CPU-work measurements, hidden WPF busy/failure/reload tests and a finite health-observer stability probe.
+
+### Fixed
+
+- Explicitly dispose the worker's redirected input/output streams on every shutdown. Directly accessed streams are caller-owned in .NET; relying on `Process.Dispose` could retain pipe handles until collection during repeated Reload.
+
 ## [1.29.0] - 2026-10-13
 
 ### Added

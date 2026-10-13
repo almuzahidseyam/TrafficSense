@@ -61,6 +61,21 @@ TrafficSense 1.29.0 adds **Reload plugin** in English/Bengali. After each comple
 
 Each script creates a fresh ignored output directory. A failure or incomplete run must not be described as passed; use the report's elapsed durations, error list and coverage fields.
 
+## Plugin health in 1.30.0
+
+Ten new pure cases check whole-PC CPU normalization, integer subtraction before floating-point conversion, idle zero, counter/clock rollback, duplicate/negative timestamps, delayed readings, reset and bounds. The native fixture runs real CPU work; a hidden WPF window checks RAM/response state, bilingual accessible values, a still-open modal settings callback, read failure/recovery, one outstanding health read and Stop/Reload with an old read deliberately delayed. Closing stops the timer and removes the language subscription. These original fixtures run in portable CI without third-party downloads or changes to the user's existing widget.
+
+The [health-observer report](validation/plugin-health-soak-2026-10-13.json) records finite repeated sampling/health reads and fresh worker reloads, with three complete worker lifecycles recorded as warmup before the measurement period. Its unchanged host budgets are +32 kernel handles and +64 MiB private memory; every stopped worker must exit. This tests the new observer's lifecycle, separately from the prior 15-minute plugin sampling workload and the known third-party repeated-dialog warning. It does not establish hours/days of stability or CPU agreement across every processor topology.
+
+The [initial cold-start check](validation/plugin-health-soak-cold-2026-10-13.json) is retained as failed: it included native/process/async runtime initialization in the retained-handle budget. Investigation also found that directly accessed redirected streams were left for eventual collection by the prior client shutdown path. They are now explicitly disposed, consistent with [.NET's caller-owned stream lifecycle](https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.cs). The native regression additionally requires both captured input/output pipes to be closed immediately after worker disposal. No collection is forced in this health check.
+
+```powershell
+$package = ./scripts/Build-Portable.ps1
+$build = Split-Path $package.ArchivePath -Parent
+& (Join-Path $build 'probe/TrafficSense.LifecycleTests.exe') --plugin-health-soak (Join-Path $build 'plugin-fixture/fixture.dll') 60 (Join-Path $build 'health-soak.json')
+if ($LASTEXITCODE -ne 0) { throw 'Plugin health resource check failed.' }
+```
+
 ## Available live hardware
 
 The available PC has a running Cloudflare WARP tunnel, physical Ethernet and one 1920×1200 monitor at 96 DPI. IPv4 route lookups for five public destinations selected the tunnel; these lookups do not send packets. Both the tunnel and its physical carrier advanced during the passive tests.
