@@ -41,6 +41,11 @@ Copy-Item -LiteralPath $release.NotesPath -Destination $applicationDirectory
 $readme = if ($Lite) { 'packaging/README-Lite.txt' } else { 'packaging/README.txt' }
 Copy-Item -LiteralPath (Join-Path $repository $readme) -Destination (Join-Path $applicationDirectory 'README.txt')
 New-Item -ItemType Directory -Path (Join-Path $applicationDirectory 'licenses') -Force | Out-Null
+if ($Lite) {
+    # The small native .NET apphost is still redistributed in Lite.
+    Copy-Item -LiteralPath (Join-Path $runtimeRoot 'LICENSE.txt') -Destination (Join-Path $applicationDirectory 'licenses/Microsoft.NET-LICENSE.txt')
+    Copy-Item -LiteralPath (Join-Path $runtimeRoot 'ThirdPartyNotices.txt') -Destination (Join-Path $applicationDirectory 'licenses/Microsoft.NET-ThirdPartyNotices.txt')
+}
 Get-ChildItem -LiteralPath (Join-Path $repository 'packaging/licenses') -File |
     Copy-Item -Destination (Join-Path $applicationDirectory 'licenses')
 
