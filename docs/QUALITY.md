@@ -62,3 +62,5 @@ Local validation note: the first Lite lifecycle run exceeded the existing three-
 ## Lite installer (1.35.1)
 
 The installer runs an extracted framework-dependent x64 Desktop checker before copying payload files, using the same apphost runtime discovery as Lite. Tests use isolated app IDs, runtime roots and install directories: no frameworks, Core-only (Desktop absent), working Desktop, rejected upgrade preserving payload, Lite/full/Lite switching and ordinary install/uninstall guards. The production helper changes no settings and opens no windows; missing-runtime host dialogs are suppressed so installer instructions handle failure.
+
+Cold plugin startup is tested with a deliberate four-second DLL initialization, followed by a hung request that must still stop at the normal three-second deadline. An explicit shorter first-request deadline is also tested. The aggregate package lifecycle watchdog is 120 seconds to accommodate the expanded suite on CI; it does not alter individual production deadlines. Probe output is retained when that aggregate watchdog expires.
