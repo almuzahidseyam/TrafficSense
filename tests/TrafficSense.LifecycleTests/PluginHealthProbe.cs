@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Windows.Input;
 using TrafficSense;
 
 internal static class PluginHealthProbe
@@ -52,6 +53,11 @@ internal static class PluginHealthProbe
                 Check(await bridge.Open(dll),"Health UI fixture did not open.");
                 Check(state.Text.Contains(language[TextKey.PluginHealthResponding])&&usage.Text.Contains("MiB"),"Live worker health missing.");
                 Check(history.Samples.Count>0&&history.Samples.Last().WorkingSetBytes>0,"Real worker readings did not reach history.");
+                var keyEvent=new KeyEventArgs(Keyboard.PrimaryDevice,PresentationSource.FromVisual(graph)!,0,Key.Home){RoutedEvent=Keyboard.KeyDownEvent};
+                graph.RaiseEvent(keyEvent);
+                Check(keyEvent.Handled&&graph.HoveredPoint!=null&&Field<TextBlock>("_historyDetails").Text==graph.KeyboardDetails,"Routed keyboard inspection did not reach visible details.");
+                var selectedTime=graph.HoveredPoint?.Timestamp;await Refresh();
+                Check(graph.HoveredPoint?.Timestamp==selectedTime,"Live worker refresh moved keyboard selection.");
                 Check(AutomationProperties.GetName(usage)==usage.Text&&AutomationProperties.GetLiveSetting(state)==AutomationLiveSetting.Polite,"Health accessibility lost its values/state.");
                 language.Select("bn");Check(state.Text.Contains(language[TextKey.PluginHealthResponding])&&usage.Text.Contains(language[TextKey.Memory])&&AutomationProperties.GetName(graph).Contains(language[TextKey.PluginHistory]),"Live health/history language did not update.");language.Select("en");
                 fail=true;await Refresh();Check(state.Text.Contains(language[TextKey.PluginHealthUnavailable])&&usage.Text.Contains(language[TextKey.NotAvailable])&&Field<Button>("_stop").IsEnabled,"Failed health read stopped worker or showed stale metrics.");
@@ -67,6 +73,7 @@ internal static class PluginHealthProbe
                 Click("_stop");await Wait(()=>!Field<bool>("_busy"));
                 Check(state.Text.Contains(language[TextKey.PluginHealthStopped])&&!usage.Text.Contains("MiB")&&!Field<DispatcherTimer>("_healthTimer").IsEnabled,"Stop retained numbers or health timer.");
                 Check(history.Samples.Count==0,"Stop retained worker history.");
+                Check(graph.HoveredPoint==null&&Field<TextBlock>("_historyDetails").Text==language[TextKey.PluginHistoryKeyboard],"Stop retained keyboard detail text.");
                 Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_MODAL",null);
                 Check(await bridge.Open(dll),"Reload after modal Stop failed.");
                 delay=true;gate.Reset();var pending=Refresh();await Wait(()=>active==1);

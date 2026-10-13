@@ -110,3 +110,7 @@ For the remaining physical matrix, record Windows build, NIC/driver and VPN vers
 ## Plugin history hover in 1.32.0
 
 The native graph probe exercises the production hover selection path with positions on both plots, nearest readings, long gaps, empty earlier history, edges and label regions. It verifies independent unknown metrics, zero, English/Bangla details, clearing and 25-hour session timestamps. This is deterministic WPF coverage; it does not claim new physical multi-monitor or VPN testing.
+
+## Plugin history keyboard inspection (1.33.0)
+
+Tab focuses the graph at its latest recorded sample. Left/Right moves one recorded sample, Home/End selects the oldest/latest, Esc clears, and Tab leaves. Selected details appear below the graph and in its accessible name, with English/Bangla instructions. Live refresh preserves the timestamp; expiration clears rather than silently choosing another reading. Focus loss, Stop/Reload and close clear inspection. Navigation tests exercise gaps, boundaries, unknown values, translation, empty/reset/expired history and shortcut pass-through; a hidden real WPF bridge probe routes a key event and verifies visible detail text and live selection. No physical keyboard or screen-reader certification is claimed.

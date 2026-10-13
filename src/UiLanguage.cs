@@ -33,7 +33,7 @@ internal enum TextKey
     PluginBridge, PluginChoose, PluginHint, PluginOptions, PluginRun, PluginFailed, PluginReload, PluginResourceLimit,
     PluginHealth, PluginHealthIdle, PluginHealthStarting, PluginHealthResponding, PluginHealthWaiting, PluginHealthSettings, PluginHealthCommand,
     PluginHealthStopped, PluginHealthFailed, PluginHealthLimited, PluginHealthUnavailable, PluginHealthResponse, PluginHealthResponseUnknown, PluginHealthNoResponse, PluginHealthHint,
-    PluginHistory, PluginHistoryHint, PluginHistoryEmpty, PluginHistoryNow, PluginHistorySessionTime, PluginHistoryNoSample,
+    PluginHistory, PluginHistoryHint, PluginHistoryEmpty, PluginHistoryNow, PluginHistorySessionTime, PluginHistoryNoSample, PluginHistoryKeyboard,
     EmbedTaskbar, EmbedHint,
     ConnectionGroup, AppearanceGroup, MetricsGroup, UsageGroup, PanelGroup, PreferencesGroup
 }
@@ -86,6 +86,8 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.PluginHistoryNow] = ("Now", "এখন"),
             [TextKey.PluginHistorySessionTime] = ("Time since plugin start (hh:mm:ss)", "Plugin চালুর পর সময় (ঘণ্টা:মিনিট:সেকেন্ড)"),
             [TextKey.PluginHistoryNoSample] = ("No reading at this time", "এই সময়ে কোনো তথ্য নেই"),
+            [TextKey.PluginHistoryKeyboard] = ("Tab to the graph. Left/Right: previous/next reading; Home/End: oldest/latest; Esc: clear selection. Tab moves on. New readings keep the selected sample until it leaves the two-minute history.",
+                "Tab দিয়ে গ্রাফে যান। Left/Right: আগের/পরের নমুনা; Home/End: সবচেয়ে পুরোনো/নতুন; Esc: নির্বাচন মুছুন। Tab দিয়ে পরের নিয়ন্ত্রণে যান। নতুন তথ্য এলেও নির্বাচিত নমুনা দুই মিনিটের history থেকে বাদ পড়া পর্যন্ত থাকবে।"),
             [TextKey.PluginHealthIdle] = ("No plugin loaded", "কোনো plugin চালু নেই"),
             [TextKey.PluginHealthStarting] = ("Starting…", "চালু হচ্ছে…"),
             [TextKey.PluginHealthResponding] = ("Responding", "সাড়া দিচ্ছে"),
