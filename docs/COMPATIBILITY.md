@@ -2,7 +2,7 @@
 
 Reviewed on 2026-10-13 against the [official TrafficMonitor README](https://github.com/zhongyang219/TrafficMonitor/blob/master/README_en-us.md). This compares documented capabilities, not benchmarks or an endorsement. TrafficSense is independently implemented.
 
-| Capability | TrafficSense 1.28 | Boundary |
+| Capability | TrafficSense 1.29.0 | Boundary |
 | --- | --- | --- |
 | Network upload/download | Background native interface sampling; 250/500/1000/2000 ms; bytes or bits | Interval average; driver batching and interface overhead apply |
 | Auto/manual connections | One routed connection or selected adapter; IPv6 fallback | No per-process attribution or automatic sum across split routes |
@@ -27,6 +27,8 @@ Pure tests cover counter timing, byte conservation, resets, selection, persisten
 Before calling a hardware/OS combination supported in detail, record Windows build, scale, adapter/driver, VPN route, refresh interval, enabled metrics and a reproducible observation. Windows 10/11 are the package targets, not a claim that every version/Explorer customization/driver has been physically tested.
 
 Version 1.28 adds four pinned community-plugin runs, active WARP/physical-interface comparisons at every refresh interval, explicit Per-Monitor V2 awareness and larger synthetic display/reconnect matrices. [Exact tested scope and reports](COMPATIBILITY-TESTING.md). A physical second monitor, real mixed-DPI transitions and active VPN reconnect are still unverified.
+
+Version 1.29.0 fixes modal plugin-request re-entry and adds real community settings/command, Stop/reopen and finite longer-duration evidence. It does not expand the physical VPN/display matrix.
 
 ## Remaining development
 

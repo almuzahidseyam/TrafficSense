@@ -2,6 +2,8 @@
 
 In the packaged app choose **System metrics & extensions → Sensor source → Native plugin bridge**. Select a **trusted, local x64 TrafficMonitor DLL**. The bridge displays plugin items and custom images, offers the plugin's settings and named commands, and has a Stop button. Closing it stops its worker. Plugins are never discovered or executed automatically on startup; backups do not auto-enable native code.
 
+**Reload plugin** explicitly restarts the last selected DLL with its configuration folder. It is available after Stop or a resource fault; transient plugin state may reset. It does not enable startup execution.
+
 The DLL runs with the current user's permissions in a separate process. This protects normal monitoring from accidental crashes/hangs; **it is not a security sandbox**. A plugin can read/write files, access networks, launch programs or require its own privileges/dependencies. TrafficSense does not elevate it or install hardware drivers. Obtain plugins from their authors and follow their licenses. The bridge does not distribute upstream plugin binaries or claim their approval.
 
 ## Implemented ABI surface
@@ -11,9 +13,11 @@ The implementation independently follows the [documented C++ virtual interface](
 - Plugin metadata, item IDs/labels/text, `DataRequired`, legacy monitor info and retained `ITrafficMonitor` v1 callbacks.
 - GDI custom drawing and API 8 `IPluginDrawer` v1: text, clipping, fills, outlines/rounding, bitmap stretch/fill/fit with alpha, icons, extents, lines and HDC access. Preview images are opaque, bounded to 512×40 pixels at 96 DPI. This is a compact preview, not a complete upstream taskbar drawing environment.
 - Options dialog and named commands. Sampling has a three-second deadline; interactive plugin settings/commands allow five minutes and can be terminated with Stop. Dialogs are owned by the worker and may appear separately.
+- A modal settings/command callback remains the sole in-flight request while its native message loop runs. Nested timer messages cannot open it again. Other host controls and monitoring remain responsive; Stop terminates that worker, including a stuck dialog.
 - Current upload/download, CPU/RAM/GPU/disk/frequency and today's totals are supplied when available. Unknown numeric host values are `-1`; text is `N/A`. The legacy unsigned speed fields have no unknown representation and use zero when unavailable; they are not authoritative sample-quality metadata. Native bridge polling is once per second and does not alter core sampling intervals.
 - Each DLL path gets a stable configuration folder under `%LOCALAPPDATA%\TrafficSense\plugins`. Strings, items, protocol records and image sizes are bounded. DLL crash/hang/malformed output stops that worker; monitoring continues. Windows kill-on-close jobs also clean up owned workers after an abrupt owner exit.
 - Normal idle Stop/close allows up to 300 ms for EOF, native unload and plugin settings teardown, then closes the job. Busy/faulted workers terminate immediately. A plugin with slow or hung teardown can still lose unsaved settings; its own persistence implementation remains responsible for correctness.
+- After a completed response, resource checks stop the direct worker above 1,000 GDI objects, 1,000 USER objects, 2,048 kernel handles or 512 MiB private memory. The fault is translated and offers explicit Reload. A completed callback uses the bounded normal teardown path to preserve settings where possible. Checks are response-bound; these are not hard sandbox limits or protection from arbitrary native code.
 - Legacy custom drawing receives transparent text backgrounds, the current light/dark text color and clipping, with native DC state restored afterward. The bridge follows the widget theme. Compact previews remain bounded and are not a full upstream drawing environment.
 - XML layout `plugin_map` fields bind exact IDs from the running bridge; images and values become unavailable after five seconds without a successful sample.
 
@@ -24,3 +28,7 @@ No plugin store, automatic discovery, native ARM64/x86, plugin mouse/keyboard ev
 Independent native fixtures test host callbacks, GDI/extended drawing, options/commands, missing DLL, crash, timeout and abrupt-owner-exit cleanup. These are not an assertion that every community plugin has been tested. Include plugin author/version, API, dependencies and Windows build when reporting a compatibility issue.
 
 Four pinned author releases have additional feature-specific coverage: DateTime 1.00, Battery 1.03, KeyboardIndicator 1.00 and TextReader 1.02. See [the compatibility plan, evidence and remaining gaps](COMPATIBILITY-TESTING.md). Diagnostic runs isolate configuration; normal bridge configuration stays in the standard local folder.
+
+Version 1.29.0 also checks their real Cancel/OK dialogs, modal Stop/reopen and isolated settings persistence, plus all seven TextReader commands against an owned sample. Test UI stays on a private desktop never shown to the user. Every option field, input-event callback and hardware combination remains outside that coverage. The original modal/UI regressions run in portable CI; third-party interaction and longer soak scripts are explicit developer opt-ins.
+
+**Known TextReader 1.02 behavior:** repeated settings dialogs retain about seven GDI objects per opening after UI warmup. Stop/Reload reclaims that worker's resources, and the host's response resource guard limits prolonged growth. The pinned binary is unchanged. Its functional command results and sampling-only soak are separate from this repeated-dialog resource warning.

@@ -25,9 +25,25 @@ struct Drawer {
     virtual void bitmap(void*,int,int,int,int,int,unsigned char)=0; virtual void icon(void*,int,int,int,int)=0;
     virtual void extent(const wchar_t*,int&,int&)=0; virtual void line(int,int,int,int,unsigned,int,bool,unsigned char)=0; virtual void* dc()=0;
 };
-static int mode, commandCount;
-static bool monitorGood;
+static int mode, commandCount, optionCount;
+static bool interacting;
 static std::wstring configDirectory;
+static void InteractivePump() {
+    wchar_t value[16]{};
+    if(!GetEnvironmentVariableW(L"TRAFFICSENSE_FIXTURE_MODAL",value,16))return;
+    if(interacting)TerminateProcess(GetCurrentProcess(),79);
+    interacting=true;
+    HANDLE file=CreateFileW((configDirectory+L"interactive.txt").c_str(),GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr);
+    if(file!=INVALID_HANDLE_VALUE)CloseHandle(file);
+    ULONGLONG end=GetTickCount64()+350;
+    do {
+        MSG message;
+        while(PeekMessageW(&message,nullptr,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
+        Sleep(1);
+    } while(_wtoi(value)==2 || GetTickCount64()<end);
+    interacting=false;
+}
+static bool monitorGood;
 struct Item {
     int drawing;
     std::wstring sample;
@@ -65,16 +81,16 @@ struct Plugin {
     virtual int api() { wchar_t value[16]{}; return GetEnvironmentVariableW(L"TRAFFICSENSE_FIXTURE_API",value,16) ? _wtoi(value) : 8; }
     virtual Item* item(int index) { return index == 0 ? &first : index == 1 ? &second : index == 2 ? &third : nullptr; }
     virtual void sample() { if (mode == 1) Sleep(INFINITE); if (mode == 2) TerminateProcess(GetCurrentProcess(), 77); }
-    virtual int options(void*) { return 1; }
+    virtual int options(void*) { InteractivePump(); optionCount++; return 1; }
     virtual const wchar_t* info(int) { return L"TrafficSense ABI fixture"; }
     virtual void monitor(const void* pointer) { struct Info { unsigned long long up,down; int cpu,memory,gpu,disk,cpuTemp,gpuTemp,diskTemp,boardTemp,freq; }; auto info=(const Info*)pointer; monitorGood=info && info->up==12345 && info->cpu==-1 && info->freq==-1; }
-    virtual const wchar_t* tooltip() { return L"Test-only fixture"; }
+    virtual const wchar_t* tooltip() { static std::wstring text; text=L"options:"+std::to_wstring(optionCount)+L";commands:"+std::to_wstring(commandCount);return text.c_str(); }
     virtual void extended(int index, const wchar_t* text) { if(index==17 && text)configDirectory=text; }
     virtual void* icon() { return nullptr; }
-    virtual int commands() { return 3; }
-    virtual const wchar_t* commandName(int i) { return i == 0 ? L"Hang" : i == 1 ? L"Crash" : L"Count"; }
+    virtual int commands() { return 4; }
+    virtual const wchar_t* commandName(int i) { return i == 0 ? L"Hang" : i == 1 ? L"Crash" : i==2 ? L"Count" : L"Leak GDI"; }
     virtual void* commandIcon(int) { return nullptr; }
-    virtual void command(int i, void*, void*) { mode = i == 0 ? 1 : i == 1 ? 2 : 0; commandCount++; }
+    virtual void command(int i, void*, void*) { if(i==2)InteractivePump();if(i==3)for(int n=0;n<1200;n++)CreatePen(PS_SOLID,1,RGB(n%255,0,0));mode = i == 0 ? 1 : i == 1 ? 2 : 0; commandCount++; }
     virtual int checked(int) { return 0; }
     virtual void initialize(Host* value) { host = value; }
 };

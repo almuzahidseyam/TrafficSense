@@ -1,0 +1,2372 @@
+{
+  "Format": "TrafficSense.PluginSoak",
+  "Version": 1,
+  "AppVersion": "1.29.0",
+  "TestedAt": "2026-10-13T09:42:35.6475828+00:00",
+  "RequestedSeconds": 900,
+  "MeasuredSeconds": 900.0474126,
+  "WallClockSeconds": 914.1152848,
+  "Results": [
+    {
+      "Name": "DateTime",
+      "Tag": "DateTime_V1.00",
+      "DllSHA256": "ade0addb758828c08f36130d04e83b1fa3641c191e4a792d99a2e40d08f21fed",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Commands": 0,
+      "ValuesChanged": true,
+      "Seconds": 900.0692875,
+      "CpuPercentOfOneCore": 0.043399436623927694,
+      "PrivateGrowthMiB": 4.33984375,
+      "HandleGrowth": -3,
+      "GdiGrowth": 0,
+      "UserGrowth": 0,
+      "PeakWorkingSetMiB": 52.9765625,
+      "Resources": [
+        {
+          "Seconds": 11.1952689,
+          "CpuSeconds": 0.28125,
+          "WorkingSet": 49913856,
+          "PrivateBytes": 12873728,
+          "Handles": 317,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 41.3386228,
+          "CpuSeconds": 0.421875,
+          "WorkingSet": 49823744,
+          "PrivateBytes": 11542528,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 71.3062922,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 50270208,
+          "PrivateBytes": 11665408,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 101.3108998,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 50700288,
+          "PrivateBytes": 12177408,
+          "Handles": 317,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 131.3085447,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 50868224,
+          "PrivateBytes": 12328960,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 161.3380599,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51064832,
+          "PrivateBytes": 12529664,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 191.3384895,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51253248,
+          "PrivateBytes": 12726272,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 221.3454993,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51445760,
+          "PrivateBytes": 12922880,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 251.3388023,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51634176,
+          "PrivateBytes": 13119488,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 281.3678666,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51822592,
+          "PrivateBytes": 13316096,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 311.377876,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52199424,
+          "PrivateBytes": 13582336,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 341.3444096,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52387840,
+          "PrivateBytes": 13778944,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 371.3764281,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52584448,
+          "PrivateBytes": 13975552,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 401.3733503,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52768768,
+          "PrivateBytes": 14172160,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 431.3700974,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 52928512,
+          "PrivateBytes": 14299136,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 461.3715503,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 53112832,
+          "PrivateBytes": 14430208,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 491.3735328,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 53309440,
+          "PrivateBytes": 14622720,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 521.3769744,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 53460992,
+          "PrivateBytes": 14929920,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 551.3724762,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53387264,
+          "PrivateBytes": 15126528,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 581.3703827,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53583872,
+          "PrivateBytes": 15323136,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 611.3727567,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53809152,
+          "PrivateBytes": 15585280,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 641.3769055,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53997568,
+          "PrivateBytes": 15781888,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 671.3770113,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54153216,
+          "PrivateBytes": 15912960,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 701.3785731,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54349824,
+          "PrivateBytes": 16109568,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 731.3685135,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54538240,
+          "PrivateBytes": 16306176,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 761.3776646,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54734848,
+          "PrivateBytes": 16502784,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 791.369642,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 54910976,
+          "PrivateBytes": 16633856,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 821.3599032,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 55107584,
+          "PrivateBytes": 16834560,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 851.3755996,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 55164928,
+          "PrivateBytes": 17031168,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 881.3892991,
+          "CpuSeconds": 0.65625,
+          "WorkingSet": 55361536,
+          "PrivateBytes": 17227776,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 911.2645564,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 55549952,
+          "PrivateBytes": 17424384,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        }
+      ],
+      "Passed": true
+    },
+    {
+      "Name": "Battery",
+      "Tag": "Battery_V1.03",
+      "DllSHA256": "c1a2e12b494c97d0726b05a2ffe757c275405d587111dbce5ff324b4249db0cd",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Commands": 0,
+      "ValuesChanged": false,
+      "Seconds": 900.1233817,
+      "CpuPercentOfOneCore": 0.07464254497323208,
+      "PrivateGrowthMiB": 6.8515625,
+      "HandleGrowth": -3,
+      "GdiGrowth": 3,
+      "UserGrowth": 1,
+      "PeakWorkingSetMiB": 58.48828125,
+      "Resources": [
+        {
+          "Seconds": 11.1999851,
+          "CpuSeconds": 0.25,
+          "WorkingSet": 52264960,
+          "PrivateBytes": 13496320,
+          "Handles": 324,
+          "Gdi": 11,
+          "User": 10
+        },
+        {
+          "Seconds": 41.3429316,
+          "CpuSeconds": 0.421875,
+          "WorkingSet": 53248000,
+          "PrivateBytes": 12886016,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 71.3106928,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 54030336,
+          "PrivateBytes": 14073856,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 101.3152205,
+          "CpuSeconds": 0.5625,
+          "WorkingSet": 54222848,
+          "PrivateBytes": 13557760,
+          "Handles": 324,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 131.3129201,
+          "CpuSeconds": 0.5625,
+          "WorkingSet": 54579200,
+          "PrivateBytes": 14016512,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 161.3425102,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 54976512,
+          "PrivateBytes": 14405632,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 191.3429786,
+          "CpuSeconds": 0.609375,
+          "WorkingSet": 55152640,
+          "PrivateBytes": 14442496,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 221.3500799,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 55558144,
+          "PrivateBytes": 14790656,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 251.3432291,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 56131584,
+          "PrivateBytes": 15577088,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 281.3721008,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 56311808,
+          "PrivateBytes": 15659008,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 311.3826335,
+          "CpuSeconds": 0.6875,
+          "WorkingSet": 57118720,
+          "PrivateBytes": 16416768,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 341.3491027,
+          "CpuSeconds": 0.6875,
+          "WorkingSet": 57278464,
+          "PrivateBytes": 16494592,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 371.3813506,
+          "CpuSeconds": 0.703125,
+          "WorkingSet": 57876480,
+          "PrivateBytes": 17199104,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 401.3784389,
+          "CpuSeconds": 0.71875,
+          "WorkingSet": 58269696,
+          "PrivateBytes": 17592320,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 431.3746044,
+          "CpuSeconds": 0.734375,
+          "WorkingSet": 58396672,
+          "PrivateBytes": 17494016,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 461.376027,
+          "CpuSeconds": 0.765625,
+          "WorkingSet": 58986496,
+          "PrivateBytes": 18300928,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 491.3780719,
+          "CpuSeconds": 0.765625,
+          "WorkingSet": 59170816,
+          "PrivateBytes": 18272256,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 521.3814567,
+          "CpuSeconds": 0.796875,
+          "WorkingSet": 59760640,
+          "PrivateBytes": 19185664,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 551.376915,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 59908096,
+          "PrivateBytes": 19537920,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 581.375008,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 60280832,
+          "PrivateBytes": 19947520,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 611.3776097,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 60739584,
+          "PrivateBytes": 20779008,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 641.3820411,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 61100032,
+          "PrivateBytes": 20267008,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 671.3818275,
+          "CpuSeconds": 0.859375,
+          "WorkingSet": 61280256,
+          "PrivateBytes": 20615168,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 701.3831468,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61284352,
+          "PrivateBytes": 20619264,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 731.3729279,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61296640,
+          "PrivateBytes": 20631552,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 761.3827044,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61296640,
+          "PrivateBytes": 20615168,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 791.3741011,
+          "CpuSeconds": 0.890625,
+          "WorkingSet": 61304832,
+          "PrivateBytes": 20615168,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 821.3642852,
+          "CpuSeconds": 0.90625,
+          "WorkingSet": 61329408,
+          "PrivateBytes": 20639744,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 851.3799516,
+          "CpuSeconds": 0.90625,
+          "WorkingSet": 61210624,
+          "PrivateBytes": 20664320,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 881.3938208,
+          "CpuSeconds": 0.921875,
+          "WorkingSet": 61218816,
+          "PrivateBytes": 20680704,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 911.3233668,
+          "CpuSeconds": 0.921875,
+          "WorkingSet": 61218816,
+          "PrivateBytes": 20680704,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        }
+      ],
+      "Passed": true
+    },
+    {
+      "Name": "KeyboardIndicator",
+      "Tag": "KeyboardIndicator_V1.00",
+      "DllSHA256": "a29a5def11207a1a1465440943a97ed4fa4ede51e32634909db644d21af57afe",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Commands": 0,
+      "ValuesChanged": false,
+      "Seconds": 900.1583658,
+      "CpuPercentOfOneCore": 0.07116803268618803,
+      "PrivateGrowthMiB": 7.2109375,
+      "HandleGrowth": -3,
+      "GdiGrowth": 0,
+      "UserGrowth": 0,
+      "PeakWorkingSetMiB": 58.89453125,
+      "Resources": [
+        {
+          "Seconds": 11.2041924,
+          "CpuSeconds": 0.265625,
+          "WorkingSet": 52740096,
+          "PrivateBytes": 13471744,
+          "Handles": 324,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 41.347277,
+          "CpuSeconds": 0.453125,
+          "WorkingSet": 53575680,
+          "PrivateBytes": 12754944,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 71.3148743,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 54460416,
+          "PrivateBytes": 14295040,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 101.3197064,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 54824960,
+          "PrivateBytes": 13791232,
+          "Handles": 324,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 131.3172301,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 55263232,
+          "PrivateBytes": 14417920,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 161.3469569,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 55488512,
+          "PrivateBytes": 14430208,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 191.3475759,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 56119296,
+          "PrivateBytes": 15265792,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 221.3545119,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 56274944,
+          "PrivateBytes": 15216640,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 251.347693,
+          "CpuSeconds": 0.5625,
+          "WorkingSet": 56684544,
+          "PrivateBytes": 15671296,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 281.3763223,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 57110528,
+          "PrivateBytes": 16150528,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 311.3874549,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 57700352,
+          "PrivateBytes": 16478208,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 341.3538597,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 58302464,
+          "PrivateBytes": 17702912,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 371.3861274,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 58736640,
+          "PrivateBytes": 18079744,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 401.3833512,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 59170816,
+          "PrivateBytes": 18493440,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 431.3790281,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 59338752,
+          "PrivateBytes": 18120704,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 461.3804274,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 59961344,
+          "PrivateBytes": 19222528,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 491.3826183,
+          "CpuSeconds": 0.65625,
+          "WorkingSet": 60379136,
+          "PrivateBytes": 19636224,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 521.385888,
+          "CpuSeconds": 0.65625,
+          "WorkingSet": 60588032,
+          "PrivateBytes": 19378176,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 551.3814415,
+          "CpuSeconds": 0.703125,
+          "WorkingSet": 60940288,
+          "PrivateBytes": 20426752,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 581.3794723,
+          "CpuSeconds": 0.71875,
+          "WorkingSet": 61456384,
+          "PrivateBytes": 20201472,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 611.3823125,
+          "CpuSeconds": 0.734375,
+          "WorkingSet": 61710336,
+          "PrivateBytes": 20979712,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 641.3871931,
+          "CpuSeconds": 0.734375,
+          "WorkingSet": 61718528,
+          "PrivateBytes": 20987904,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 671.3863846,
+          "CpuSeconds": 0.765625,
+          "WorkingSet": 61698048,
+          "PrivateBytes": 20934656,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 701.3878871,
+          "CpuSeconds": 0.78125,
+          "WorkingSet": 61706240,
+          "PrivateBytes": 20942848,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 731.3773758,
+          "CpuSeconds": 0.796875,
+          "WorkingSet": 61714432,
+          "PrivateBytes": 20951040,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 761.3877959,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 61726720,
+          "PrivateBytes": 20963328,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 791.3786793,
+          "CpuSeconds": 0.859375,
+          "WorkingSet": 61747200,
+          "PrivateBytes": 20975616,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 821.3685998,
+          "CpuSeconds": 0.859375,
+          "WorkingSet": 61755392,
+          "PrivateBytes": 20983808,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 851.3841681,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61632512,
+          "PrivateBytes": 20996096,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 881.3984504,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61640704,
+          "PrivateBytes": 21008384,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 911.3625582,
+          "CpuSeconds": 0.90625,
+          "WorkingSet": 61657088,
+          "PrivateBytes": 21032960,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        }
+      ],
+      "Passed": true
+    },
+    {
+      "Name": "TextReader",
+      "Tag": "TextReader_V1.02",
+      "DllSHA256": "59883e8bc0aa11c3422af2dba731d7526a943b7321fe6fdcd2a8722a45299d3e",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Commands": 0,
+      "ValuesChanged": false,
+      "Seconds": 900.2182797,
+      "CpuPercentOfOneCore": 0.10934847938524925,
+      "PrivateGrowthMiB": 7.12890625,
+      "HandleGrowth": -3,
+      "GdiGrowth": 0,
+      "UserGrowth": 0,
+      "PeakWorkingSetMiB": 59.4296875,
+      "Resources": [
+        {
+          "Seconds": 11.2085303,
+          "CpuSeconds": 0.3125,
+          "WorkingSet": 53297152,
+          "PrivateBytes": 13570048,
+          "Handles": 324,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 41.3517846,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 54214656,
+          "PrivateBytes": 12951552,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 71.3190975,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 54857728,
+          "PrivateBytes": 13279232,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 101.3240304,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 55791616,
+          "PrivateBytes": 14700544,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 131.3217966,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 55799808,
+          "PrivateBytes": 14237696,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 161.351358,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 56270848,
+          "PrivateBytes": 14716928,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 191.3523806,
+          "CpuSeconds": 0.609375,
+          "WorkingSet": 56758272,
+          "PrivateBytes": 15208448,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 221.359013,
+          "CpuSeconds": 0.609375,
+          "WorkingSet": 57282560,
+          "PrivateBytes": 15773696,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 251.3521149,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 58003456,
+          "PrivateBytes": 16687104,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 281.3808543,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 58478592,
+          "PrivateBytes": 17145856,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 311.392035,
+          "CpuSeconds": 0.75,
+          "WorkingSet": 58896384,
+          "PrivateBytes": 17281024,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 341.3585723,
+          "CpuSeconds": 0.78125,
+          "WorkingSet": 59625472,
+          "PrivateBytes": 18132992,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 371.3907268,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 60141568,
+          "PrivateBytes": 18784256,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 401.3884108,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 60325888,
+          "PrivateBytes": 18726912,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 431.3834542,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 61026304,
+          "PrivateBytes": 19771392,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 461.3848786,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 61517824,
+          "PrivateBytes": 20262912,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 491.3872375,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 62185472,
+          "PrivateBytes": 20213760,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 521.3904713,
+          "CpuSeconds": 0.921875,
+          "WorkingSet": 62189568,
+          "PrivateBytes": 20283392,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 551.3859203,
+          "CpuSeconds": 0.9375,
+          "WorkingSet": 61939712,
+          "PrivateBytes": 20283392,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 581.3838921,
+          "CpuSeconds": 0.96875,
+          "WorkingSet": 62226432,
+          "PrivateBytes": 20930560,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 611.3868247,
+          "CpuSeconds": 0.984375,
+          "WorkingSet": 62263296,
+          "PrivateBytes": 20996096,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 641.3922335,
+          "CpuSeconds": 1.03125,
+          "WorkingSet": 61988864,
+          "PrivateBytes": 20361216,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 671.3908394,
+          "CpuSeconds": 1.078125,
+          "WorkingSet": 62255104,
+          "PrivateBytes": 20955136,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 701.3924069,
+          "CpuSeconds": 1.15625,
+          "WorkingSet": 62263296,
+          "PrivateBytes": 20963328,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 731.3819074,
+          "CpuSeconds": 1.171875,
+          "WorkingSet": 62279680,
+          "PrivateBytes": 20979712,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 761.3924765,
+          "CpuSeconds": 1.171875,
+          "WorkingSet": 62287872,
+          "PrivateBytes": 20987904,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 791.3830922,
+          "CpuSeconds": 1.203125,
+          "WorkingSet": 62300160,
+          "PrivateBytes": 20987904,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 821.3728831,
+          "CpuSeconds": 1.21875,
+          "WorkingSet": 62316544,
+          "PrivateBytes": 21004288,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 851.3883596,
+          "CpuSeconds": 1.265625,
+          "WorkingSet": 62197760,
+          "PrivateBytes": 21045248,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 881.4029379,
+          "CpuSeconds": 1.265625,
+          "WorkingSet": 62210048,
+          "PrivateBytes": 21045248,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 911.42681,
+          "CpuSeconds": 1.296875,
+          "WorkingSet": 62210048,
+          "PrivateBytes": 21045248,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        }
+      ],
+      "Passed": true
+    }
+  ],
+  "Diagnostics": [
+    {
+      "Name": "DateTime",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Resources": [
+        {
+          "Seconds": 11.1952689,
+          "CpuSeconds": 0.28125,
+          "WorkingSet": 49913856,
+          "PrivateBytes": 12873728,
+          "Handles": 317,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 41.3386228,
+          "CpuSeconds": 0.421875,
+          "WorkingSet": 49823744,
+          "PrivateBytes": 11542528,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 71.3062922,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 50270208,
+          "PrivateBytes": 11665408,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 101.3108998,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 50700288,
+          "PrivateBytes": 12177408,
+          "Handles": 317,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 131.3085447,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 50868224,
+          "PrivateBytes": 12328960,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 161.3380599,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51064832,
+          "PrivateBytes": 12529664,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 191.3384895,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51253248,
+          "PrivateBytes": 12726272,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 221.3454993,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51445760,
+          "PrivateBytes": 12922880,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 251.3388023,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51634176,
+          "PrivateBytes": 13119488,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 281.3678666,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 51822592,
+          "PrivateBytes": 13316096,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 311.377876,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52199424,
+          "PrivateBytes": 13582336,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 341.3444096,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52387840,
+          "PrivateBytes": 13778944,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 371.3764281,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52584448,
+          "PrivateBytes": 13975552,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 401.3733503,
+          "CpuSeconds": 0.515625,
+          "WorkingSet": 52768768,
+          "PrivateBytes": 14172160,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 431.3700974,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 52928512,
+          "PrivateBytes": 14299136,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 461.3715503,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 53112832,
+          "PrivateBytes": 14430208,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 491.3735328,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 53309440,
+          "PrivateBytes": 14622720,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 521.3769744,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 53460992,
+          "PrivateBytes": 14929920,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 551.3724762,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53387264,
+          "PrivateBytes": 15126528,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 581.3703827,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53583872,
+          "PrivateBytes": 15323136,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 611.3727567,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53809152,
+          "PrivateBytes": 15585280,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 641.3769055,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 53997568,
+          "PrivateBytes": 15781888,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 671.3770113,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54153216,
+          "PrivateBytes": 15912960,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 701.3785731,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54349824,
+          "PrivateBytes": 16109568,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 731.3685135,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54538240,
+          "PrivateBytes": 16306176,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 761.3776646,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 54734848,
+          "PrivateBytes": 16502784,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 791.369642,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 54910976,
+          "PrivateBytes": 16633856,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 821.3599032,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 55107584,
+          "PrivateBytes": 16834560,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 851.3755996,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 55164928,
+          "PrivateBytes": 17031168,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 881.3892991,
+          "CpuSeconds": 0.65625,
+          "WorkingSet": 55361536,
+          "PrivateBytes": 17227776,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        },
+        {
+          "Seconds": 911.2645564,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 55549952,
+          "PrivateBytes": 17424384,
+          "Handles": 314,
+          "Gdi": 3,
+          "User": 8
+        }
+      ]
+    },
+    {
+      "Name": "Battery",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Resources": [
+        {
+          "Seconds": 11.1999851,
+          "CpuSeconds": 0.25,
+          "WorkingSet": 52264960,
+          "PrivateBytes": 13496320,
+          "Handles": 324,
+          "Gdi": 11,
+          "User": 10
+        },
+        {
+          "Seconds": 41.3429316,
+          "CpuSeconds": 0.421875,
+          "WorkingSet": 53248000,
+          "PrivateBytes": 12886016,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 71.3106928,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 54030336,
+          "PrivateBytes": 14073856,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 101.3152205,
+          "CpuSeconds": 0.5625,
+          "WorkingSet": 54222848,
+          "PrivateBytes": 13557760,
+          "Handles": 324,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 131.3129201,
+          "CpuSeconds": 0.5625,
+          "WorkingSet": 54579200,
+          "PrivateBytes": 14016512,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 161.3425102,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 54976512,
+          "PrivateBytes": 14405632,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 191.3429786,
+          "CpuSeconds": 0.609375,
+          "WorkingSet": 55152640,
+          "PrivateBytes": 14442496,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 221.3500799,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 55558144,
+          "PrivateBytes": 14790656,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 251.3432291,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 56131584,
+          "PrivateBytes": 15577088,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 281.3721008,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 56311808,
+          "PrivateBytes": 15659008,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 311.3826335,
+          "CpuSeconds": 0.6875,
+          "WorkingSet": 57118720,
+          "PrivateBytes": 16416768,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 341.3491027,
+          "CpuSeconds": 0.6875,
+          "WorkingSet": 57278464,
+          "PrivateBytes": 16494592,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 371.3813506,
+          "CpuSeconds": 0.703125,
+          "WorkingSet": 57876480,
+          "PrivateBytes": 17199104,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 401.3784389,
+          "CpuSeconds": 0.71875,
+          "WorkingSet": 58269696,
+          "PrivateBytes": 17592320,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 431.3746044,
+          "CpuSeconds": 0.734375,
+          "WorkingSet": 58396672,
+          "PrivateBytes": 17494016,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 461.376027,
+          "CpuSeconds": 0.765625,
+          "WorkingSet": 58986496,
+          "PrivateBytes": 18300928,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 491.3780719,
+          "CpuSeconds": 0.765625,
+          "WorkingSet": 59170816,
+          "PrivateBytes": 18272256,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 521.3814567,
+          "CpuSeconds": 0.796875,
+          "WorkingSet": 59760640,
+          "PrivateBytes": 19185664,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 551.376915,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 59908096,
+          "PrivateBytes": 19537920,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 581.375008,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 60280832,
+          "PrivateBytes": 19947520,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 611.3776097,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 60739584,
+          "PrivateBytes": 20779008,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 641.3820411,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 61100032,
+          "PrivateBytes": 20267008,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 671.3818275,
+          "CpuSeconds": 0.859375,
+          "WorkingSet": 61280256,
+          "PrivateBytes": 20615168,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 701.3831468,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61284352,
+          "PrivateBytes": 20619264,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 731.3729279,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61296640,
+          "PrivateBytes": 20631552,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 761.3827044,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61296640,
+          "PrivateBytes": 20615168,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 791.3741011,
+          "CpuSeconds": 0.890625,
+          "WorkingSet": 61304832,
+          "PrivateBytes": 20615168,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 821.3642852,
+          "CpuSeconds": 0.90625,
+          "WorkingSet": 61329408,
+          "PrivateBytes": 20639744,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 851.3799516,
+          "CpuSeconds": 0.90625,
+          "WorkingSet": 61210624,
+          "PrivateBytes": 20664320,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 881.3938208,
+          "CpuSeconds": 0.921875,
+          "WorkingSet": 61218816,
+          "PrivateBytes": 20680704,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        },
+        {
+          "Seconds": 911.3233668,
+          "CpuSeconds": 0.921875,
+          "WorkingSet": 61218816,
+          "PrivateBytes": 20680704,
+          "Handles": 321,
+          "Gdi": 14,
+          "User": 11
+        }
+      ]
+    },
+    {
+      "Name": "KeyboardIndicator",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Resources": [
+        {
+          "Seconds": 11.2041924,
+          "CpuSeconds": 0.265625,
+          "WorkingSet": 52740096,
+          "PrivateBytes": 13471744,
+          "Handles": 324,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 41.347277,
+          "CpuSeconds": 0.453125,
+          "WorkingSet": 53575680,
+          "PrivateBytes": 12754944,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 71.3148743,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 54460416,
+          "PrivateBytes": 14295040,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 101.3197064,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 54824960,
+          "PrivateBytes": 13791232,
+          "Handles": 324,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 131.3172301,
+          "CpuSeconds": 0.53125,
+          "WorkingSet": 55263232,
+          "PrivateBytes": 14417920,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 161.3469569,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 55488512,
+          "PrivateBytes": 14430208,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 191.3475759,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 56119296,
+          "PrivateBytes": 15265792,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 221.3545119,
+          "CpuSeconds": 0.546875,
+          "WorkingSet": 56274944,
+          "PrivateBytes": 15216640,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 251.347693,
+          "CpuSeconds": 0.5625,
+          "WorkingSet": 56684544,
+          "PrivateBytes": 15671296,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 281.3763223,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 57110528,
+          "PrivateBytes": 16150528,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 311.3874549,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 57700352,
+          "PrivateBytes": 16478208,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 341.3538597,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 58302464,
+          "PrivateBytes": 17702912,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 371.3861274,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 58736640,
+          "PrivateBytes": 18079744,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 401.3833512,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 59170816,
+          "PrivateBytes": 18493440,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 431.3790281,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 59338752,
+          "PrivateBytes": 18120704,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 461.3804274,
+          "CpuSeconds": 0.640625,
+          "WorkingSet": 59961344,
+          "PrivateBytes": 19222528,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 491.3826183,
+          "CpuSeconds": 0.65625,
+          "WorkingSet": 60379136,
+          "PrivateBytes": 19636224,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 521.385888,
+          "CpuSeconds": 0.65625,
+          "WorkingSet": 60588032,
+          "PrivateBytes": 19378176,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 551.3814415,
+          "CpuSeconds": 0.703125,
+          "WorkingSet": 60940288,
+          "PrivateBytes": 20426752,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 581.3794723,
+          "CpuSeconds": 0.71875,
+          "WorkingSet": 61456384,
+          "PrivateBytes": 20201472,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 611.3823125,
+          "CpuSeconds": 0.734375,
+          "WorkingSet": 61710336,
+          "PrivateBytes": 20979712,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 641.3871931,
+          "CpuSeconds": 0.734375,
+          "WorkingSet": 61718528,
+          "PrivateBytes": 20987904,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 671.3863846,
+          "CpuSeconds": 0.765625,
+          "WorkingSet": 61698048,
+          "PrivateBytes": 20934656,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 701.3878871,
+          "CpuSeconds": 0.78125,
+          "WorkingSet": 61706240,
+          "PrivateBytes": 20942848,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 731.3773758,
+          "CpuSeconds": 0.796875,
+          "WorkingSet": 61714432,
+          "PrivateBytes": 20951040,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 761.3877959,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 61726720,
+          "PrivateBytes": 20963328,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 791.3786793,
+          "CpuSeconds": 0.859375,
+          "WorkingSet": 61747200,
+          "PrivateBytes": 20975616,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 821.3685998,
+          "CpuSeconds": 0.859375,
+          "WorkingSet": 61755392,
+          "PrivateBytes": 20983808,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 851.3841681,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61632512,
+          "PrivateBytes": 20996096,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 881.3984504,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 61640704,
+          "PrivateBytes": 21008384,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        },
+        {
+          "Seconds": 911.3625582,
+          "CpuSeconds": 0.90625,
+          "WorkingSet": 61657088,
+          "PrivateBytes": 21032960,
+          "Handles": 321,
+          "Gdi": 5,
+          "User": 8
+        }
+      ]
+    },
+    {
+      "Name": "TextReader",
+      "Samples": 913,
+      "Dialogs": 0,
+      "Resources": [
+        {
+          "Seconds": 11.2085303,
+          "CpuSeconds": 0.3125,
+          "WorkingSet": 53297152,
+          "PrivateBytes": 13570048,
+          "Handles": 324,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 41.3517846,
+          "CpuSeconds": 0.5,
+          "WorkingSet": 54214656,
+          "PrivateBytes": 12951552,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 71.3190975,
+          "CpuSeconds": 0.578125,
+          "WorkingSet": 54857728,
+          "PrivateBytes": 13279232,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 101.3240304,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 55791616,
+          "PrivateBytes": 14700544,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 131.3217966,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 55799808,
+          "PrivateBytes": 14237696,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 161.351358,
+          "CpuSeconds": 0.59375,
+          "WorkingSet": 56270848,
+          "PrivateBytes": 14716928,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 191.3523806,
+          "CpuSeconds": 0.609375,
+          "WorkingSet": 56758272,
+          "PrivateBytes": 15208448,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 221.359013,
+          "CpuSeconds": 0.609375,
+          "WorkingSet": 57282560,
+          "PrivateBytes": 15773696,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 251.3521149,
+          "CpuSeconds": 0.625,
+          "WorkingSet": 58003456,
+          "PrivateBytes": 16687104,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 281.3808543,
+          "CpuSeconds": 0.671875,
+          "WorkingSet": 58478592,
+          "PrivateBytes": 17145856,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 311.392035,
+          "CpuSeconds": 0.75,
+          "WorkingSet": 58896384,
+          "PrivateBytes": 17281024,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 341.3585723,
+          "CpuSeconds": 0.78125,
+          "WorkingSet": 59625472,
+          "PrivateBytes": 18132992,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 371.3907268,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 60141568,
+          "PrivateBytes": 18784256,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 401.3884108,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 60325888,
+          "PrivateBytes": 18726912,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 431.3834542,
+          "CpuSeconds": 0.8125,
+          "WorkingSet": 61026304,
+          "PrivateBytes": 19771392,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 461.3848786,
+          "CpuSeconds": 0.828125,
+          "WorkingSet": 61517824,
+          "PrivateBytes": 20262912,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 491.3872375,
+          "CpuSeconds": 0.875,
+          "WorkingSet": 62185472,
+          "PrivateBytes": 20213760,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 521.3904713,
+          "CpuSeconds": 0.921875,
+          "WorkingSet": 62189568,
+          "PrivateBytes": 20283392,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 551.3859203,
+          "CpuSeconds": 0.9375,
+          "WorkingSet": 61939712,
+          "PrivateBytes": 20283392,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 581.3838921,
+          "CpuSeconds": 0.96875,
+          "WorkingSet": 62226432,
+          "PrivateBytes": 20930560,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 611.3868247,
+          "CpuSeconds": 0.984375,
+          "WorkingSet": 62263296,
+          "PrivateBytes": 20996096,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 641.3922335,
+          "CpuSeconds": 1.03125,
+          "WorkingSet": 61988864,
+          "PrivateBytes": 20361216,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 671.3908394,
+          "CpuSeconds": 1.078125,
+          "WorkingSet": 62255104,
+          "PrivateBytes": 20955136,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 701.3924069,
+          "CpuSeconds": 1.15625,
+          "WorkingSet": 62263296,
+          "PrivateBytes": 20963328,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 731.3819074,
+          "CpuSeconds": 1.171875,
+          "WorkingSet": 62279680,
+          "PrivateBytes": 20979712,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 761.3924765,
+          "CpuSeconds": 1.171875,
+          "WorkingSet": 62287872,
+          "PrivateBytes": 20987904,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 791.3830922,
+          "CpuSeconds": 1.203125,
+          "WorkingSet": 62300160,
+          "PrivateBytes": 20987904,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 821.3728831,
+          "CpuSeconds": 1.21875,
+          "WorkingSet": 62316544,
+          "PrivateBytes": 21004288,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 851.3883596,
+          "CpuSeconds": 1.265625,
+          "WorkingSet": 62197760,
+          "PrivateBytes": 21045248,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 881.4029379,
+          "CpuSeconds": 1.265625,
+          "WorkingSet": 62210048,
+          "PrivateBytes": 21045248,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        },
+        {
+          "Seconds": 911.42681,
+          "CpuSeconds": 1.296875,
+          "WorkingSet": 62210048,
+          "PrivateBytes": 21045248,
+          "Handles": 321,
+          "Gdi": 8,
+          "User": 10
+        }
+      ]
+    }
+  ],
+  "HostWarm": {
+    "Seconds": 11.2128857,
+    "CpuSeconds": 1.046875,
+    "WorkingSet": 62369792,
+    "PrivateBytes": 20762624,
+    "Handles": 375,
+    "Gdi": 0,
+    "User": 6
+  },
+  "HostAfterCleanup": {
+    "Seconds": 914.1102291,
+    "CpuSeconds": 24.578125,
+    "WorkingSet": 65228800,
+    "PrivateBytes": 22085632,
+    "Handles": 372,
+    "Gdi": 0,
+    "User": 7
+  },
+  "RestartCycles": 12,
+  "Errors": [],
+  "Passed": true,
+  "Interactive": false,
+  "Scope": "Finite same-machine diagnostic run; four pinned community binaries, isolated configuration and owned text, normal GC, no forced collections. Default sampling-only run uses direct production worker logic and response resource checks. Interactive opt-in uses private desktops and includes the test dialog-driver timer; known third-party modal resource growth may fail its budgets. Per-worker budgets: \u002B32 kernel handles, \u002B8 GDI, \u002B8 USER, \u002B64 MiB private memory. Not an hours/days soak or hardware/driver certification."
+}

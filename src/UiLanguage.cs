@@ -30,7 +30,7 @@ internal enum TextKey
     ExternalSensors, SensorSource, ChooseSensor, ClearSensor, SensorUnavailable, SensorHint,
     SensorBridge, BridgeHint, SensorPort, BridgeStart, BridgeStop, SensorOutput, BridgeInvalidPort, BridgeConnected, BridgeFailed, BridgeStopped, BridgeLaunchFailed,
     SamplingShort, SampleUnavailableShort, SampleDelayedShort, LayoutSkin, LayoutImport, LayoutCompact, LayoutClear,
-    PluginBridge, PluginChoose, PluginHint, PluginOptions, PluginRun, PluginFailed, EmbedTaskbar, EmbedHint,
+    PluginBridge, PluginChoose, PluginHint, PluginOptions, PluginRun, PluginFailed, PluginReload, PluginResourceLimit, EmbedTaskbar, EmbedHint,
     ConnectionGroup, AppearanceGroup, MetricsGroup, UsageGroup, PanelGroup, PreferencesGroup
 }
 
@@ -73,6 +73,8 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.PluginChoose] = ("Choose trusted DLL…", "বিশ্বস্ত DLL বাছুন…"),
             [TextKey.PluginOptions] = ("Plugin settings…", "Plugin সেটিং…"),
             [TextKey.PluginRun] = ("Run command", "কমান্ড চালান"),
+            [TextKey.PluginReload] = ("Reload plugin", "Plugin আবার চালু করুন"),
+            [TextKey.PluginResourceLimit] = ("Plugin resource limit exceeded; its worker stopped. Reload it to continue. Monitoring continues.", "Plugin-এর resource সীমা পার হয়েছে; worker বন্ধ হয়েছে। আবার চালু করতে Reload চাপুন। গতি মাপা চলছে।"),
             [TextKey.PluginFailed] = ("Plugin stopped, failed or timed out. Monitoring continues.", "Plugin বন্ধ হয়েছে, ব্যর্থ বা সময়সীমা পার হয়েছে। গতি মাপা চলছে।"),
             [TextKey.PluginHint] = ("Select a trusted x64 TrafficMonitor DLL. It runs with your permissions in a separate process; this is crash containment, not a security sandbox. Stop terminates this worker. Plugins are never loaded automatically at startup.",
                 "বিশ্বস্ত x64 TrafficMonitor DLL বাছুন। এটি আপনার অনুমতিতে আলাদা process-এ চলে; crash থেকে সুরক্ষা আছে, security sandbox নয়। Stop দিয়ে worker বন্ধ করুন। চালুর সময় plugin নিজে থেকে খোলে না।"),

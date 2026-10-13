@@ -6,14 +6,13 @@ using TrafficSense;
 
 internal static class CommunityPluginProbe
 {
-    private sealed record Case(string Name,string Tag,string SourceRevision,string Source,string Release,string ArchiveSHA256,string DllSHA256,string Dll);
+    internal sealed record Case(string Name,string Tag,string SourceRevision,string Source,string Release,string ArchiveSHA256,string DllSHA256,string Dll);
     private sealed record Resources(int Handles,uint Gdi,uint User);
     [DllImport("user32.dll")] private static extern uint GetGuiResources(nint process,uint kind);
     private static Resources Snapshot(Process worker){worker.Refresh();return new(worker.HandleCount,GetGuiResources(worker.Handle,0),GetGuiResources(worker.Handle,1));}
     internal static int Run(string manifestPath,string reportPath)
     {
-        var cases=JsonSerializer.Deserialize<Case[]>(LegacySkin.ReadBounded(manifestPath,65536),new JsonSerializerOptions{MaxDepth=8}) ?? throw new InvalidDataException("Missing plugin manifest.");
-        if(cases.Length is <1 or >4 || cases.Select(c=>c.Name).Distinct().Count()!=cases.Length || cases.Any(c=>c.Name is not ("DateTime" or "Battery" or "KeyboardIndicator" or "TextReader")))throw new InvalidDataException("Unexpected community test cases.");
+        var cases=ReadCases(manifestPath);
         string root=Path.Combine(Path.GetDirectoryName(Path.GetFullPath(reportPath))!,"plugin-probe-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(root);
         var reports=new List<object>(); int failures=0;
         foreach(var test in cases)
@@ -73,5 +72,13 @@ internal static class CommunityPluginProbe
         File.WriteAllText(reportPath,JsonSerializer.Serialize(new { Format="TrafficSense.CommunityPlugins",Version=1,TestedAt=DateTimeOffset.UtcNow,Windows=Environment.OSVersion.VersionString,Results=reports,
             Provenance="Binaries from author release assets; hashes record tested bytes, not reproducible-build/signature attestation. No third-party binaries bundled.",Configuration="Per-run isolated configuration directories; no user plugin configuration loaded."},new JsonSerializerOptions{WriteIndented=true}));
         return failures==0?0:1;
+    }
+    internal static Case[] ReadCases(string manifestPath)
+    {
+        var cases=JsonSerializer.Deserialize<Case[]>(LegacySkin.ReadBounded(manifestPath,65536),new JsonSerializerOptions{MaxDepth=8}) ?? throw new InvalidDataException("Missing plugin manifest.");
+        if(cases.Length is <1 or >4 || cases.Select(c=>c.Name).Distinct().Count()!=cases.Length || cases.Any(c=>c.Name is not ("DateTime" or "Battery" or "KeyboardIndicator" or "TextReader")))throw new InvalidDataException("Unexpected community test cases.");
+        foreach(var test in cases)
+            if(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(test.Dll))).ToLowerInvariant()!=test.DllSHA256)throw new InvalidDataException("DLL differs from acquired manifest.");
+        return cases;
     }
 }

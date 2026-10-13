@@ -1,0 +1,26 @@
+{
+  "Format": "TrafficSense.PluginSoak",
+  "Version": 1,
+  "AppVersion": "1.28.1",
+  "TestedAt": "2026-10-13T09:18:46.960402+00:00",
+  "RequestedSeconds": 900,
+  "MeasuredSeconds": 900.6233501,
+  "WallClockSeconds": 912.2822712,
+  "Results": [],
+  "HostWarm": {
+    "Seconds": 11.4896992,
+    "CpuSeconds": 0.71875,
+    "WorkingSet": 62484480,
+    "PrivateBytes": 20467712,
+    "Handles": 370,
+    "Gdi": 0,
+    "User": 3
+  },
+  "HostAfterCleanup": null,
+  "RestartCycles": 0,
+  "Errors": [
+    "System.InvalidOperationException: Worker native handles grew beyond existing community budgets.\r\n   at PluginSoakProbe.Run(String manifest, Int32 seconds, String reportPath) in D:\\GitHub\\TrafficSense\\tests\\TrafficSense.LifecycleTests\\PluginSoakProbe.cs:line 20"
+  ],
+  "Passed": false,
+  "Scope": "Finite same-machine private-desktop diagnostic run; four pinned community binaries, isolated configuration and owned text, normal GC, no forced collections. CPU includes the test dialog-driver timer. Per-worker budgets: \u002B32 kernel handles, \u002B8 GDI, \u002B8 USER, \u002B64 MiB private memory. Not an hours/days soak or hardware/driver certification."
+}

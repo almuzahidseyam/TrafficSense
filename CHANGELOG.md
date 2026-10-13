@@ -4,6 +4,26 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.29.0] - 2026-10-13
+
+### Added
+
+- Explicit bilingual Reload control for the currently chosen native DLL. Response-bound resource checks stop a worker above 1,000 GDI objects, 1,000 USER objects, 2,048 kernel handles or 512 MiB private memory, with a translated recovery message. A completed callback gets the bounded normal unload/settings-save path before job cleanup; busy Stop remains immediate. Core monitoring continues, and reload remains an explicit user action.
+
+### Fixed
+
+- Native plugin requests are claimed until their callback returns. A native settings/command dialog's nested message loop can no longer execute the same request repeatedly, open duplicate dialogs or crash the worker. An independent pumped-modal fixture reproduces the failure in 1.28.0 and passes with the guard.
+
+### Validation and tools
+
+- Added native modal/concurrent-request/Stop/invalid-command regression checks and actual WPF bridge button, responsiveness, selected-command, reopen and close-cleanup coverage.
+- Added opt-in private-desktop dialog probes for four pinned community releases. Cancel/OK, isolated settings persistence, modal Stop/reopen and all seven TextReader commands use owned test configuration and an owned sample document. Test desktops are never shown; no global keyboard state is changed.
+- Added repeatable finite plugin-worker soak measurements alongside the existing visible/hidden widget measurements. The compatibility report records actual elapsed duration, samples, CPU/memory and native handle budgets, with untested hardware and duration limits stated explicitly.
+
+### Known third-party behavior
+
+- Pinned TextReader 1.02 retains roughly seven additional GDI objects per repeated settings dialog after initial UI-cache warmup. The author binary is unchanged. Stop/Reload removes its process resources; the new response resource guard contains prolonged growth. Sampling-only soak and functional dialog/command results are reported separately from this repeated-dialog resource warning.
+
 ## [1.28.0] - 2026-10-13
 
 ### Fixed
