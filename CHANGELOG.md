@@ -4,6 +4,14 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.32.0] - 2026-10-13
+
+### Added
+
+- Hover either plugin resource plot to inspect the nearest recorded sample: time since plugin start (hours:minutes:seconds), CPU percentage and resident RAM in MiB. A shared cursor marks the sample in both plots; English/Bangla details update with the app language.
+- Missing metrics remain unavailable, genuine zero remains visible, and empty history or gaps farther than 2.5 seconds from a sample show no reading. Leaving the plots or clearing/reloading history removes stale details. Session hours do not wrap after a day.
+- Native WPF regression checks cover both plots, nearest-sample selection, boundaries, delayed gaps, independent missing values, zero, translation and reset.
+
 ## [1.31.0] - 2026-10-13
 
 ### Added

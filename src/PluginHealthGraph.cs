@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace TrafficSense;
 
@@ -10,12 +12,52 @@ internal sealed class PluginHealthGraph:FrameworkElement
 {
     private PluginHealthPoint[] _points=[];
     private UiLanguage _language=new();
+    private readonly ToolTip _details=new();
+    private PluginHealthPoint? _hover;
+    internal PluginHealthPoint? HoveredPoint=>_hover;
+    internal string HoverText=>_details.Content as string??"";
+    public PluginHealthGraph()
+    {
+        ToolTip=_details;
+        ToolTipService.SetShowDuration(this,int.MaxValue);
+        Unloaded+=(_,_)=>Inspect(null);
+    }
     internal void Update(IEnumerable<PluginHealthPoint> points,UiLanguage language,string current)
     {
         _points=points.ToArray();_language=language;
         AutomationProperties.SetName(this,language[TextKey.PluginHistory]+". "+current);
         AutomationProperties.SetHelpText(this,language[TextKey.PluginHistoryHint]);
-        ToolTip=language[TextKey.PluginHistoryHint];InvalidateVisual();
+        Inspect(IsMouseOver?Mouse.GetPosition(this):null);
+    }
+    protected override void OnMouseMove(MouseEventArgs e){base.OnMouseMove(e);Inspect(e.GetPosition(this));}
+    protected override void OnMouseLeave(MouseEventArgs e){base.OnMouseLeave(e);Inspect(null);}
+    internal void Inspect(Point? position)
+    {
+        _hover=null;
+        double height=(ActualHeight-70)/2;
+        if(position is {} p && ActualWidth>=180 && ActualHeight>=150 && _points.Length>0 &&
+            (new Rect(4,20,ActualWidth-8,height).Contains(p)||new Rect(4,50+height,ActualWidth-8,height).Contains(p)))
+        {
+            double target=_points[^1].Timestamp.TotalSeconds-120+(p.X-4)/(ActualWidth-8)*120;
+            var nearest=_points.MinBy(s=>Math.Abs(s.Timestamp.TotalSeconds-target));
+            // Do not extrapolate into empty history or bridge an unobserved delay.
+            if(target>=_points[0].Timestamp.TotalSeconds-.000001 && Math.Abs(nearest.Timestamp.TotalSeconds-target)<=2.5)
+                _hover=nearest;
+            _details.Content=_hover is {} sample?FormatDetails(sample):_language[TextKey.PluginHistoryNoSample];
+        }
+        else
+        {
+            _details.Content=_language[TextKey.PluginHistoryHint];
+            _details.IsOpen=false;
+        }
+        InvalidateVisual();
+    }
+    private string FormatDetails(PluginHealthPoint sample)
+    {
+        string time=$"{(long)sample.Timestamp.TotalHours:00}:{sample.Timestamp.Minutes:00}:{sample.Timestamp.Seconds:00}";
+        string cpu=sample.CpuPercent is {} c?c.ToString("0.0",CultureInfo.InvariantCulture)+"%":_language[TextKey.NotAvailable];
+        string ram=sample.WorkingSetBytes is {} r?(r/(1024d*1024)).ToString("0.0",CultureInfo.InvariantCulture)+" MiB":_language[TextKey.NotAvailable];
+        return _language[TextKey.PluginHistorySessionTime]+": "+time+"\n"+_language[TextKey.Cpu]+": "+cpu+"\n"+_language[TextKey.Memory]+": "+ram;
     }
     protected override AutomationPeer OnCreateAutomationPeer()=>new GraphPeer(this);
     private sealed class GraphPeer(PluginHealthGraph owner):FrameworkElementAutomationPeer(owner)
@@ -65,6 +107,13 @@ internal sealed class PluginHealthGraph:FrameworkElement
         }
         Plot(cpuPlot,p=>p.CpuPercent,100,SystemParameters.HighContrast?SystemColors.WindowTextBrush:Brushes.ForestGreen,DashStyles.Solid);
         Plot(ramPlot,p=>p.WorkingSetBytes/(1024d*1024),maximumRam,SystemParameters.HighContrast?SystemColors.WindowTextBrush:Brushes.RoyalBlue,DashStyles.Dash);
+        if(_hover is {} hovered && _points.Length>0)
+        {
+            double x=cpuPlot.Left+(hovered.Timestamp-_points[^1].Timestamp+PluginHealthHistory.Duration).TotalSeconds/120*cpuPlot.Width;
+            var cursor=new Pen(SystemColors.WindowTextBrush,1){DashStyle=DashStyles.Dot};
+            context.DrawLine(cursor,new(x,cpuPlot.Top),new(x,cpuPlot.Bottom));
+            context.DrawLine(cursor,new(x,ramPlot.Top),new(x,ramPlot.Bottom));
+        }
         if(_points.Length==0)Label(_language[TextKey.PluginHistoryEmpty],12,cpuPlot.Top+8);
     }
 }

@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.31.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.32.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -46,3 +46,5 @@ Retention checks record ordinary collection snapshots and separately use the exi
 ## Verdict
 
 The reviewed implementation is ready for the documented Windows x64 feature scope after its release workflows pass. Hardware/OS matrix coverage and the compatibility gaps remain follow-up requirements; passing tests does not establish universal reliability or competitive popularity.
+
+- **Plugin history hover:** native WPF checks cover both plots, exact/nearest time mapping, unknown CPU/RAM independently, genuine zero, delayed/empty regions, plot boundaries, mouse-leave state, translation, reset and sessions over 24 hours.
