@@ -4,6 +4,7 @@ param(
     [switch]$Community,
     [string]$CommunityManifest='',
     [ValidateRange(0,86400)][int]$Seconds=0,
+    [switch]$InteractiveSoak,
     [string]$OutputDirectory=(Join-Path $PSScriptRoot '../.artifacts/plugin-interactions')
 )
 $ErrorActionPreference='Stop'
@@ -30,8 +31,11 @@ try {
         if(!$CommunityManifest){$CommunityManifest=& (Join-Path $PSScriptRoot 'Get-CommunityPlugins.ps1')}
         & $exe --community-interactions $CommunityManifest (Join-Path $root 'community-interactions.json')
         if($LASTEXITCODE -ne 0){throw 'Community dialog checks failed.'}
+        & $exe --plugin-dialog-resources $CommunityManifest (Join-Path $root 'dialog-resources.json')
+        if($LASTEXITCODE -ne 0){throw 'Dialog resource trace failed.'}
         if($Seconds -gt 0){
-            & $exe --plugin-soak $CommunityManifest $Seconds (Join-Path $root 'plugin-soak.json')
+            $soakOperation=if($InteractiveSoak){'--plugin-soak-interactive'}else{'--plugin-soak'}
+            & $exe $soakOperation $CommunityManifest $Seconds (Join-Path $root 'plugin-soak.json')
             if($LASTEXITCODE -ne 0){throw 'Plugin soak failed; inspect its report.'}
         }
     }

@@ -1,0 +1,205 @@
+{
+  "ObservationOnly": true,
+  "Results": [
+    {
+      "Name": "DateTime",
+      "Resources": [
+        {
+          "Handles": 287,
+          "Gdi": 3,
+          "User": 10
+        },
+        {
+          "Handles": 381,
+          "Gdi": 27,
+          "User": 17
+        },
+        {
+          "Handles": 506,
+          "Gdi": 45,
+          "User": 43
+        },
+        {
+          "Handles": 506,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 506,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 506,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 506,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 506,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 506,
+          "Gdi": 47,
+          "User": 43
+        }
+      ]
+    },
+    {
+      "Name": "Battery",
+      "Resources": [
+        {
+          "Handles": 294,
+          "Gdi": 11,
+          "User": 12
+        },
+        {
+          "Handles": 386,
+          "Gdi": 27,
+          "User": 18
+        },
+        {
+          "Handles": 511,
+          "Gdi": 45,
+          "User": 45
+        },
+        {
+          "Handles": 511,
+          "Gdi": 46,
+          "User": 44
+        },
+        {
+          "Handles": 511,
+          "Gdi": 46,
+          "User": 44
+        },
+        {
+          "Handles": 511,
+          "Gdi": 46,
+          "User": 44
+        },
+        {
+          "Handles": 511,
+          "Gdi": 46,
+          "User": 44
+        },
+        {
+          "Handles": 511,
+          "Gdi": 46,
+          "User": 44
+        },
+        {
+          "Handles": 511,
+          "Gdi": 46,
+          "User": 44
+        }
+      ]
+    },
+    {
+      "Name": "KeyboardIndicator",
+      "Resources": [
+        {
+          "Handles": 294,
+          "Gdi": 5,
+          "User": 10
+        },
+        {
+          "Handles": 385,
+          "Gdi": 28,
+          "User": 17
+        },
+        {
+          "Handles": 510,
+          "Gdi": 46,
+          "User": 44
+        },
+        {
+          "Handles": 510,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 510,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 510,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 510,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 510,
+          "Gdi": 47,
+          "User": 43
+        },
+        {
+          "Handles": 510,
+          "Gdi": 47,
+          "User": 43
+        }
+      ]
+    },
+    {
+      "Name": "TextReader",
+      "Resources": [
+        {
+          "Handles": 294,
+          "Gdi": 8,
+          "User": 12
+        },
+        {
+          "Handles": 385,
+          "Gdi": 50,
+          "User": 22
+        },
+        {
+          "Handles": 510,
+          "Gdi": 77,
+          "User": 50
+        },
+        {
+          "Handles": 510,
+          "Gdi": 84,
+          "User": 50
+        },
+        {
+          "Handles": 510,
+          "Gdi": 91,
+          "User": 51
+        },
+        {
+          "Handles": 510,
+          "Gdi": 98,
+          "User": 52
+        },
+        {
+          "Handles": 510,
+          "Gdi": 105,
+          "User": 53
+        },
+        {
+          "Handles": 510,
+          "Gdi": 112,
+          "User": 54
+        },
+        {
+          "Handles": 510,
+          "Gdi": 119,
+          "User": 55
+        }
+      ]
+    }
+  ]
+}

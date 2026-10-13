@@ -23,7 +23,7 @@
 
 ## Install or run portable
 
-Current version: **[1.28.1](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.28.1)**. For **64-bit Windows 10/11**.
+Current version: **[1.29.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.29.0)**. For **64-bit Windows 10/11**.
 
 1. Open [Releases](https://github.com/almuzahidseyam/TrafficSense/releases/latest).
 2. Download **TrafficSense-Setup.exe** for a per-user installation, or **TrafficSense.zip** for portable use.

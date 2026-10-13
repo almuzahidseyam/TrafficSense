@@ -1,11 +1,14 @@
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using TrafficSense;
 
 internal static class CommunityInteractionProbe
 {
+    private sealed record Resources(int Handles,uint Gdi,uint User);
+    private static Resources Capture(Process process){process.Refresh();return new(process.HandleCount,GetGuiResources(process.Handle,0),GetGuiResources(process.Handle,1));}
     internal static int Run(string manifest,string reportPath)
     {
         var results=new List<object>();var cases=CommunityPluginProbe.ReadCases(manifest);
@@ -17,9 +20,11 @@ internal static class CommunityInteractionProbe
             {
                 string config=Path.Combine(root,test.Name);Directory.CreateDirectory(config);if(test.Name=="TextReader")SeedText(test.Dll,config);
                 var actions=new List<PluginDialogDriver.Observation>();var request=new PluginRequest("sample",[12345]);
+                Resources? beforeDialogs=null,afterDialogs=null;
                 using(var client=CreateClient(test.Dll,config))
                 {
                     var first=client.Request(request).GetAwaiter().GetResult();
+                    using var native=OpenNativeWorker(config);beforeDialogs=Capture(native);
                     var cancel=Dialog(client,config,request with {Operation="options"},test.Name=="DateTime"?"DateTimeCancel":"Cancel",actions);
                     if(test.Name=="DateTime")Check(cancel.Items.All(i=>i.Value!="ZZZ"),"DateTime Cancel committed an edited format.");
                     var accept=Dialog(client,config,request with {Operation="options"},test.Name=="DateTime"?"DateTimeAccept":"Accept",actions);
@@ -38,6 +43,8 @@ internal static class CommunityInteractionProbe
                         var shown=client.Request(request with {Operation="command",Command=4}).GetAwaiter().GetResult();Check(shown.Items[0].Png==before,"Hide toggle did not restore rendering.");
                         foreach(int command in new[]{5,6})Dialog(client,config,request with {Operation="command",Command=command},"Cancel",actions);
                     }
+                    afterDialogs=Capture(native);
+                    Console.WriteLine($"RESOURCES: {test.Name}, GDI {beforeDialogs.Gdi}->{afterDialogs.Gdi}, USER {beforeDialogs.User}->{afterDialogs.User}, handles {beforeDialogs.Handles}->{afterDialogs.Handles}.");
                 }
                 using(var reload=CreateClient(test.Dll,config))
                 {
@@ -51,7 +58,7 @@ internal static class CommunityInteractionProbe
                 }
                 using(var reopen=CreateClient(test.Dll,config))Check(reopen.Request(request).GetAwaiter().GetResult().Items.Length>0,"Reopen after Stop failed.");
                 Check(Directory.GetFiles(config,"*.ini",SearchOption.AllDirectories).Length>0,"Plugin did not persist an isolated configuration.");
-                results.Add(new{test.Name,test.Tag,test.DllSHA256,Passed=true,Actions=actions,DateTimeEditedFormatPersisted=test.Name=="DateTime",CommandsExercised=test.Name=="TextReader"?Enumerable.Range(0,7).ToArray():Array.Empty<int>(),StopDuringDialog=true,ReopenAfterStop=true});
+                results.Add(new{test.Name,test.Tag,test.DllSHA256,Passed=true,Actions=actions,BeforeDialogs=beforeDialogs,AfterDialogs=afterDialogs,DateTimeEditedFormatPersisted=test.Name=="DateTime",CommandsExercised=test.Name=="TextReader"?Enumerable.Range(0,7).ToArray():Array.Empty<int>(),StopDuringDialog=true,ReopenAfterStop=true});
                 Console.WriteLine($"PASS: {test.Name} private-desktop Cancel/OK, persistence, modal Stop and reopen; {actions.Count} observed dialogs.");
             }
             File.WriteAllText(reportPath,JsonSerializer.Serialize(new{Format="TrafficSense.CommunityInteractions",Version=1,TestedAt=DateTimeOffset.UtcNow,Results=results,
@@ -67,6 +74,21 @@ internal static class CommunityInteractionProbe
         File.WriteAllText(temp,JsonSerializer.Serialize(new PluginDialogDriver.Plan(id,mode)));
         for(int attempt=0;;attempt++){try{File.Move(temp,path,true);break;}catch(IOException) when(attempt<10){Thread.Sleep(10);}}
         return id;
+    }
+    internal static int TraceDialogResources(string manifest,string reportPath)
+    {
+        var results=new List<object>();string root=Path.Combine(Path.GetDirectoryName(Path.GetFullPath(reportPath))!,"dialog-resources-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
+        Environment.SetEnvironmentVariable("TRAFFICSENSE_TEST_DIALOGS","1");
+        foreach(var test in CommunityPluginProbe.ReadCases(manifest))
+        {
+            string config=Path.Combine(root,test.Name);Directory.CreateDirectory(config);if(test.Name=="TextReader")SeedText(test.Dll,config);
+            using var client=CreateClient(test.Dll,config);client.Request(new("sample",[12345])).GetAwaiter().GetResult();using var worker=OpenNativeWorker(config);
+            var resources=new List<Resources>{Capture(worker)};
+            for(int i=0;i<8;i++){Dialog(client,config,new("options",[12345]),"Cancel",[]);resources.Add(Capture(worker));}
+            Console.WriteLine($"TRACE: {test.Name}; GDI {string.Join(",",resources.Select(r=>r.Gdi))}; USER {string.Join(",",resources.Select(r=>r.User))}; handles {string.Join(",",resources.Select(r=>r.Handles))}.");
+            results.Add(new{test.Name,Resources=resources});
+        }
+        File.WriteAllText(reportPath,JsonSerializer.Serialize(new{ObservationOnly=true,Results=results},new JsonSerializerOptions{WriteIndented=true}));return 0;
     }
     internal static PluginClient CreateClient(string dll,string config)
     {
@@ -88,4 +110,5 @@ internal static class CommunityInteractionProbe
         File.WriteAllText(Path.Combine(config,"TextReader.dll.ini"),"[config]\nfile_path="+document+"\nauto_read=0\nauto_reload_when_file_changed=0\nuse_own_context_menu=0\n",Encoding.Unicode);
     }
     private static void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);}
+    [DllImport("user32.dll")]private static extern uint GetGuiResources(nint process,uint flags);
 }

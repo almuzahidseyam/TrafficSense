@@ -1,7 +1,7 @@
 {
   "Format": "TrafficSense.CommunityInteractions",
   "Version": 1,
-  "TestedAt": "2026-10-13T09:03:34.5327317+00:00",
+  "TestedAt": "2026-10-13T09:26:16.4714578+00:00",
   "Results": [
     {
       "Name": "DateTime",
@@ -10,20 +10,30 @@
       "Passed": true,
       "Actions": [
         {
-          "Id": "c090a937e0f54ac3b02d36c11b754e8f",
+          "Id": "6858ba9f42ed458f8097857a4b64eb4b",
           "Mode": "DateTimeCancel",
           "RootDialogs": 1,
           "ChildControls": 11,
-          "OpenMilliseconds": 437.5728
+          "OpenMilliseconds": 433.6545
         },
         {
-          "Id": "76476501ea914d7990bee48b94cb6c08",
+          "Id": "70bcdd54687f4c2ab3bbc4599cfdef0e",
           "Mode": "DateTimeAccept",
           "RootDialogs": 1,
           "ChildControls": 11,
-          "OpenMilliseconds": 438.6837
+          "OpenMilliseconds": 437.4412
         }
       ],
+      "BeforeDialogs": {
+        "Handles": 287,
+        "Gdi": 3,
+        "User": 10
+      },
+      "AfterDialogs": {
+        "Handles": 506,
+        "Gdi": 45,
+        "User": 44
+      },
       "DateTimeEditedFormatPersisted": true,
       "CommandsExercised": [],
       "StopDuringDialog": true,
@@ -36,20 +46,30 @@
       "Passed": true,
       "Actions": [
         {
-          "Id": "0396e0978a84406f8c511f4a07938b10",
+          "Id": "70df8443a6404f67bf2e20d321cff7be",
           "Mode": "Cancel",
           "RootDialogs": 1,
           "ChildControls": 8,
-          "OpenMilliseconds": 434.5092
+          "OpenMilliseconds": 438.0789
         },
         {
-          "Id": "8e609fbaa3b5483bbe3cca52baa07c8b",
+          "Id": "01739ff726724a5e87d358b359aafcae",
           "Mode": "Accept",
           "RootDialogs": 1,
           "ChildControls": 8,
-          "OpenMilliseconds": 436.6199
+          "OpenMilliseconds": 436.7102
         }
       ],
+      "BeforeDialogs": {
+        "Handles": 294,
+        "Gdi": 11,
+        "User": 12
+      },
+      "AfterDialogs": {
+        "Handles": 511,
+        "Gdi": 45,
+        "User": 45
+      },
       "DateTimeEditedFormatPersisted": false,
       "CommandsExercised": [],
       "StopDuringDialog": true,
@@ -62,20 +82,30 @@
       "Passed": true,
       "Actions": [
         {
-          "Id": "70d98a94440d405b906c2ea5b6216e07",
+          "Id": "4b1e6a892f4944808571e27d590090c9",
           "Mode": "Cancel",
           "RootDialogs": 1,
           "ChildControls": 6,
-          "OpenMilliseconds": 436.7821
+          "OpenMilliseconds": 433.1334
         },
         {
-          "Id": "fbb40386ae4b47718a6cbd1149c5b13c",
+          "Id": "d3a0dc9ab8fa45b3b62ede295d291841",
           "Mode": "Accept",
           "RootDialogs": 1,
           "ChildControls": 6,
-          "OpenMilliseconds": 438.2873
+          "OpenMilliseconds": 437.9011
         }
       ],
+      "BeforeDialogs": {
+        "Handles": 294,
+        "Gdi": 5,
+        "User": 10
+      },
+      "AfterDialogs": {
+        "Handles": 510,
+        "Gdi": 46,
+        "User": 43
+      },
       "DateTimeEditedFormatPersisted": false,
       "CommandsExercised": [],
       "StopDuringDialog": true,
@@ -88,34 +118,44 @@
       "Passed": true,
       "Actions": [
         {
-          "Id": "a18e2fdb89284dc3b7094d9a68f0ebea",
+          "Id": "67a5b25e3aab4d45bff0be3adce1e5eb",
           "Mode": "Cancel",
           "RootDialogs": 1,
           "ChildControls": 38,
-          "OpenMilliseconds": 409.1202
+          "OpenMilliseconds": 433.2048
         },
         {
-          "Id": "e681b8364e564f62af8054a9bd140704",
+          "Id": "a6dccc25fe874099aac58ad4eb58b6b0",
           "Mode": "Accept",
           "RootDialogs": 1,
           "ChildControls": 38,
-          "OpenMilliseconds": 438.3693
+          "OpenMilliseconds": 437.0255
         },
         {
-          "Id": "9f5d9612a854416dab6489b8a96d5057",
+          "Id": "855e7668243a4fd7b55aefe7714e4d9a",
           "Mode": "Cancel",
           "RootDialogs": 1,
           "ChildControls": 38,
-          "OpenMilliseconds": 450.7514
+          "OpenMilliseconds": 442.943
         },
         {
-          "Id": "3484aebca7074d9f8dc63a7ff13e6c42",
+          "Id": "06d620fc49d34a0e9cdf19d2f2a9f8bd",
           "Mode": "Cancel",
           "RootDialogs": 1,
           "ChildControls": 38,
-          "OpenMilliseconds": 455.096
+          "OpenMilliseconds": 442.8751
         }
       ],
+      "BeforeDialogs": {
+        "Handles": 294,
+        "Gdi": 8,
+        "User": 12
+      },
+      "AfterDialogs": {
+        "Handles": 510,
+        "Gdi": 91,
+        "User": 51
+      },
       "DateTimeEditedFormatPersisted": false,
       "CommandsExercised": [
         0,

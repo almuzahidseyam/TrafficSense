@@ -12,7 +12,7 @@ internal static class PluginProbe
         for(int api=1;api<=7;api++)
         {
             Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_API",api.ToString());
-            try { using var legacy = new PluginClient(executable,dll); var value=legacy.Request(request).GetAwaiter().GetResult(); Check(value.Api==api && value.Items[0].Value==(api>=7?"verified":"legacy") && value.Commands.Length==(api>=5?3:0),"Legacy API gate/monitor info failed."); }
+            try { using var legacy = new PluginClient(executable,dll); var value=legacy.Request(request).GetAwaiter().GetResult(); Check(value.Api==api && value.Items[0].Value==(api>=7?"verified":"legacy") && value.Commands.Length==(api>=5?4:0),"Legacy API gate/monitor info failed."); }
             finally { Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_API",null); }
         }
         Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_API","9");
@@ -21,7 +21,7 @@ internal static class PluginProbe
         using (var client = new PluginClient(executable, dll))
         {
             var sample = client.Request(request).GetAwaiter().GetResult();
-            Check(sample.Api == 8 && sample.Items.Length == 3 && sample.Items[0].Value == "verified" && sample.Items[1].Png?.Length > 20 && sample.Commands.Length == 3, "Native ABI/host callbacks/custom draw failed.");
+            Check(sample.Api == 8 && sample.Items.Length == 3 && sample.Items[0].Value == "verified" && sample.Items[1].Png?.Length > 20 && sample.Commands.Length == 4, "Native ABI/host callbacks/custom draw failed.");
             foreach (var item in sample.Items.Skip(1))
             { using var bytes = new MemoryStream(Convert.FromBase64String(item.Png!)); using var bitmap = new System.Drawing.Bitmap(bytes); Check(bitmap.GetPixel(60,30).G > 100,"Plugin drawing was blank."); }
             Check(client.Request(request with { Operation = "options" }).GetAwaiter().GetResult().Name == sample.Name, "Plugin options failed.");

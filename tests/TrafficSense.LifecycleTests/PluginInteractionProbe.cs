@@ -45,6 +45,16 @@ internal static class PluginInteractionProbe
                 catch(Exception e) when(e is IOException or InvalidDataException){}
             }
             Console.WriteLine("PASS: overlapping requests rejected, modal Stop cleans up, and invalid commands terminate without execution.");
+            string limitedRoot=Path.Combine(Path.GetTempPath(),"TrafficSense.Teardown-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(limitedRoot);
+            using(var limited=new PluginClient(exe,dll,limitedRoot))
+            {
+                limited.Request(request).GetAwaiter().GetResult();using var leaking=Process.GetProcessById(limited.WorkerId);
+                try{limited.Request(request with{Operation="command",Command=3}).GetAwaiter().GetResult();throw new InvalidOperationException("Leaking native GDI worker was accepted.");}
+                catch(PluginResourceLimitException){}
+                if(!leaking.WaitForExit(2000)||Directory.GetFiles(limitedRoot,"saved.txt",SearchOption.AllDirectories).Length!=1)throw new InvalidOperationException("Resource limit did not unload/save and clean up the worker.");
+            }
+            using(var recovered=new PluginClient(exe,dll,limitedRoot))if(recovered.Request(request).GetAwaiter().GetResult().Items[0].Value!="verified")throw new InvalidOperationException("Reload after native resource limit failed.");
+            Console.WriteLine("PASS: real 1,200-object GDI leak is contained, normal teardown saves configuration, and reload recovers.");
             return 0;
         }
         finally{Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_MODAL",null);}

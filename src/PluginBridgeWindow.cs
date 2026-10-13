@@ -16,9 +16,11 @@ internal sealed class PluginBridgeWindow : Window
     private readonly Func<bool> _dark;
     private readonly Func<string,PluginClient> _createClient;
     private PluginClient? _client;
+    private string? _path;
     private readonly Button _open = new() { Style = null, Margin = new(4) }, _stop = new() { Style = null, Margin = new(4) }, _options = new() { Style = null, Margin = new(4) };
     private readonly ComboBox _commands = new() { MinWidth = 100, Margin = new(4) };
     private readonly Button _run = new() { Style = null, Margin = new(4) };
+    private readonly Button _reload = new() { Style = null, Margin = new(4) };
     private readonly TextBlock _status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(8) };
     private readonly StackPanel _items = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -31,23 +33,25 @@ internal sealed class PluginBridgeWindow : Window
         Title = language[TextKey.PluginBridge]; Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
         var root = new DockPanel { Margin = new(12) }; var top = new StackPanel();
         top.Children.Add(new TextBlock { Text = language[TextKey.PluginHint], TextWrapping = TextWrapping.Wrap, Margin = new(4) });
-        var buttons = new WrapPanel(); foreach (var control in new Control[] { _open, _stop, _options, _commands, _run }) buttons.Children.Add(control);
+        var buttons = new WrapPanel(); foreach (var control in new Control[] { _open, _stop, _reload, _options, _commands, _run }) buttons.Children.Add(control);
         top.Children.Add(buttons); top.Children.Add(_status); DockPanel.SetDock(top, Dock.Top); root.Children.Add(top);
         root.Children.Add(new ScrollViewer { Content = _items, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); Content = root;
         _open.Content = language[TextKey.PluginChoose]; _stop.Content = language[TextKey.BridgeStop]; _options.Content = language[TextKey.PluginOptions]; _run.Content = language[TextKey.PluginRun];
+        _reload.Content = language[TextKey.PluginReload];
         _open.Click += async (_, _) => { var dialog = new OpenFileDialog { Filter = "Trusted x64 TrafficMonitor plugin (*.dll)|*.dll" }; if (dialog.ShowDialog(this) == true) await Open(dialog.FileName); };
         _stop.Click += (_, _) => Stop(); _options.Click += async (_, _) => await Poll("options"); _run.Click += async (_, _) => await Poll("command");
+        _reload.Click += async (_, _) => { if(_path is {} path) await Open(path); };
         _timer.Tick += async (_, _) => await Poll("sample");
         Closed += (_, _) => { _timer.Stop(); Stop(); }; Controls();
     }
     internal async Task<bool> Open(string path)
     {
-        Stop();
+        Stop(); _path = path;
         try { _client = _createClient(path); await Poll("sample"); if (_client != null) _timer.Start(); return _client != null; }
         catch (Exception e) when (e is InvalidDataException or IOException or System.ComponentModel.Win32Exception or InvalidOperationException or ArgumentException)
         { _status.Text = _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false); return false; }
     }
-    private void Controls() { _stop.IsEnabled = _client != null; _open.IsEnabled = !_busy; _options.IsEnabled = _client != null && !_busy; _run.IsEnabled = _client != null && !_busy && _commands.SelectedIndex >= 0; }
+    private void Controls() { _stop.IsEnabled = _client != null; _open.IsEnabled = !_busy; _reload.IsEnabled = _path != null && !_busy; _options.IsEnabled = _client != null && !_busy; _run.IsEnabled = _client != null && !_busy && _commands.SelectedIndex >= 0; }
     private void Stop(bool clearStatus = true)
     { _timer.Stop(); _client?.Dispose(); _client = null; _publish(null); _items.Children.Clear(); _commands.Items.Clear(); if (clearStatus) _status.Text = _language[TextKey.BridgeStopped]; Controls(); }
     private async Task Poll(string operation)
@@ -72,9 +76,9 @@ internal sealed class PluginBridgeWindow : Window
             int selected = _commands.SelectedIndex; _commands.Items.Clear(); foreach (string command in sample.Commands) _commands.Items.Add(command);
             _commands.SelectedIndex = sample.Commands.Length == 0 ? -1 : Math.Clamp(selected, 0, sample.Commands.Length - 1);
         }
-        catch (Exception e) when (e is InvalidDataException or IOException or OperationCanceledException or System.Text.Json.JsonException or InvalidOperationException or ArgumentException or NotSupportedException or FormatException)
+        catch (Exception e) when (e is InvalidDataException or IOException or OperationCanceledException or System.Text.Json.JsonException or InvalidOperationException or ArgumentException or NotSupportedException or FormatException or System.ComponentModel.Win32Exception)
         {
-            if (ReferenceEquals(client, _client)) { _status.Text = _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false); }
+            if (ReferenceEquals(client, _client)) { _status.Text = e is PluginResourceLimitException ? _language[TextKey.PluginResourceLimit] : _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false); }
         }
         finally { _busy = false; Controls(); }
     }

@@ -2,8 +2,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Runtime.InteropServices;
 
 namespace TrafficSense;
+
+internal sealed class PluginResourceLimitException : IOException
+{
+    internal PluginResourceLimitException() : base("Plugin worker exceeded its resource limit. Reload the plugin.") { }
+}
 
 internal sealed class PluginClient : IDisposable
 {
@@ -43,18 +49,27 @@ internal sealed class PluginClient : IDisposable
             if (sample.Items is not { Length: <= 32 } || sample.Commands is not { Length: <= 32 } || sample.Api is < 1 or > 8 || sample.Name?.Length > 256 || sample.Tooltip?.Length > 256 ||
                 sample.Items.Any(i => i == null || i.Id is not { Length: > 0 and <= 256 } || i.Name?.Length > 256 || i.Label?.Length > 256 || i.Value?.Length > 256 || i.Png?.Length > 192 * 1024))
                 throw new InvalidDataException("Invalid plugin fields.");
+            _process.Refresh();
+            if (_process.HandleCount > 2048 || GetGuiResources(_process.Handle,0) > 1000 || GetGuiResources(_process.Handle,1) > 1000 || _process.PrivateMemorySize64 > 512L*1024*1024)
+            {
+                // A complete response means the callback returned: EOF can give
+                // settings destructors their bounded normal-unload opportunity.
+                DisposeCore(graceful:true);
+                throw new PluginResourceLimitException();
+            }
             return sample;
         }
         catch { Dispose(); throw; }
         finally { Volatile.Write(ref _busy, 0); }
     }
-    public void Dispose()
+    public void Dispose() => DisposeCore(Volatile.Read(ref _busy)==0);
+    private void DisposeCore(bool graceful)
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
-        // Idle plugins may persist settings in DLL detach/destructors. Give the
-        // normal EOF path a short deadline, then let the job enforce ownership.
-        // A busy/crashed/timed-out worker must still be terminated immediately.
-        if(Volatile.Read(ref _busy)==0)
+        // Idle plugins and completed responses may persist DLL destructor
+        // settings. Bound the EOF/unload path; stuck/faulted callbacks use the
+        // immediate job-termination path instead.
+        if(graceful)
         {
             try { _process.StandardInput.Close(); _process.WaitForExit(300); }
             catch(Exception e) when(e is IOException or InvalidOperationException or System.ComponentModel.Win32Exception) { }
@@ -64,4 +79,5 @@ internal sealed class PluginClient : IDisposable
         catch (Exception e) when (e is InvalidOperationException or System.ComponentModel.Win32Exception) { }
         _process.Dispose();
     }
+    [DllImport("user32.dll")] private static extern uint GetGuiResources(IntPtr process,uint flags);
 }

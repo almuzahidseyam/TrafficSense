@@ -87,10 +87,10 @@ struct Plugin {
     virtual const wchar_t* tooltip() { static std::wstring text; text=L"options:"+std::to_wstring(optionCount)+L";commands:"+std::to_wstring(commandCount);return text.c_str(); }
     virtual void extended(int index, const wchar_t* text) { if(index==17 && text)configDirectory=text; }
     virtual void* icon() { return nullptr; }
-    virtual int commands() { return 3; }
-    virtual const wchar_t* commandName(int i) { return i == 0 ? L"Hang" : i == 1 ? L"Crash" : L"Count"; }
+    virtual int commands() { return 4; }
+    virtual const wchar_t* commandName(int i) { return i == 0 ? L"Hang" : i == 1 ? L"Crash" : i==2 ? L"Count" : L"Leak GDI"; }
     virtual void* commandIcon(int) { return nullptr; }
-    virtual void command(int i, void*, void*) { if(i==2)InteractivePump();mode = i == 0 ? 1 : i == 1 ? 2 : 0; commandCount++; }
+    virtual void command(int i, void*, void*) { if(i==2)InteractivePump();if(i==3)for(int n=0;n<1200;n++)CreatePen(PS_SOLID,1,RGB(n%255,0,0));mode = i == 0 ? 1 : i == 1 ? 2 : 0; commandCount++; }
     virtual int checked(int) { return 0; }
     virtual void initialize(Host* value) { host = value; }
 };
