@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.33.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.34.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -52,3 +52,9 @@ The reviewed implementation is ready for the documented Windows x64 feature scop
 ## Plugin history keyboard inspection (1.33.0)
 
 Tab focuses the graph at its latest recorded sample. Left/Right moves one recorded sample, Home/End selects the oldest/latest, Esc clears, and Tab leaves. Selected details appear below the graph and in its accessible name, with English/Bangla instructions. Live refresh preserves the timestamp; expiration clears rather than silently choosing another reading. Focus loss, Stop/Reload and close clear inspection. Navigation tests exercise gaps, boundaries, unknown values, translation, empty/reset/expired history and shortcut pass-through; a hidden real WPF bridge probe routes a key event and verifies visible detail text and live selection. No physical keyboard or screen-reader certification is claimed.
+
+## Lite packaging (1.34.0)
+
+`./scripts/Build-Portable.ps1 -Lite` uses `build/Lite.pubxml`, outputs to an isolated `.artifacts/lite` directory and runs the lifecycle suite against the chosen dotnet installation. CoreLib and native WPF modules must come from the shared runtime root. A separate hostfxr-only directory verifies the framework-missing exit without launching the app or showing a dialog. ZIP payload hashes and app version are checked. Full ZIP/installer behavior remains covered in CI.
+
+Local validation note: the first Lite lifecycle run exceeded the existing three-second plugin response deadline during startup. A targeted worker run and a fresh complete Lite build subsequently passed with unchanged deadlines. Clean-runner CI additionally verifies both package modes; this is not a guarantee against slow-machine startup delays.

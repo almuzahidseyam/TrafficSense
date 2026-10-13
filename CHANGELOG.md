@@ -4,6 +4,14 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.34.0] - 2026-10-13
+
+### Added
+
+- Optional **TrafficSense-Lite-win-x64.zip** alongside the full portable ZIP and Setup. Lite has all the same features and omits the bundled runtime; it requires **.NET 8 Desktop Runtime x64** (latest 8.0 patch). .NET Framework, plain runtime, x86-only or newer-major-only installations are insufficient.
+- English/Bangla download guidance and package instructions explain which edition to choose. All editions share settings/history. Lite targets smaller downloads and disk footprint, not reduced CPU/RAM use.
+- CI and release pipelines build both packages with checksums, validate extracted contents/version, and run the Windows/plugin lifecycle suite against each. Lite checks CoreLib/WPF loading from the shared runtime and the missing-runtime failure path in an isolated host directory.
+
 ## [1.33.0] - 2026-10-13
 
 ### Added
