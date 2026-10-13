@@ -33,6 +33,10 @@ jobs:
       shell: pwsh
       run: ./scripts/Build-Portable.ps1
 
+    - name: Build and verify Lite ZIP with shared .NET runtime
+      timeout-minutes: 10
+      shell: pwsh
+      run: ./scripts/Build-Portable.ps1 -Lite
     - name: Build and verify per-user installer
       timeout-minutes: 10
       shell: pwsh
@@ -48,6 +52,8 @@ jobs:
         files: |
           .artifacts/portable/**/TrafficSense.zip
           .artifacts/portable/**/TrafficSense.zip.sha256
+          .artifacts/lite/**/TrafficSense-Lite-win-x64.zip
+          .artifacts/lite/**/TrafficSense-Lite-win-x64.zip.sha256
           .artifacts/installer/**/TrafficSense-Setup.exe
           .artifacts/installer/**/TrafficSense-Setup.exe.sha256
       env:

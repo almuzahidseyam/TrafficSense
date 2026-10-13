@@ -264,16 +264,18 @@ internal static class Program
         Justification = "This probe deliberately verifies that CoreLib has no external assembly file in the single-file bundle.")]
     internal static void VerifyBundledRuntime()
     {
-        if (Environment.GetEnvironmentVariable("TRAFFICSENSE_VERIFY_BUNDLE") != "1") return;
+        string? sharedRoot=Environment.GetEnvironmentVariable("TRAFFICSENSE_SHARED_RUNTIME");
+        bool shared=!string.IsNullOrEmpty(sharedRoot);
+        if (!shared && Environment.GetEnvironmentVariable("TRAFFICSENSE_VERIFY_BUNDLE") != "1") return;
         string expectedVersion = Environment.GetEnvironmentVariable("TRAFFICSENSE_EXPECTED_VERSION")!;
         var appAssembly = typeof(MainWindow).Assembly;
         string? informationalVersion = appAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         Check(!string.IsNullOrEmpty(expectedVersion) && informationalVersion?.Split('+')[0] == expectedVersion &&
             appAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version == expectedVersion + ".0",
             "Bundled app version does not match the release version.");
-        string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!) + Path.DirectorySeparatorChar;
+        string root = Path.GetFullPath(shared?sharedRoot!:Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!) + Path.DirectorySeparatorChar;
         using var process = Process.GetCurrentProcess();
-        Check(typeof(object).Assembly.Location.Length == 0, "CoreLib was loaded from an external runtime assembly instead of the bundle.");
+        Check(shared?typeof(object).Assembly.Location.StartsWith(Path.Combine(root,"shared"),StringComparison.OrdinalIgnoreCase):typeof(object).Assembly.Location.Length == 0, "CoreLib runtime source does not match the package type.");
         // The Windows .NET single-file host can statically link CoreCLR, so no
         // coreclr.dll module exists in that mode. Reject an external one if present.
         foreach (var module in process.Modules.Cast<ProcessModule>().Where(item => item.ModuleName.Equals("coreclr.dll", StringComparison.OrdinalIgnoreCase)))
@@ -284,7 +286,7 @@ internal static class Program
             Check(module != null, $"{name} was not loaded. Modules: {string.Join(", ", process.Modules.Cast<ProcessModule>().Select(item => item.ModuleName))}");
             Check(module!.FileName.StartsWith(root, StringComparison.OrdinalIgnoreCase), $"{name} was not loaded from the bundled runtime: {module.FileName}");
         }
-        Console.WriteLine($"PASS: app version {expectedVersion}, embedded CoreLib and bundled WPF native libraries, with installed-runtime lookup disabled.");
+        Console.WriteLine(shared?$"PASS: Lite app version {expectedVersion}, CoreLib and WPF native libraries loaded from the selected shared runtime.":$"PASS: app version {expectedVersion}, embedded CoreLib and bundled WPF native libraries, with installed-runtime lookup disabled.");
     }
 
     private static void VerifyPackagedEntryPoint()
@@ -313,13 +315,15 @@ internal static class Program
             throw new InvalidOperationException("Packaged entry point did not exit as a secondary instance.");
         }
         Check(child.ExitCode == 0 && activated.Wait(5000), "Packaged entry point failed to activate the primary instance.");
-        string root = Path.GetFullPath(Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!);
+        string? sharedRoot=Environment.GetEnvironmentVariable("TRAFFICSENSE_SHARED_RUNTIME");
+        bool shared=!string.IsNullOrEmpty(sharedRoot);
+        string root = Path.GetFullPath(shared?sharedRoot!:Environment.GetEnvironmentVariable("DOTNET_BUNDLE_EXTRACT_BASE_DIR")!);
         string[] trace = File.ReadAllLines(tracePath);
-        Check(trace.Any(line => line.Contains("CoreCLR path = '', CoreCLR dir = ''", StringComparison.Ordinal) ||
+        Check(trace.Any(line => (!shared && line.Contains("CoreCLR path = '', CoreCLR dir = ''", StringComparison.Ordinal)) ||
             (line.Contains("CoreCLR path", StringComparison.OrdinalIgnoreCase) && line.Contains(root, StringComparison.OrdinalIgnoreCase) &&
              line.Contains("coreclr.dll", StringComparison.OrdinalIgnoreCase))),
             "Packaged entry point did not load its own bundled CoreCLR.");
-        Console.WriteLine("PASS: distributed EXE started from the extracted ZIP, used bundled CoreCLR and signaled the primary instance without touching user settings.");
+        Console.WriteLine($"PASS: distributed EXE started from the extracted ZIP, used {(shared?"shared":"bundled")} CoreCLR and signaled the primary instance without touching user settings.");
     }
 
     private static int VerifyRestart(string scope, string settingsPath)

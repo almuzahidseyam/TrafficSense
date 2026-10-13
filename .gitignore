@@ -431,3 +431,7 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Shared release profiles contain no deployment credentials.
+!/build/Portable.pubxml
+!/build/Lite.pubxml
