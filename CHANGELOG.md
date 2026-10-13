@@ -4,6 +4,18 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.28.1] - 2026-10-13
+
+### Fixed
+
+- Native plugin requests are claimed until their callback returns. A native settings/command dialog's nested message loop can no longer execute the same request repeatedly, open duplicate dialogs or crash the worker. An independent pumped-modal fixture reproduces the failure in 1.28.0 and passes with the guard.
+
+### Validation and tools
+
+- Added native modal/concurrent-request/Stop/invalid-command regression checks and actual WPF bridge button, responsiveness, selected-command, reopen and close-cleanup coverage.
+- Added opt-in private-desktop dialog probes for four pinned community releases. Cancel/OK, isolated settings persistence, modal Stop/reopen and all seven TextReader commands use owned test configuration and an owned sample document. Test desktops are never shown; no global keyboard state is changed.
+- Added repeatable finite plugin-worker soak measurements alongside the existing visible/hidden widget measurements. The compatibility report records actual elapsed duration, samples, CPU/memory and native handle budgets, with untested hardware and duration limits stated explicitly.
+
 ## [1.28.0] - 2026-10-13
 
 ### Fixed

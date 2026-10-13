@@ -1,0 +1,134 @@
+{
+  "Format": "TrafficSense.CommunityInteractions",
+  "Version": 1,
+  "TestedAt": "2026-10-13T09:03:34.5327317+00:00",
+  "Results": [
+    {
+      "Name": "DateTime",
+      "Tag": "DateTime_V1.00",
+      "DllSHA256": "ade0addb758828c08f36130d04e83b1fa3641c191e4a792d99a2e40d08f21fed",
+      "Passed": true,
+      "Actions": [
+        {
+          "Id": "c090a937e0f54ac3b02d36c11b754e8f",
+          "Mode": "DateTimeCancel",
+          "RootDialogs": 1,
+          "ChildControls": 11,
+          "OpenMilliseconds": 437.5728
+        },
+        {
+          "Id": "76476501ea914d7990bee48b94cb6c08",
+          "Mode": "DateTimeAccept",
+          "RootDialogs": 1,
+          "ChildControls": 11,
+          "OpenMilliseconds": 438.6837
+        }
+      ],
+      "DateTimeEditedFormatPersisted": true,
+      "CommandsExercised": [],
+      "StopDuringDialog": true,
+      "ReopenAfterStop": true
+    },
+    {
+      "Name": "Battery",
+      "Tag": "Battery_V1.03",
+      "DllSHA256": "c1a2e12b494c97d0726b05a2ffe757c275405d587111dbce5ff324b4249db0cd",
+      "Passed": true,
+      "Actions": [
+        {
+          "Id": "0396e0978a84406f8c511f4a07938b10",
+          "Mode": "Cancel",
+          "RootDialogs": 1,
+          "ChildControls": 8,
+          "OpenMilliseconds": 434.5092
+        },
+        {
+          "Id": "8e609fbaa3b5483bbe3cca52baa07c8b",
+          "Mode": "Accept",
+          "RootDialogs": 1,
+          "ChildControls": 8,
+          "OpenMilliseconds": 436.6199
+        }
+      ],
+      "DateTimeEditedFormatPersisted": false,
+      "CommandsExercised": [],
+      "StopDuringDialog": true,
+      "ReopenAfterStop": true
+    },
+    {
+      "Name": "KeyboardIndicator",
+      "Tag": "KeyboardIndicator_V1.00",
+      "DllSHA256": "a29a5def11207a1a1465440943a97ed4fa4ede51e32634909db644d21af57afe",
+      "Passed": true,
+      "Actions": [
+        {
+          "Id": "70d98a94440d405b906c2ea5b6216e07",
+          "Mode": "Cancel",
+          "RootDialogs": 1,
+          "ChildControls": 6,
+          "OpenMilliseconds": 436.7821
+        },
+        {
+          "Id": "fbb40386ae4b47718a6cbd1149c5b13c",
+          "Mode": "Accept",
+          "RootDialogs": 1,
+          "ChildControls": 6,
+          "OpenMilliseconds": 438.2873
+        }
+      ],
+      "DateTimeEditedFormatPersisted": false,
+      "CommandsExercised": [],
+      "StopDuringDialog": true,
+      "ReopenAfterStop": true
+    },
+    {
+      "Name": "TextReader",
+      "Tag": "TextReader_V1.02",
+      "DllSHA256": "59883e8bc0aa11c3422af2dba731d7526a943b7321fe6fdcd2a8722a45299d3e",
+      "Passed": true,
+      "Actions": [
+        {
+          "Id": "a18e2fdb89284dc3b7094d9a68f0ebea",
+          "Mode": "Cancel",
+          "RootDialogs": 1,
+          "ChildControls": 38,
+          "OpenMilliseconds": 409.1202
+        },
+        {
+          "Id": "e681b8364e564f62af8054a9bd140704",
+          "Mode": "Accept",
+          "RootDialogs": 1,
+          "ChildControls": 38,
+          "OpenMilliseconds": 438.3693
+        },
+        {
+          "Id": "9f5d9612a854416dab6489b8a96d5057",
+          "Mode": "Cancel",
+          "RootDialogs": 1,
+          "ChildControls": 38,
+          "OpenMilliseconds": 450.7514
+        },
+        {
+          "Id": "3484aebca7074d9f8dc63a7ff13e6c42",
+          "Mode": "Cancel",
+          "RootDialogs": 1,
+          "ChildControls": 38,
+          "OpenMilliseconds": 455.096
+        }
+      ],
+      "DateTimeEditedFormatPersisted": false,
+      "CommandsExercised": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "StopDuringDialog": true,
+      "ReopenAfterStop": true
+    }
+  ],
+  "Scope": "Real pinned author-release dialogs on private desktops which were never switched into view; isolated plugin configuration and owned TextReader document. No user input, user documents or global key state changed. Not all option fields/hardware callbacks tested."
+}

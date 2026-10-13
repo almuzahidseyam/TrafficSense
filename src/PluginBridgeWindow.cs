@@ -14,6 +14,7 @@ internal sealed class PluginBridgeWindow : Window
     private readonly Func<double[]> _metrics;
     private readonly Action<PluginSample?> _publish;
     private readonly Func<bool> _dark;
+    private readonly Func<string,PluginClient> _createClient;
     private PluginClient? _client;
     private readonly Button _open = new() { Style = null, Margin = new(4) }, _stop = new() { Style = null, Margin = new(4) }, _options = new() { Style = null, Margin = new(4) };
     private readonly ComboBox _commands = new() { MinWidth = 100, Margin = new(4) };
@@ -22,9 +23,10 @@ internal sealed class PluginBridgeWindow : Window
     private readonly StackPanel _items = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private bool _busy;
-    internal PluginBridgeWindow(UiLanguage language, Func<double[]> metrics, Action<PluginSample?> publish, Func<bool>? dark = null)
+    internal PluginBridgeWindow(UiLanguage language, Func<double[]> metrics, Action<PluginSample?> publish, Func<bool>? dark = null, Func<string,PluginClient>? createClient = null)
     {
         _language = language; _metrics = metrics; _publish = publish; _dark = dark ?? (()=>true);
+        _createClient = createClient ?? (path=>new PluginClient(Environment.ProcessPath!,path));
         Width = 620; Height = 400; MinWidth = 360; MinHeight = 250; FontSize = 14; FontFamily = new FontFamily("Segoe UI, Nirmala UI");
         Title = language[TextKey.PluginBridge]; Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
         var root = new DockPanel { Margin = new(12) }; var top = new StackPanel();
@@ -41,7 +43,7 @@ internal sealed class PluginBridgeWindow : Window
     internal async Task<bool> Open(string path)
     {
         Stop();
-        try { _client = new(Environment.ProcessPath!, path); await Poll("sample"); if (_client != null) _timer.Start(); return _client != null; }
+        try { _client = _createClient(path); await Poll("sample"); if (_client != null) _timer.Start(); return _client != null; }
         catch (Exception e) when (e is InvalidDataException or IOException or System.ComponentModel.Win32Exception or InvalidOperationException or ArgumentException)
         { _status.Text = _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false); return false; }
     }

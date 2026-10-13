@@ -182,11 +182,14 @@ internal static class PluginWorker
         {
             using var input = new StreamReader(Console.OpenStandardInput()); using var output = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
             using var plugin = new NativePlugin(path,Environment.GetEnvironmentVariable("TRAFFICSENSE_PLUGIN_CONFIG_ROOT"));
-            Task<string?> pending = ReadLine(input,8192); int exit = 0;
+            Task<string?> pending = ReadLine(input,8192); int exit = 0; bool executing = false;
             using var timer = new System.Windows.Forms.Timer { Interval = 25 };
             timer.Tick += (_, _) =>
             {
-                if (!pending.IsCompleted) return;
+                // Native modal dialogs pump this thread's timer messages. Keep
+                // the in-flight request claimed until its callback returns.
+                if (executing || !pending.IsCompleted) return;
+                executing = true;
                 try
                 {
                     string? line = pending.GetAwaiter().GetResult(); if (line == null) { System.Windows.Forms.Application.ExitThread(); return; }
@@ -195,6 +198,7 @@ internal static class PluginWorker
                     output.WriteLine(response); pending = ReadLine(input,8192);
                 }
                 catch { exit=2; System.Windows.Forms.Application.ExitThread(); }
+                finally { executing = false; }
             };
             timer.Start(); System.Windows.Forms.Application.Run(); return exit;
         }
