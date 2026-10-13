@@ -9,6 +9,30 @@ internal static class PluginProbe
         static void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
         var request = new PluginRequest("sample", [12345]);
         string executable = Environment.GetEnvironmentVariable("TRAFFICSENSE_PACKAGE_EXE") ?? Environment.ProcessPath!;
+        string? oldDelay=Environment.GetEnvironmentVariable("TRAFFICSENSE_FIXTURE_STARTUP_DELAY");
+        Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_STARTUP_DELAY","4000");
+        try
+        {
+            using(var cold=new PluginClient(executable,dll))
+            {
+                var started=Stopwatch.StartNew();
+                cold.Request(request).GetAwaiter().GetResult();
+                Check(started.Elapsed>=TimeSpan.FromSeconds(4)&&started.Elapsed<TimeSpan.FromSeconds(10),"Bounded cold worker startup failed.");
+                started.Restart();bool stopped=false;
+                try{cold.Request(request with {Operation="command",Command=0}).GetAwaiter().GetResult();}
+                catch(OperationCanceledException){stopped=true;}
+                Check(stopped&&started.Elapsed>=TimeSpan.FromSeconds(2)&&started.Elapsed<TimeSpan.FromSeconds(6),"Running worker did not return to its short deadline.");
+            }
+            using(var limited=new PluginClient(executable,dll))
+            {
+                var started=Stopwatch.StartNew();bool stopped=false;
+                try{limited.Request(request,TimeSpan.FromMilliseconds(100)).GetAwaiter().GetResult();}
+                catch(OperationCanceledException){stopped=true;}
+                Check(stopped&&started.Elapsed<TimeSpan.FromSeconds(3),"Explicit startup deadline was overridden.");
+            }
+        }
+        finally{Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_STARTUP_DELAY",oldDelay);}
+        Console.WriteLine("PASS: four-second cold initialization, subsequent three-second hang deadline and explicit first-request timeout.");
         for(int api=1;api<=7;api++)
         {
             Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_API",api.ToString());

@@ -34,7 +34,10 @@ internal sealed class PluginClient : IDisposable
     {
         if (Volatile.Read(ref _disposed) != 0) throw new ObjectDisposedException(nameof(PluginClient));
         if (Interlocked.Exchange(ref _busy, 1) != 0) throw new InvalidOperationException("A plugin request is already running.");
-        using var deadline = new CancellationTokenSource(timeout ?? TimeSpan.FromSeconds(3));
+        // The first reply includes process/runtime/DLL initialization, which can
+        // exceed one sampling deadline on a cold machine. Later requests keep
+        // the short deadline, and callers' explicit limits always take priority.
+        using var deadline = new CancellationTokenSource(timeout ?? TimeSpan.FromSeconds(Interlocked.Read(ref _lastResponse)==0?10:3));
         try
         {
             await _process.StandardInput.WriteLineAsync(JsonSerializer.Serialize(request).AsMemory(), deadline.Token).ConfigureAwait(false);
