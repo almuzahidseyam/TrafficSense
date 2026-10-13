@@ -1,0 +1,23 @@
+{
+  "Format": "TrafficSense.PluginHealthSoak",
+  "Version": 1,
+  "AppVersion": "1.30.0",
+  "TestedAt": "2026-10-13T10:32:51.5049461+00:00",
+  "Seconds": 64.6229806,
+  "Reads": 500,
+  "Reloads": 10,
+  "HandleGrowth": 92,
+  "PrivateGrowthMiB": 10.2109375,
+  "Last": {
+    "Availability": 0,
+    "CpuPercent": 0,
+    "WorkingSetBytes": 59768832,
+    "PrivateBytes": 17842176,
+    "Uptime": "00:00:06.3246709",
+    "LastResponseAge": "00:00:00.0000291"
+  },
+  "Errors": [
+    "System.InvalidOperationException: Health observers leaked host handles.\r\n   at PluginHealthProbe.Check(Boolean condition, String message) in D:\\GitHub\\TrafficSense\\tests\\TrafficSense.LifecycleTests\\PluginHealthProbe.cs:line 14\r\n   at PluginHealthProbe.Soak(String dll, Int32 seconds, String report) in D:\\GitHub\\TrafficSense\\tests\\TrafficSense.LifecycleTests\\PluginHealthProbe.cs:line 100"
+  ],
+  "Passed": false
+}

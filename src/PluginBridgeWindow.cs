@@ -5,6 +5,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using System.Globalization;
+using System.Windows.Automation;
 
 namespace TrafficSense;
 
@@ -15,6 +17,7 @@ internal sealed class PluginBridgeWindow : Window
     private readonly Action<PluginSample?> _publish;
     private readonly Func<bool> _dark;
     private readonly Func<string,PluginClient> _createClient;
+    private readonly Func<PluginClient,PluginWorkerHealth> _readHealth;
     private PluginClient? _client;
     private string? _path;
     private readonly Button _open = new() { Style = null, Margin = new(4) }, _stop = new() { Style = null, Margin = new(4) }, _options = new() { Style = null, Margin = new(4) };
@@ -22,42 +25,57 @@ internal sealed class PluginBridgeWindow : Window
     private readonly Button _run = new() { Style = null, Margin = new(4) };
     private readonly Button _reload = new() { Style = null, Margin = new(4) };
     private readonly TextBlock _status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(8) };
+    private readonly TextBlock _hint = new() { TextWrapping=TextWrapping.Wrap,Margin=new(4) };
+    private readonly TextBlock _healthState = new() { TextWrapping=TextWrapping.Wrap,FontWeight=FontWeights.SemiBold };
+    private readonly TextBlock _healthUsage = new() { TextWrapping=TextWrapping.Wrap,Margin=new(0,4,0,0) };
+    private readonly TextBlock _healthAge = new() { TextWrapping=TextWrapping.Wrap,Margin=new(0,4,0,0) };
     private readonly StackPanel _items = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private readonly DispatcherTimer _healthTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private PluginWorkerHealth? _latestHealth;
+    private TextKey _terminalHealth=TextKey.PluginHealthIdle;
+    private string? _operation;
+    private bool _healthBusy;
+    private bool _healthReadFailed;
+    private Exception? _failure;
     private bool _busy;
-    internal PluginBridgeWindow(UiLanguage language, Func<double[]> metrics, Action<PluginSample?> publish, Func<bool>? dark = null, Func<string,PluginClient>? createClient = null)
+    internal PluginBridgeWindow(UiLanguage language, Func<double[]> metrics, Action<PluginSample?> publish, Func<bool>? dark = null, Func<string,PluginClient>? createClient = null, Func<PluginClient,PluginWorkerHealth>? readHealth = null)
     {
         _language = language; _metrics = metrics; _publish = publish; _dark = dark ?? (()=>true);
         _createClient = createClient ?? (path=>new PluginClient(Environment.ProcessPath!,path));
-        Width = 620; Height = 400; MinWidth = 360; MinHeight = 250; FontSize = 14; FontFamily = new FontFamily("Segoe UI, Nirmala UI");
+        _readHealth = readHealth ?? (client=>client.ReadHealth());
+        Width = 620; Height = 460; MinWidth = 360; MinHeight = 250; FontSize = 14; FontFamily = new FontFamily("Segoe UI, Nirmala UI");
         Title = language[TextKey.PluginBridge]; Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
-        var root = new DockPanel { Margin = new(12) }; var top = new StackPanel();
-        top.Children.Add(new TextBlock { Text = language[TextKey.PluginHint], TextWrapping = TextWrapping.Wrap, Margin = new(4) });
+        var top = new StackPanel { Margin=new(12) };
+        top.Children.Add(_hint);
         var buttons = new WrapPanel(); foreach (var control in new Control[] { _open, _stop, _reload, _options, _commands, _run }) buttons.Children.Add(control);
-        top.Children.Add(buttons); top.Children.Add(_status); DockPanel.SetDock(top, Dock.Top); root.Children.Add(top);
-        root.Children.Add(new ScrollViewer { Content = _items, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); Content = root;
-        _open.Content = language[TextKey.PluginChoose]; _stop.Content = language[TextKey.BridgeStop]; _options.Content = language[TextKey.PluginOptions]; _run.Content = language[TextKey.PluginRun];
-        _reload.Content = language[TextKey.PluginReload];
+        top.Children.Add(buttons);
+        var health = new StackPanel();health.Children.Add(_healthState);health.Children.Add(_healthUsage);health.Children.Add(_healthAge);
+        top.Children.Add(new Border { Child=health,Padding=new(8),Margin=new(4),BorderThickness=new(1),BorderBrush=SystemColors.ControlDarkBrush });
+        top.Children.Add(_status);top.Children.Add(_items);
+        Content=new ScrollViewer { Content=top,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled };
         _open.Click += async (_, _) => { var dialog = new OpenFileDialog { Filter = "Trusted x64 TrafficMonitor plugin (*.dll)|*.dll" }; if (dialog.ShowDialog(this) == true) await Open(dialog.FileName); };
         _stop.Click += (_, _) => Stop(); _options.Click += async (_, _) => await Poll("options"); _run.Click += async (_, _) => await Poll("command");
         _reload.Click += async (_, _) => { if(_path is {} path) await Open(path); };
         _timer.Tick += async (_, _) => await Poll("sample");
-        Closed += (_, _) => { _timer.Stop(); Stop(); }; Controls();
+        _healthTimer.Tick += async (_,_)=>await RefreshHealth();
+        _language.Changed+=LanguageChanged;
+        Closed += (_, _) => { _language.Changed-=LanguageChanged; Stop(); }; LanguageChanged(this,EventArgs.Empty);Controls();
     }
     internal async Task<bool> Open(string path)
     {
-        Stop(); _path = path;
-        try { _client = _createClient(path); await Poll("sample"); if (_client != null) _timer.Start(); return _client != null; }
+        Stop(); _path = path;_failure=null;
+        try { _client = _createClient(path);_terminalHealth=TextKey.PluginHealthStarting;RenderHealth();_healthTimer.Start();await Poll("sample");if (_client != null) { _timer.Start();await RefreshHealth(); } return _client != null; }
         catch (Exception e) when (e is InvalidDataException or IOException or System.ComponentModel.Win32Exception or InvalidOperationException or ArgumentException)
-        { _status.Text = _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false); return false; }
+        { _failure=e;_status.Text = _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false,health:TextKey.PluginHealthFailed); return false; }
     }
     private void Controls() { _stop.IsEnabled = _client != null; _open.IsEnabled = !_busy; _reload.IsEnabled = _path != null && !_busy; _options.IsEnabled = _client != null && !_busy; _run.IsEnabled = _client != null && !_busy && _commands.SelectedIndex >= 0; }
-    private void Stop(bool clearStatus = true)
-    { _timer.Stop(); _client?.Dispose(); _client = null; _publish(null); _items.Children.Clear(); _commands.Items.Clear(); if (clearStatus) _status.Text = _language[TextKey.BridgeStopped]; Controls(); }
+    private void Stop(bool clearStatus = true,TextKey health=TextKey.PluginHealthStopped)
+    { _timer.Stop();_healthTimer.Stop();_client?.Dispose(); _client = null;_latestHealth=null;_healthReadFailed=false;_terminalHealth=health; _publish(null); _items.Children.Clear(); _commands.Items.Clear(); if (clearStatus) {_failure=null;_status.Text = _language[TextKey.BridgeStopped];} RenderHealth();Controls(); }
     private async Task Poll(string operation)
     {
         if (_client == null || _busy) return;
-        var client = _client; _busy = true; Controls();
+        var client = _client; _busy = true;_operation=operation;RenderHealth(); Controls();
         try
         {
             var sample = await client.Request(new(operation, _metrics(), _commands.SelectedIndex, _dark()), operation == "sample" ? null : TimeSpan.FromMinutes(5));
@@ -78,9 +96,53 @@ internal sealed class PluginBridgeWindow : Window
         }
         catch (Exception e) when (e is InvalidDataException or IOException or OperationCanceledException or System.Text.Json.JsonException or InvalidOperationException or ArgumentException or NotSupportedException or FormatException or System.ComponentModel.Win32Exception)
         {
-            if (ReferenceEquals(client, _client)) { _status.Text = e is PluginResourceLimitException ? _language[TextKey.PluginResourceLimit] : _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false); }
+            if (ReferenceEquals(client, _client)) { _failure=e;_status.Text = e is PluginResourceLimitException ? _language[TextKey.PluginResourceLimit] : _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false,health:e is PluginResourceLimitException?TextKey.PluginHealthLimited:TextKey.PluginHealthFailed); }
         }
-        finally { _busy = false; Controls(); }
+        finally { _busy = false;_operation=null;RenderHealth(); Controls(); }
+    }
+    private async Task RefreshHealth()
+    {
+        if(_client is not {} client || _healthBusy)return;
+        _healthBusy=true;
+        try
+        {
+            var health=await Task.Run(()=>_readHealth(client));
+            if(ReferenceEquals(client,_client)){_latestHealth=health;_healthReadFailed=false;RenderHealth();}
+        }
+        catch(Exception e) when(e is IOException or InvalidOperationException or System.ComponentModel.Win32Exception or NotSupportedException)
+        {if(ReferenceEquals(client,_client)){_latestHealth=null;_healthReadFailed=true;RenderHealth();}}
+        finally{_healthBusy=false;}
+    }
+    private void RenderHealth()
+    {
+        var health=_client==null?null:_latestHealth;
+        TextKey state=_client==null?_terminalHealth:
+            health?.Availability==PluginWorkerAvailability.Exited?TextKey.PluginHealthStopped:
+            _operation=="options"?TextKey.PluginHealthSettings:_operation=="command"?TextKey.PluginHealthCommand:
+            _healthReadFailed?TextKey.PluginHealthUnavailable:
+            health==null?TextKey.PluginHealthStarting:health.Availability==PluginWorkerAvailability.Unavailable?TextKey.PluginHealthUnavailable:
+            health.LastResponseAge==null?TextKey.PluginHealthStarting:health.LastResponseAge>TimeSpan.FromSeconds(5)?TextKey.PluginHealthWaiting:TextKey.PluginHealthResponding;
+        string unknown=_language[TextKey.NotAvailable];
+        bool available=health?.Availability==PluginWorkerAvailability.Available;
+        _healthState.Text=_language[TextKey.PluginHealth]+": "+_language[state];
+        string cpu=available&&health!.CpuPercent is {} percent?percent.ToString("F1",CultureInfo.InvariantCulture)+"%":unknown;
+        string ram=available&&health!.WorkingSetBytes is {} bytes?(bytes/(1024d*1024)).ToString("F1",CultureInfo.InvariantCulture)+" MiB":unknown;
+        _healthUsage.Text=_language[TextKey.Cpu]+": "+cpu+"  ·  "+_language[TextKey.Memory]+": "+ram;
+        _healthAge.Text=health?.LastResponseAge is {} age?string.Format(CultureInfo.InvariantCulture,_language[TextKey.PluginHealthResponse],age.TotalSeconds.ToString("F0",CultureInfo.InvariantCulture)):_language[_client==null||_healthReadFailed?TextKey.PluginHealthResponseUnknown:TextKey.PluginHealthNoResponse];
+        string allocated=available&&health!.PrivateBytes is {} privateBytes?(privateBytes/(1024d*1024)).ToString("F1",CultureInfo.InvariantCulture):unknown;
+        _healthUsage.ToolTip=string.Format(CultureInfo.InvariantCulture,_language[TextKey.PluginHealthHint],allocated,health?.Uptime.TotalSeconds.ToString("F0",CultureInfo.InvariantCulture)??unknown);
+        AutomationProperties.SetName(_healthState,_healthState.Text);
+        AutomationProperties.SetName(_healthUsage,_healthUsage.Text);
+    }
+    private void LanguageChanged(object? sender,EventArgs args)
+    {
+        Title=_language[TextKey.PluginBridge];_hint.Text=_language[TextKey.PluginHint];
+        _open.Content=_language[TextKey.PluginChoose];_stop.Content=_language[TextKey.BridgeStop];_options.Content=_language[TextKey.PluginOptions];_run.Content=_language[TextKey.PluginRun];_reload.Content=_language[TextKey.PluginReload];
+        AutomationProperties.SetName(_healthState,_language[TextKey.PluginHealth]);AutomationProperties.SetLiveSetting(_healthState,AutomationLiveSetting.Polite);
+        AutomationProperties.SetName(_healthUsage,_language[TextKey.Cpu]+" / "+_language[TextKey.Memory]);
+        if(_failure!=null)_status.Text=_failure is PluginResourceLimitException?_language[TextKey.PluginResourceLimit]:_language[TextKey.PluginFailed]+" "+_failure.Message;
+        else if(_client==null&&_terminalHealth==TextKey.PluginHealthStopped)_status.Text=_language[TextKey.BridgeStopped];
+        RenderHealth();
     }
 }
 

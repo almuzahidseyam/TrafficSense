@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.29.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.30.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -22,7 +22,8 @@ Suggestions still open: validate physical shell/driver combinations, add optiona
 
 ## What is verified
 
-- **299 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema. Graph retention covers the full two minutes even at 250 ms.
+- **309 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files, LibreHardwareMonitor schema and plugin CPU interval arithmetic. Graph retention covers the full two minutes even at 250 ms.
+- **Plugin health:** native CPU-work fixture and actual hidden WPF bridge verify first-observation unknowns, real worker CPU/RAM, bilingual status/accessibility, health reads during modal settings, unavailable-read recovery, request coalescing, stale-worker exclusion and observer/timer cleanup. See [scope and finite resource report](COMPATIBILITY-TESTING.md#plugin-health-in-1300).
 - **Synthetic timing characterization:** 4,096 samples at each of four intervals; known-rate relative error ≤10⁻¹², byte conservation beyond 4 GiB, tiny deltas at large lifetime values. See [methodology](MEASUREMENT.md).
 - **Real WPF/process probes:** bilingual live controls, history/chart/table selection, clipboard boundary, graph path gaps, appearance and restart, native counters, taskbar messages with a simulated shell, sensor bridge entry/cancellation, update errors, tray/duplicate activation and fatal/normal cleanup.
 - **Native compatibility probes:** independently authored compiler-built DLL fixtures exercise retained host callbacks, legacy GDI and extended drawing, options/commands, startup failures, crash/hang deadlines and kernel-job cleanup after an abrupt owner exit. Actual WPF checks cover layout positions, PNG alpha, managed copies, compact layout, invalid/save rollback and backup/restore. Child attachment is exercised against an isolated owned native window; Explorer is only inspected read-only locally.

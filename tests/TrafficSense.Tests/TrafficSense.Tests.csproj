@@ -15,6 +15,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../../src/PluginHealth.cs" Link="PluginHealth.cs" />
     <Compile Include="../../src/NetworkSpeedCalculator.cs" Link="NetworkSpeedCalculator.cs" />
     <Compile Include="../../src/NetworkSamplingService.cs" Link="NetworkSamplingService.cs" />
     <Compile Include="../../src/SystemMetrics.cs" Link="SystemMetrics.cs" />

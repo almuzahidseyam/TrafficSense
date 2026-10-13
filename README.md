@@ -17,13 +17,13 @@
 - **System information:** optional CPU, physical RAM, reported CPU frequency, busiest GPU engine, disk activity/read/write and connection details. Disabled optional metrics stop polling. Missing counters show unavailable.
 - **Usage history:** today/month totals, up to 400 retained days, selected date/month totals, daily table and chart, hover details, click-to-select/highlight, exact-byte CSV export and selected-day copying as text or CSV. Optional daily/monthly GiB alerts notify on a newly observed crossing.
 - **Make it yours:** live English/বাংলা switching, light/dark themes, fonts, colors, transparency, JSON styles and positioned TrafficMonitor INI/XML bitmap skins. Windows high contrast takes precedence. [Skin guide](docs/SKINS.md).
-- **Trusted native plugins:** explicit x64 TrafficMonitor DLL bridge with text, GDI/extended drawing, settings and commands. Separate worker, timeouts and Windows job ownership contain crashes/hangs. [Plugin support and limits](docs/NATIVE-PLUGINS.md).
+- **Trusted native plugins:** explicit x64 TrafficMonitor DLL bridge with text, GDI/extended drawing, settings and commands. Live worker CPU/RAM, response age and bilingual health status help identify a busy or stopped plugin. Separate worker, timeouts and Windows job ownership contain crashes/hangs. [Plugin support and limits](docs/NATIVE-PLUGINS.md).
 - **Optional sensors:** a separate bridge reads Celsius temperatures from an existing local LibreHardwareMonitor server, or use a data-only JSON provider. No hardware driver is installed by TrafficSense. [Sensor guide](docs/EXTENSIONS.md).
 - **Everyday controls:** sign-in startup, keyboard shortcuts, settings backup/restore, About/version/update check and rotating local error logs.
 
 ## Install or run portable
 
-Current version: **[1.29.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.29.0)**. For **64-bit Windows 10/11**.
+Current version: **[1.30.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.30.0)**. For **64-bit Windows 10/11**.
 
 1. Open [Releases](https://github.com/almuzahidseyam/TrafficSense/releases/latest).
 2. Download **TrafficSense-Setup.exe** for a per-user installation, or **TrafficSense.zip** for portable use.

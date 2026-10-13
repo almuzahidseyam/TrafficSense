@@ -4,6 +4,12 @@ In the packaged app choose **System metrics & extensions → Sensor source → N
 
 **Reload plugin** explicitly restarts the last selected DLL with its configuration folder. It is available after Stop or a resource fault; transient plugin state may reset. It does not enable startup execution.
 
+The **Plugin health** panel updates once per second while the bridge is open, including while native settings or commands are busy. It shows worker CPU, resident RAM and time since the last validated response. Hover over the values for private allocated memory, uptime and scope. Labels follow live English/Bangla selection; short windows scroll to keep controls reachable.
+
+CPU is the change in worker processor time divided by monotonic elapsed time and [all active logical processors](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorcount), expressed as a share of whole-computer capacity. The first observation, counter reset, unavailable reading or gap longer than five seconds rebases and shows unavailable. RAM uses [WorkingSet64](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.workingset64), including shared and private resident pages; the tooltip's allocated figure uses [PrivateMemorySize64](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.privatememorysize64). These are worker process measurements, exclude child processes and include host/runtime overhead. They are independent of network byte counters and do not alter speed sampling.
+
+**Responding** means a validated response arrived within five seconds. **Waiting** means an older response; settings and commands have their own busy states. A health reading failure clears metrics without stopping the plugin. Stop, fault, Reload and close clear prior worker values; delayed observations cannot overwrite the replacement worker. This is operational status, not certification of a plugin's hardware measurements, safety or long-term reliability. Existing response resource guards retain their documented limits.
+
 The DLL runs with the current user's permissions in a separate process. This protects normal monitoring from accidental crashes/hangs; **it is not a security sandbox**. A plugin can read/write files, access networks, launch programs or require its own privileges/dependencies. TrafficSense does not elevate it or install hardware drivers. Obtain plugins from their authors and follow their licenses. The bridge does not distribute upstream plugin binaries or claim their approval.
 
 ## Implemented ABI surface
