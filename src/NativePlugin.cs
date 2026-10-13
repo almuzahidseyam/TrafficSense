@@ -39,6 +39,7 @@ internal sealed class NativePlugin : IDisposable
     private volatile double[] _values = [];
     private readonly int _api;
     private readonly string _config;
+    private bool _dark = true;
     internal static T Slot<T>(IntPtr instance, int slot) where T : Delegate => Marshal.GetDelegateForFunctionPointer<T>(Marshal.ReadIntPtr(Marshal.ReadIntPtr(instance), slot * IntPtr.Size));
     private static string Text(IntPtr pointer)
     {
@@ -67,10 +68,11 @@ internal sealed class NativePlugin : IDisposable
         return _metricText[index];
         }
     }
-    internal NativePlugin(string path)
+    internal NativePlugin(string path, string? configRoot = null)
     {
         if (IntPtr.Size != 8 || LegacySkin.LocalPath(path) == null || Path.GetExtension(path).ToLowerInvariant() != ".dll") throw new InvalidDataException("Choose a local x64 DLL.");
-        _config = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrafficSense", "plugins",
+        if (configRoot != null && LegacySkin.LocalPath(configRoot) == null) throw new InvalidDataException("Plugin configuration root must be local.");
+        _config = Path.Combine(configRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrafficSense", "plugins"),
             Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(Path.GetFullPath(path)))));
         Directory.CreateDirectory(_config); String("");
         _module = LoadLibraryEx(path, IntPtr.Zero, 0x100 | 0x1000);
@@ -84,7 +86,7 @@ internal sealed class NativePlugin : IDisposable
             new IntCall(_ => 1), new PtrCall(_ => String(typeof(App).Assembly.GetName().Version!.ToString(3))),
             new MetricCall((_, i) => Value(i)), new MetricTextCall((_, i, _) => ValueText(i)),
             new PtrVoid((_, _) => { }), new LanguageCall(_ => 0x409), new PtrCall(_ => String(_config + Path.DirectorySeparatorChar)),
-            new IndexedInt((_, _) => 96), new ColorCall(_ => 0xffffff), new ResourceCall((_, _, _) => String("")),
+            new IndexedInt((_, _) => 96), new ColorCall(_ => _dark ? 0xffffffu : 0u), new ResourceCall((_, _, _) => String("")),
             new PtrCall(_ => IntPtr.Zero), new PtrCall(_ => IntPtr.Zero)
         });
         _table = Marshal.AllocHGlobal(_callbacks.Count * IntPtr.Size); _host = Marshal.AllocHGlobal(IntPtr.Size);
@@ -95,6 +97,13 @@ internal sealed class NativePlugin : IDisposable
     }
     internal PluginSample Execute(PluginRequest request)
     {
+        _dark = request.Dark;
+        if (_api >= 2)
+        {
+            var color = String(request.Dark ? "16777215" : "0");
+            Slot<Extended>(_plugin,7)(_plugin,0,color); Slot<Extended>(_plugin,7)(_plugin,1,color);
+            Slot<Extended>(_plugin,7)(_plugin,2,String("0"));
+        }
         _values = request.Values is { Length: <= 13 } values && values.All(double.IsFinite) ? values : [];
         int Integer(int index) => (int)Math.Clamp(Value(index), -1, int.MaxValue);
         var info = new MonitorInfo { Up = (ulong)Math.Clamp(Value(0),0,long.MaxValue), Down = (ulong)Math.Clamp(Value(1),0,long.MaxValue), Cpu=Integer(2), Memory=Integer(3), Gpu=Integer(4),
@@ -122,13 +131,18 @@ internal sealed class NativePlugin : IDisposable
                 { using var measure = new System.Drawing.Bitmap(1,1); using var g = System.Drawing.Graphics.FromImage(measure); nint measureDc = g.GetHdc(); try { int measured = Slot<PtrInt>(item,8)(item,measureDc); if (measured > 0) width = Math.Clamp(measured,16,512); } finally { g.ReleaseHdc(measureDc); } }
                 using var bitmap = new System.Drawing.Bitmap(width, 40); using var graphics = System.Drawing.Graphics.FromImage(bitmap);
                 graphics.Clear(request.Dark ? System.Drawing.Color.Black : System.Drawing.Color.White);
-                IntPtr dc = graphics.GetHdc(); try
+                IntPtr dc = graphics.GetHdc(); int saved = SaveDC(dc); try
                 {
+                    // The host DC state is part of the legacy drawing contract.
+                    // Default GDI uses opaque white text backgrounds and black
+                    // text, making dark previews illegible without these values.
+                    SetBkMode(dc,1); SetTextColor(dc,request.Dark ? 0xffffffu : 0u);
+                    SetBkColor(dc,request.Dark ? 0u : 0xffffffu); IntersectClipRect(dc,0,0,width,40);
                     bool drawn = false;
                     if (_api >= 8) { using var drawer = new PluginDrawer(dc,width,40); drawn = Slot<DrawEx>(item,14)(item,drawer.Pointer,0,0,width,40,request.Dark); }
                     if (!drawn) Slot<Draw>(item, 7)(item, dc, 0, 0, width, 40, request.Dark);
                 }
-                finally { graphics.ReleaseHdc(dc); }
+                finally { if(saved!=0)RestoreDC(dc,saved); graphics.ReleaseHdc(dc); }
                 using var stream = new MemoryStream(); bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png); png = Convert.ToBase64String(stream.ToArray());
             }
             items.Add(new(id, Text(Slot<PtrCall>(item, 0)(item)), Text(Slot<PtrCall>(item, 2)(item)), Text(Slot<PtrCall>(item, 3)(item)), png));
@@ -150,6 +164,12 @@ internal sealed class NativePlugin : IDisposable
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] private static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
     [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)] private static extern IntPtr GetProcAddress(IntPtr module, string name);
     [DllImport("kernel32.dll")] private static extern bool FreeLibrary(IntPtr module);
+    [DllImport("gdi32.dll")] private static extern int SaveDC(IntPtr dc);
+    [DllImport("gdi32.dll")] private static extern bool RestoreDC(IntPtr dc,int saved);
+    [DllImport("gdi32.dll")] private static extern int SetBkMode(IntPtr dc,int mode);
+    [DllImport("gdi32.dll")] private static extern uint SetTextColor(IntPtr dc,uint color);
+    [DllImport("gdi32.dll")] private static extern uint SetBkColor(IntPtr dc,uint color);
+    [DllImport("gdi32.dll")] private static extern int IntersectClipRect(IntPtr dc,int left,int top,int right,int bottom);
 }
 
 internal static class PluginWorker
@@ -161,7 +181,7 @@ internal static class PluginWorker
         try
         {
             using var input = new StreamReader(Console.OpenStandardInput()); using var output = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
-            using var plugin = new NativePlugin(path);
+            using var plugin = new NativePlugin(path,Environment.GetEnvironmentVariable("TRAFFICSENSE_PLUGIN_CONFIG_ROOT"));
             Task<string?> pending = ReadLine(input,8192); int exit = 0;
             using var timer = new System.Windows.Forms.Timer { Interval = 25 };
             timer.Tick += (_, _) =>

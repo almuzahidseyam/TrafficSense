@@ -16,6 +16,10 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.FirstOrDefault()=="--community-plugins" && args.Length==3) return CommunityPluginProbe.Run(args[1],args[2]);
+        if (args.FirstOrDefault()=="--vpn-environment" && args.Length==3) return VpnEnvironmentProbe.Run(args[1],args[2]);
+        if (args.FirstOrDefault()=="--display-topology" && args.Length==2) return DisplayTopologyProbe.Run(args[1]);
+        if (args.FirstOrDefault()=="--display-topology-baseline" && args.Length==2) return DisplayTopologyProbe.Run(args[1],requirePerMonitor:false);
         if (args.FirstOrDefault() == "--plugin-worker" && args.Length == 2) return PluginWorker.Run(args[1]);
         if (args.FirstOrDefault() == "--taskbar-worker") return EmbeddedTaskbarWorker.Run();
         if (args.FirstOrDefault() == "--taskbar-inspect") return EmbeddedTaskbarWorker.Run(inspectOnly: true);
@@ -55,6 +59,7 @@ internal static class Program
             RunChild("--taskbar-panel");
             RunChild("--customization");
             RunChild("--compatibility");
+            RunChild("--display-topology",Path.Combine(AppContext.BaseDirectory,"display-topology.json"));
             RunChild("--sensor-bridge-probe");
             RunChild("--sensor-bridge");
             RunChild("--about");

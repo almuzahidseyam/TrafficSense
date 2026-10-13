@@ -11,10 +11,12 @@ internal sealed class PluginClient : IDisposable
     private readonly WorkerJob _job;
     private int _disposed, _busy;
     internal int WorkerId => _process.Id;
-    internal PluginClient(string executable, string dll)
+    internal PluginClient(string executable, string dll, string? configRoot = null)
     {
         var start = new ProcessStartInfo(executable) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true, RedirectStandardOutput = true };
         start.ArgumentList.Add("--plugin-worker"); start.ArgumentList.Add(dll);
+        start.Environment.Remove("TRAFFICSENSE_PLUGIN_CONFIG_ROOT");
+        if (configRoot != null) start.Environment["TRAFFICSENSE_PLUGIN_CONFIG_ROOT"] = configRoot;
         _process = Process.Start(start) ?? throw new IOException("Could not start plugin worker.");
         try { _job = new(_process); } catch { try { _process.Kill(); } finally { _process.Dispose(); } throw; }
     }
@@ -49,6 +51,14 @@ internal sealed class PluginClient : IDisposable
     public void Dispose()
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        // Idle plugins may persist settings in DLL detach/destructors. Give the
+        // normal EOF path a short deadline, then let the job enforce ownership.
+        // A busy/crashed/timed-out worker must still be terminated immediately.
+        if(Volatile.Read(ref _busy)==0)
+        {
+            try { _process.StandardInput.Close(); _process.WaitForExit(300); }
+            catch(Exception e) when(e is IOException or InvalidOperationException or System.ComponentModel.Win32Exception) { }
+        }
         _job.Dispose();
         try { if (!_process.HasExited) _process.Kill(entireProcessTree: true); }
         catch (Exception e) when (e is InvalidOperationException or System.ComponentModel.Win32Exception) { }

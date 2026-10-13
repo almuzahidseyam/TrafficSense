@@ -12,7 +12,7 @@ public partial class MainWindow
     {
         if (_pluginBridge == null)
         {
-            _pluginBridge = new(Localization, PluginMetrics, sample => { _pluginSample = sample; _pluginUpdated = System.Diagnostics.Stopwatch.GetTimestamp(); if (sample == null) _pluginImages.Clear(); if (IsVisible) RenderLayoutSkin(); });
+            _pluginBridge = new(Localization, PluginMetrics, sample => { _pluginSample = sample; _pluginUpdated = System.Diagnostics.Stopwatch.GetTimestamp(); if (sample == null) _pluginImages.Clear(); if (IsVisible) RenderLayoutSkin(); },()=>_settings.Theme!="Light");
             _pluginBridge.Closed += (_, _) => { _pluginBridge = null; _pluginSample = null; ConfigureSystemMetrics(); RenderLayoutSkin(); };
             ConfigureSystemMetrics();
         }

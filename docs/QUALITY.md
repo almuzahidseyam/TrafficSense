@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.27.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.28.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -17,11 +17,11 @@ The network sampler now separates collection from rendering, carries actual nati
 | Unchanged stale worker timestamp could leave history's latest legend fresh | Medium | Unknown point uses consumption time when delayed; deterministic stalled-delivery native test |
 | Provider outages/cached files could show stale sensor data | Medium | Bounded loopback HTTP, cancellation, numeric schema validation, atomic publication and reader/UI freshness checks |
 
-Suggestions still open: simplify the growing context menu into grouped settings, validate physical shell/driver combinations, add optional-metric/panel long-duration measurements, plan runtime servicing and signed/ARM64 distribution. These are follow-up work, not hidden claims of completed parity.
+Suggestions still open: validate physical shell/driver combinations, add optional-metric/panel long-duration measurements, plan runtime servicing and signed/ARM64 distribution. These are follow-up work, not hidden claims of completed parity.
 
 ## What is verified
 
-- **291 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema. Graph retention covers the full two minutes even at 250 ms.
+- **299 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files and LibreHardwareMonitor schema. Graph retention covers the full two minutes even at 250 ms.
 - **Synthetic timing characterization:** 4,096 samples at each of four intervals; known-rate relative error ≤10⁻¹², byte conservation beyond 4 GiB, tiny deltas at large lifetime values. See [methodology](MEASUREMENT.md).
 - **Real WPF/process probes:** bilingual live controls, history/chart/table selection, clipboard boundary, graph path gaps, appearance and restart, native counters, taskbar messages with a simulated shell, sensor bridge entry/cancellation, update errors, tray/duplicate activation and fatal/normal cleanup.
 - **Native compatibility probes:** independently authored compiler-built DLL fixtures exercise retained host callbacks, legacy GDI and extended drawing, options/commands, startup failures, crash/hang deadlines and kernel-job cleanup after an abrupt owner exit. Actual WPF checks cover layout positions, PNG alpha, managed copies, compact layout, invalid/save rollback and backup/restore. Child attachment is exercised against an isolated owned native window; Explorer is only inspected read-only locally.

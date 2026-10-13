@@ -27,6 +27,7 @@ struct Drawer {
 };
 static int mode, commandCount;
 static bool monitorGood;
+static std::wstring configDirectory;
 struct Item {
     int drawing;
     std::wstring sample;
@@ -39,6 +40,7 @@ struct Item {
     virtual bool custom() { return drawing; }
     virtual int width() { return 120; }
     virtual void draw(void* dc, int x, int y, int w, int h, bool dark) {
+        if(GetBkMode((HDC)dc)!=TRANSPARENT || (host && GetTextColor((HDC)dc)!=host->color()))TerminateProcess(GetCurrentProcess(),78);
         RECT r{x,y,x+w,y+h}; HBRUSH b = CreateSolidBrush(RGB(20,180,100)); FillRect((HDC)dc,&r,b); DeleteObject(b);
     }
     virtual int widthEx(void*) { return 120; }
@@ -67,7 +69,7 @@ struct Plugin {
     virtual const wchar_t* info(int) { return L"TrafficSense ABI fixture"; }
     virtual void monitor(const void* pointer) { struct Info { unsigned long long up,down; int cpu,memory,gpu,disk,cpuTemp,gpuTemp,diskTemp,boardTemp,freq; }; auto info=(const Info*)pointer; monitorGood=info && info->up==12345 && info->cpu==-1 && info->freq==-1; }
     virtual const wchar_t* tooltip() { return L"Test-only fixture"; }
-    virtual void extended(int, const wchar_t*) {}
+    virtual void extended(int index, const wchar_t* text) { if(index==17 && text)configDirectory=text; }
     virtual void* icon() { return nullptr; }
     virtual int commands() { return 3; }
     virtual const wchar_t* commandName(int i) { return i == 0 ? L"Hang" : i == 1 ? L"Crash" : L"Count"; }
@@ -77,10 +79,23 @@ struct Plugin {
     virtual void initialize(Host* value) { host = value; }
 };
 static Plugin plugin;
+struct Teardown {
+    ~Teardown() {
+        if(configDirectory.find(L"TrafficSense.Teardown-")==std::wstring::npos)return;
+        auto path=configDirectory+L"saved.txt"; HANDLE file=CreateFileW(path.c_str(),GENERIC_WRITE,0,nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr);
+        if(file!=INVALID_HANDLE_VALUE){DWORD count;WriteFile(file,"saved",5,&count,nullptr);CloseHandle(file);}
+    }
+};
+static Teardown teardown;
 extern "C" __declspec(dllexport) Plugin* TMPluginGetInstance() { return &plugin; }
 extern "C" __declspec(dllexport) unsigned ReadNicCounters(const GUID* id, unsigned long long* rx, unsigned long long* tx) {
     MIB_IF_ROW2 row{}; unsigned error = ConvertInterfaceGuidToLuid(id, &row.InterfaceLuid);
     if (error) return error;
     error = GetIfEntry2(&row); if (!error) { *rx = row.InOctets; *tx = row.OutOctets; }
     return error;
+}
+extern "C" __declspec(dllexport) unsigned ReadNicFacts(const GUID* id, unsigned* index, unsigned* hardware) {
+    MIB_IF_ROW2 row{}; unsigned error=ConvertInterfaceGuidToLuid(id,&row.InterfaceLuid);
+    if(error)return error; error=GetIfEntry2(&row);
+    if(!error){*index=row.InterfaceIndex;*hardware=row.InterfaceAndOperStatusFlags.HardwareInterface?1:0;} return error;
 }

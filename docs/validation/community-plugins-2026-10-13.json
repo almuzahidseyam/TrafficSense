@@ -1,0 +1,127 @@
+{
+  "Format": "TrafficSense.CommunityPlugins",
+  "Version": 1,
+  "TestedAt": "2026-10-13T06:08:45.0417022+00:00",
+  "Windows": "Microsoft Windows NT 10.0.26200.0",
+  "Results": [
+    {
+      "Name": "DateTime",
+      "Tag": "DateTime_V1.00",
+      "SourceRevision": "d02fdf60227b1354a43eea34ab363ce208d18e96",
+      "Source": "https://github.com/zhongyang219/TrafficMonitorPlugins/tree/d02fdf60227b1354a43eea34ab363ce208d18e96/Plugins/DateTime",
+      "Release": "https://github.com/zhongyang219/TrafficMonitorPlugins/releases/tag/DateTime_V1.00",
+      "ArchiveSHA256": "1a3da9e4333c54ddcbac07d80a9a9faf97cae5d05ca0314d95ed550dd45daf88",
+      "DllSHA256": "ade0addb758828c08f36130d04e83b1fa3641c191e4a792d99a2e40d08f21fed",
+      "Status": "Passed",
+      "Error": null,
+      "Api": 6,
+      "ItemIds": [
+        "o282ffc4",
+        "ra1YX2g1"
+      ],
+      "CustomPreviewSamples": 0,
+      "ValueChanged": true,
+      "WarmResources": {
+        "Handles": 318,
+        "Gdi": 3,
+        "User": 8
+      },
+      "After32StressSamples": {
+        "Handles": 318,
+        "Gdi": 3,
+        "User": 8
+      },
+      "GracefulConfigurationSaved": true,
+      "Scope": "Startup, repeated sampling, stable IDs, visible dark/light rendering, clock progress, seeded sample file for TextReader, 32 additional stress samples with native handle budgets; no options/commands/input events or hardware drivers."
+    },
+    {
+      "Name": "Battery",
+      "Tag": "Battery_V1.03",
+      "SourceRevision": "d02fdf60227b1354a43eea34ab363ce208d18e96",
+      "Source": "https://github.com/zhongyang219/TrafficMonitorPlugins/tree/d02fdf60227b1354a43eea34ab363ce208d18e96/Plugins/Battery",
+      "Release": "https://github.com/zhongyang219/TrafficMonitorPlugins/releases/tag/Battery_V1.03",
+      "ArchiveSHA256": "9478190119430534ebfe87724bf6dcc7060afa5606404999e104b8249a0d9c80",
+      "DllSHA256": "c1a2e12b494c97d0726b05a2ffe757c275405d587111dbce5ff324b4249db0cd",
+      "Status": "Passed",
+      "Error": null,
+      "Api": 6,
+      "ItemIds": [
+        "b5R30ITQ"
+      ],
+      "CustomPreviewSamples": 4,
+      "ValueChanged": false,
+      "WarmResources": {
+        "Handles": 325,
+        "Gdi": 14,
+        "User": 11
+      },
+      "After32StressSamples": {
+        "Handles": 325,
+        "Gdi": 14,
+        "User": 11
+      },
+      "GracefulConfigurationSaved": null,
+      "Scope": "Startup, repeated sampling, stable IDs, visible dark/light rendering, clock progress, seeded sample file for TextReader, 32 additional stress samples with native handle budgets; no options/commands/input events or hardware drivers."
+    },
+    {
+      "Name": "KeyboardIndicator",
+      "Tag": "KeyboardIndicator_V1.00",
+      "SourceRevision": "fae9840fb6c134b120e182571931b2bc258b5b78",
+      "Source": "https://github.com/zhongyang219/TrafficMonitorPlugins/tree/fae9840fb6c134b120e182571931b2bc258b5b78/Plugins/KeyboardIndicator",
+      "Release": "https://github.com/zhongyang219/TrafficMonitorPlugins/releases/tag/KeyboardIndicator_V1.00",
+      "ArchiveSHA256": "11fcf7171380285d43e6353e1dff2bad9c27ca3baab5be472c5dfa8bbbcb25a3",
+      "DllSHA256": "a29a5def11207a1a1465440943a97ed4fa4ede51e32634909db644d21af57afe",
+      "Status": "Passed",
+      "Error": null,
+      "Api": 6,
+      "ItemIds": [
+        "3db99u17"
+      ],
+      "CustomPreviewSamples": 4,
+      "ValueChanged": false,
+      "WarmResources": {
+        "Handles": 325,
+        "Gdi": 5,
+        "User": 8
+      },
+      "After32StressSamples": {
+        "Handles": 325,
+        "Gdi": 5,
+        "User": 8
+      },
+      "GracefulConfigurationSaved": null,
+      "Scope": "Startup, repeated sampling, stable IDs, visible dark/light rendering, clock progress, seeded sample file for TextReader, 32 additional stress samples with native handle budgets; no options/commands/input events or hardware drivers."
+    },
+    {
+      "Name": "TextReader",
+      "Tag": "TextReader_V1.02",
+      "SourceRevision": "d02fdf60227b1354a43eea34ab363ce208d18e96",
+      "Source": "https://github.com/zhongyang219/TrafficMonitorPlugins/tree/d02fdf60227b1354a43eea34ab363ce208d18e96/Plugins/TextReader",
+      "Release": "https://github.com/zhongyang219/TrafficMonitorPlugins/releases/tag/TextReader_V1.02",
+      "ArchiveSHA256": "b26145f92f2a2d4a765f0424ce89f5dba11d5c168a7a44992c98c2e1d2e3abd7",
+      "DllSHA256": "59883e8bc0aa11c3422af2dba731d7526a943b7321fe6fdcd2a8722a45299d3e",
+      "Status": "Passed",
+      "Error": null,
+      "Api": 6,
+      "ItemIds": [
+        "W5XuBvH0"
+      ],
+      "CustomPreviewSamples": 4,
+      "ValueChanged": false,
+      "WarmResources": {
+        "Handles": 325,
+        "Gdi": 8,
+        "User": 10
+      },
+      "After32StressSamples": {
+        "Handles": 325,
+        "Gdi": 8,
+        "User": 10
+      },
+      "GracefulConfigurationSaved": null,
+      "Scope": "Startup, repeated sampling, stable IDs, visible dark/light rendering, clock progress, seeded sample file for TextReader, 32 additional stress samples with native handle budgets; no options/commands/input events or hardware drivers."
+    }
+  ],
+  "Provenance": "Binaries from author release assets; hashes record tested bytes, not reproducible-build/signature attestation. No third-party binaries bundled.",
+  "Configuration": "Per-run isolated configuration directories; no user plugin configuration loaded."
+}

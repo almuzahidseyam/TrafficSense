@@ -1,0 +1,1590 @@
+{
+  "Format": "TrafficSense.VpnEnvironment",
+  "Version": 1,
+  "TestedAt": "2026-10-13T06:18:27.9879238+00:00",
+  "Windows": "Microsoft Windows NT 10.0.26200.0",
+  "ObservedWarpPresent": true,
+  "PhysicalInterfacePresent": true,
+  "ConnectedInterfaces": 3,
+  "RouteLookups": [
+    {
+      "Destination": "1.1.1.1",
+      "Status": 0,
+      "SelectedRole": "Observed WARP tunnel"
+    },
+    {
+      "Destination": "8.8.8.8",
+      "Status": 0,
+      "SelectedRole": "Observed WARP tunnel"
+    },
+    {
+      "Destination": "9.9.9.9",
+      "Status": 0,
+      "SelectedRole": "Observed WARP tunnel"
+    },
+    {
+      "Destination": "93.184.216.34",
+      "Status": 0,
+      "SelectedRole": "Observed WARP tunnel"
+    },
+    {
+      "Destination": "140.82.112.3",
+      "Status": 0,
+      "SelectedRole": "Observed WARP tunnel"
+    }
+  ],
+  "Cases": [
+    {
+      "IntervalMilliseconds": 250,
+      "AutoIsObservedTunnel": true,
+      "CounterBracketsPass": true,
+      "AutoMatchesOneManualInterface": true,
+      "AddingTunnelAndPhysicalWouldDiffer": true,
+      "Totals": [
+        {
+          "Role": "Auto",
+          "Fresh": 10,
+          "Received": 8828,
+          "Sent": 13526,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual WARP",
+          "Fresh": 10,
+          "Received": 8828,
+          "Sent": 13526,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual physical",
+          "Fresh": 10,
+          "Received": 15850,
+          "Sent": 20609,
+          "ByteConservationPass": true
+        }
+      ],
+      "Samples": [
+        {
+          "Sample": 0,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819721920,
+              "Sent": 643900452,
+              "Elapsed": 0.0470123,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819721920,
+              "Sent": 643900452,
+              "Elapsed": 0.0470123,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283006679,
+              "Sent": 991920747,
+              "Elapsed": 0.0470123,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            }
+          ]
+        },
+        {
+          "Sample": 1,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819721980,
+              "Sent": 643900543,
+              "Elapsed": 0.321923,
+              "DownloadBytesPerSecond": 218.23935401151212,
+              "UploadBytesPerSecond": 330.9963535841267,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819721980,
+              "Sent": 643900543,
+              "Elapsed": 0.321923,
+              "DownloadBytesPerSecond": 218.23935401151212,
+              "UploadBytesPerSecond": 330.9963535841267,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283006912,
+              "Sent": 991921095,
+              "Elapsed": 0.321923,
+              "DownloadBytesPerSecond": 847.5235942566272,
+              "UploadBytesPerSecond": 1265.8292309068938,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 2,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819722040,
+              "Sent": 643900603,
+              "Elapsed": 0.5884726,
+              "DownloadBytesPerSecond": 225.13057573392567,
+              "UploadBytesPerSecond": 225.13057573392567,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819722040,
+              "Sent": 643900603,
+              "Elapsed": 0.5884726,
+              "DownloadBytesPerSecond": 225.13057573392567,
+              "UploadBytesPerSecond": 225.13057573392567,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283007233,
+              "Sent": 991921328,
+              "Elapsed": 0.5884726,
+              "DownloadBytesPerSecond": 1204.3857651357712,
+              "UploadBytesPerSecond": 874.2114743820395,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 3,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819722040,
+              "Sent": 643900603,
+              "Elapsed": 0.8535792,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819722040,
+              "Sent": 643900603,
+              "Elapsed": 0.8535792,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283007233,
+              "Sent": 991921328,
+              "Elapsed": 0.8535792,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 4,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819722180,
+              "Sent": 643900951,
+              "Elapsed": 1.1200499,
+              "DownloadBytesPerSecond": 525.3880647593329,
+              "UploadBytesPerSecond": 1305.964618116056,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819722180,
+              "Sent": 643900951,
+              "Elapsed": 1.1200499,
+              "DownloadBytesPerSecond": 525.3880647593329,
+              "UploadBytesPerSecond": 1305.964618116056,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283007980,
+              "Sent": 991922450,
+              "Elapsed": 1.1200499,
+              "DownloadBytesPerSecond": 2803.296406376655,
+              "UploadBytesPerSecond": 4210.573718814735,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 5,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819725975,
+              "Sent": 643903410,
+              "Elapsed": 1.3844968,
+              "DownloadBytesPerSecond": 14351.363738811986,
+              "UploadBytesPerSecond": 9299.078638666317,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819725975,
+              "Sent": 643903410,
+              "Elapsed": 1.3844968,
+              "DownloadBytesPerSecond": 14351.363738811986,
+              "UploadBytesPerSecond": 9299.078638666317,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283013326,
+              "Sent": 991926552,
+              "Elapsed": 1.3844968,
+              "DownloadBytesPerSecond": 20216.092100068523,
+              "UploadBytesPerSecond": 15511.86116619549,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 6,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819726724,
+              "Sent": 643903789,
+              "Elapsed": 1.649973,
+              "DownloadBytesPerSecond": 2821.2665490448376,
+              "UploadBytesPerSecond": 1427.5834740827684,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819726724,
+              "Sent": 643903789,
+              "Elapsed": 1.649973,
+              "DownloadBytesPerSecond": 2821.2665490448376,
+              "UploadBytesPerSecond": 1427.5834740827684,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283015557,
+              "Sent": 991928145,
+              "Elapsed": 1.649973,
+              "DownloadBytesPerSecond": 8403.643060251974,
+              "UploadBytesPerSecond": 6000.4497512242915,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 7,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819729002,
+              "Sent": 643903929,
+              "Elapsed": 1.9151233,
+              "DownloadBytesPerSecond": 8590.122565739137,
+              "UploadBytesPerSecond": 527.9267599664088,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819729002,
+              "Sent": 643903929,
+              "Elapsed": 1.9151233,
+              "DownloadBytesPerSecond": 8590.122565739137,
+              "UploadBytesPerSecond": 527.9267599664088,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283018612,
+              "Sent": 991928892,
+              "Elapsed": 1.9151233,
+              "DownloadBytesPerSecond": 11520.70691510163,
+              "UploadBytesPerSecond": 2817.010823430742,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 8,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819729002,
+              "Sent": 643903929,
+              "Elapsed": 2.1807059,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819729002,
+              "Sent": 643903929,
+              "Elapsed": 2.1807059,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283018612,
+              "Sent": 991928892,
+              "Elapsed": 2.1807059,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 9,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819729062,
+              "Sent": 643911003,
+              "Elapsed": 2.4517912,
+              "DownloadBytesPerSecond": 221.27997928819394,
+              "UploadBytesPerSecond": 26088.909558078067,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819729062,
+              "Sent": 643911003,
+              "Elapsed": 2.4517912,
+              "DownloadBytesPerSecond": 221.27997928819394,
+              "UploadBytesPerSecond": 26088.909558078067,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283018845,
+              "Sent": 991936733,
+              "Elapsed": 2.4517912,
+              "DownloadBytesPerSecond": 859.3463877761849,
+              "UploadBytesPerSecond": 28919.034448725604,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 10,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819730748,
+              "Sent": 643913978,
+              "Elapsed": 2.7162379,
+              "DownloadBytesPerSecond": 6375.903773014801,
+              "UploadBytesPerSecond": 11250.482636250908,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819730748,
+              "Sent": 643913978,
+              "Elapsed": 2.7162379,
+              "DownloadBytesPerSecond": 6375.903773014801,
+              "UploadBytesPerSecond": 11250.482636250908,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283022529,
+              "Sent": 991941356,
+              "Elapsed": 2.7162379,
+              "DownloadBytesPerSecond": 13931.5847253258,
+              "UploadBytesPerSecond": 17482.550538865682,
+              "Quality": "Fresh"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "IntervalMilliseconds": 500,
+      "AutoIsObservedTunnel": true,
+      "CounterBracketsPass": true,
+      "AutoMatchesOneManualInterface": true,
+      "AddingTunnelAndPhysicalWouldDiffer": true,
+      "Totals": [
+        {
+          "Role": "Auto",
+          "Fresh": 10,
+          "Received": 17100,
+          "Sent": 6972,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual WARP",
+          "Fresh": 10,
+          "Received": 17100,
+          "Sent": 6972,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual physical",
+          "Fresh": 10,
+          "Received": 26958,
+          "Sent": 17640,
+          "ByteConservationPass": true
+        }
+      ],
+      "Samples": [
+        {
+          "Sample": 0,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819730748,
+              "Sent": 643913978,
+              "Elapsed": 2.7330454,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819730748,
+              "Sent": 643913978,
+              "Elapsed": 2.7330454,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283022529,
+              "Sent": 991941356,
+              "Elapsed": 2.7330454,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            }
+          ]
+        },
+        {
+          "Sample": 1,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819732152,
+              "Sent": 643914304,
+              "Elapsed": 3.2476214,
+              "DownloadBytesPerSecond": 2728.8502444303467,
+              "UploadBytesPerSecond": 633.6219228520605,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819732152,
+              "Sent": 643914304,
+              "Elapsed": 3.2476214,
+              "DownloadBytesPerSecond": 2728.8502444303467,
+              "UploadBytesPerSecond": 633.6219228520605,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283025059,
+              "Sent": 991942720,
+              "Elapsed": 3.2476214,
+              "DownloadBytesPerSecond": 4917.135576117259,
+              "UploadBytesPerSecond": 2650.977441037131,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 2,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819733640,
+              "Sent": 643914512,
+              "Elapsed": 3.7617493,
+              "DownloadBytesPerSecond": 2893.8094453706926,
+              "UploadBytesPerSecond": 404.5109977399893,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819733640,
+              "Sent": 643914512,
+              "Elapsed": 3.7617493,
+              "DownloadBytesPerSecond": 2893.8094453706926,
+              "UploadBytesPerSecond": 404.5109977399893,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283027156,
+              "Sent": 991943539,
+              "Elapsed": 3.7617493,
+              "DownloadBytesPerSecond": 4078.4319216941076,
+              "UploadBytesPerSecond": 1592.863969417012,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 3,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819733796,
+              "Sent": 643914661,
+              "Elapsed": 4.2766194,
+              "DownloadBytesPerSecond": 302.9693325119498,
+              "UploadBytesPerSecond": 289.37455477102895,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819733796,
+              "Sent": 643914661,
+              "Elapsed": 4.2766194,
+              "DownloadBytesPerSecond": 302.9693325119498,
+              "UploadBytesPerSecond": 289.37455477102895,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283027570,
+              "Sent": 991945513,
+              "Elapsed": 4.2766194,
+              "DownloadBytesPerSecond": 804.0393070346447,
+              "UploadBytesPerSecond": 3833.752637889828,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 4,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819734980,
+              "Sent": 643915753,
+              "Elapsed": 4.7923895,
+              "DownloadBytesPerSecond": 2295.8786457496094,
+              "UploadBytesPerSecond": 2117.482669897444,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819734980,
+              "Sent": 643915753,
+              "Elapsed": 4.7923895,
+              "DownloadBytesPerSecond": 2295.8786457496094,
+              "UploadBytesPerSecond": 2117.482669897444,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283030223,
+              "Sent": 991947739,
+              "Elapsed": 4.7923895,
+              "DownloadBytesPerSecond": 5144.294254406971,
+              "UploadBytesPerSecond": 4316.320772826957,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 5,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819735124,
+              "Sent": 643915907,
+              "Elapsed": 5.3073492,
+              "DownloadBytesPerSecond": 279.6058411990275,
+              "UploadBytesPerSecond": 299.0229135045155,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819735124,
+              "Sent": 643915907,
+              "Elapsed": 5.3073492,
+              "DownloadBytesPerSecond": 279.6058411990275,
+              "UploadBytesPerSecond": 299.0229135045155,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283030713,
+              "Sent": 991948323,
+              "Elapsed": 5.3073492,
+              "DownloadBytesPerSecond": 951.4553869365176,
+              "UploadBytesPerSecond": 1133.979481573319,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 6,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819735184,
+              "Sent": 643915967,
+              "Elapsed": 5.822068,
+              "DownloadBytesPerSecond": 116.56725746190727,
+              "UploadBytesPerSecond": 116.56725746190727,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819735184,
+              "Sent": 643915967,
+              "Elapsed": 5.822068,
+              "DownloadBytesPerSecond": 116.56725746190727,
+              "UploadBytesPerSecond": 116.56725746190727,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283031034,
+              "Sent": 991948556,
+              "Elapsed": 5.822068,
+              "DownloadBytesPerSecond": 623.6322830925322,
+              "UploadBytesPerSecond": 452.66766965906544,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 7,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819735428,
+              "Sent": 643916155,
+              "Elapsed": 6.3366857,
+              "DownloadBytesPerSecond": 474.1633446083158,
+              "UploadBytesPerSecond": 365.3389704359155,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819735428,
+              "Sent": 643916155,
+              "Elapsed": 6.3366857,
+              "DownloadBytesPerSecond": 474.1633446083158,
+              "UploadBytesPerSecond": 365.3389704359155,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283031882,
+              "Sent": 991949435,
+              "Elapsed": 6.3366857,
+              "DownloadBytesPerSecond": 1647.8658388472713,
+              "UploadBytesPerSecond": 1708.106217390037,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 8,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819744966,
+              "Sent": 643918904,
+              "Elapsed": 6.8514883,
+              "DownloadBytesPerSecond": 18526.061281289436,
+              "UploadBytesPerSecond": 5339.499104871531,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819744966,
+              "Sent": 643918904,
+              "Elapsed": 6.8514883,
+              "DownloadBytesPerSecond": 18526.061281289436,
+              "UploadBytesPerSecond": 5339.499104871531,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283043311,
+              "Sent": 991954520,
+              "Elapsed": 6.8514883,
+              "DownloadBytesPerSecond": 22199.854241223005,
+              "UploadBytesPerSecond": 9877.1772523072,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 9,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819747016,
+              "Sent": 643920542,
+              "Elapsed": 7.3664223,
+              "DownloadBytesPerSecond": 3981.525720656156,
+              "UploadBytesPerSecond": 3181.336161187699,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819747016,
+              "Sent": 643920542,
+              "Elapsed": 7.3664223,
+              "DownloadBytesPerSecond": 3981.525720656156,
+              "UploadBytesPerSecond": 3181.336161187699,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283047793,
+              "Sent": 991957720,
+              "Elapsed": 7.3664223,
+              "DownloadBytesPerSecond": 8704.79218036982,
+              "UploadBytesPerSecond": 6214.934176078407,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 10,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819747848,
+              "Sent": 643920950,
+              "Elapsed": 7.8809619,
+              "DownloadBytesPerSecond": 1617.0917266127622,
+              "UploadBytesPerSecond": 792.996904396643,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819747848,
+              "Sent": 643920950,
+              "Elapsed": 7.8809619,
+              "DownloadBytesPerSecond": 1617.0917266127622,
+              "UploadBytesPerSecond": 792.996904396643,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283049487,
+              "Sent": 991958996,
+              "Elapsed": 7.8809619,
+              "DownloadBytesPerSecond": 3292.4523736268734,
+              "UploadBytesPerSecond": 2480.029060654009,
+              "Quality": "Fresh"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "IntervalMilliseconds": 1000,
+      "AutoIsObservedTunnel": true,
+      "CounterBracketsPass": true,
+      "AutoMatchesOneManualInterface": true,
+      "AddingTunnelAndPhysicalWouldDiffer": true,
+      "Totals": [
+        {
+          "Role": "Auto",
+          "Fresh": 10,
+          "Received": 86228,
+          "Sent": 78257,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual WARP",
+          "Fresh": 10,
+          "Received": 86228,
+          "Sent": 78257,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual physical",
+          "Fresh": 10,
+          "Received": 118194,
+          "Sent": 113388,
+          "ByteConservationPass": true
+        }
+      ],
+      "Samples": [
+        {
+          "Sample": 0,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819747848,
+              "Sent": 643920950,
+              "Elapsed": 7.8953837,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819747848,
+              "Sent": 643920950,
+              "Elapsed": 7.8953837,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283049487,
+              "Sent": 991958996,
+              "Elapsed": 7.8953837,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            }
+          ]
+        },
+        {
+          "Sample": 1,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819748513,
+              "Sent": 643921777,
+              "Elapsed": 8.9098662,
+              "DownloadBytesPerSecond": 655.4993238992688,
+              "UploadBytesPerSecond": 815.1848734807448,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819748513,
+              "Sent": 643921777,
+              "Elapsed": 8.9098662,
+              "DownloadBytesPerSecond": 655.4993238992688,
+              "UploadBytesPerSecond": 815.1848734807448,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283051719,
+              "Sent": 991961469,
+              "Elapsed": 8.9098662,
+              "DownloadBytesPerSecond": 2200.128932286892,
+              "UploadBytesPerSecond": 2437.6876566063997,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 2,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819804378,
+              "Sent": 643925440,
+              "Elapsed": 9.924149,
+              "DownloadBytesPerSecond": 55077.9417206067,
+              "UploadBytesPerSecond": 3611.393547347755,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819804378,
+              "Sent": 643925440,
+              "Elapsed": 9.924149,
+              "DownloadBytesPerSecond": 55077.9417206067,
+              "UploadBytesPerSecond": 3611.393547347755,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283115681,
+              "Sent": 991972539,
+              "Elapsed": 9.924149,
+              "DownloadBytesPerSecond": 63061.02195492126,
+              "UploadBytesPerSecond": 10914.066368171389,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 3,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819805042,
+              "Sent": 643926174,
+              "Elapsed": 10.9386962,
+              "DownloadBytesPerSecond": 654.4914177841483,
+              "UploadBytesPerSecond": 723.4890070083809,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819805042,
+              "Sent": 643926174,
+              "Elapsed": 10.9386962,
+              "DownloadBytesPerSecond": 654.4914177841483,
+              "UploadBytesPerSecond": 723.4890070083809,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283117749,
+              "Sent": 991974510,
+              "Elapsed": 10.9386962,
+              "DownloadBytesPerSecond": 2038.3792913280663,
+              "UploadBytesPerSecond": 1942.768657257069,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 4,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819806000,
+              "Sent": 643927017,
+              "Elapsed": 11.9527355,
+              "DownloadBytesPerSecond": 944.7210947641053,
+              "UploadBytesPerSecond": 831.3151178352199,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819806000,
+              "Sent": 643927017,
+              "Elapsed": 11.9527355,
+              "DownloadBytesPerSecond": 944.7210947641053,
+              "UploadBytesPerSecond": 831.3151178352199,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283121046,
+              "Sent": 991977694,
+              "Elapsed": 11.9527355,
+              "DownloadBytesPerSecond": 3251.3202510015285,
+              "UploadBytesPerSecond": 3139.88585962659,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 5,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819806468,
+              "Sent": 643927462,
+              "Elapsed": 12.9675389,
+              "DownloadBytesPerSecond": 461.17729695117464,
+              "UploadBytesPerSecond": 438.5126007334887,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819806468,
+              "Sent": 643927462,
+              "Elapsed": 12.9675389,
+              "DownloadBytesPerSecond": 461.17729695117464,
+              "UploadBytesPerSecond": 438.5126007334887,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283122813,
+              "Sent": 991979434,
+              "Elapsed": 12.9675389,
+              "DownloadBytesPerSecond": 1741.227396808873,
+              "UploadBytesPerSecond": 1714.6212056861568,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 6,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819806978,
+              "Sent": 643927850,
+              "Elapsed": 13.981792,
+              "DownloadBytesPerSecond": 502.83733360151325,
+              "UploadBytesPerSecond": 382.5507557595826,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819806978,
+              "Sent": 643927850,
+              "Elapsed": 13.981792,
+              "DownloadBytesPerSecond": 502.83733360151325,
+              "UploadBytesPerSecond": 382.5507557595826,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283124443,
+              "Sent": 991980784,
+              "Elapsed": 13.981792,
+              "DownloadBytesPerSecond": 1607.113260764775,
+              "UploadBytesPerSecond": 1331.04472517328,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 7,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819811359,
+              "Sent": 643929274,
+              "Elapsed": 14.9962918,
+              "DownloadBytesPerSecond": 4318.315760255705,
+              "UploadBytesPerSecond": 1403.6251181474831,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819811359,
+              "Sent": 643929274,
+              "Elapsed": 14.9962918,
+              "DownloadBytesPerSecond": 4318.315760255705,
+              "UploadBytesPerSecond": 1403.6251181474831,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283130897,
+              "Sent": 991985430,
+              "Elapsed": 14.9962918,
+              "DownloadBytesPerSecond": 6361.6692767844615,
+              "UploadBytesPerSecond": 4579.534468537436,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 8,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819817668,
+              "Sent": 643953901,
+              "Elapsed": 16.0101758,
+              "DownloadBytesPerSecond": 6222.667335651899,
+              "UploadBytesPerSecond": 24290.002928372058,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819817668,
+              "Sent": 643953901,
+              "Elapsed": 16.0101758,
+              "DownloadBytesPerSecond": 6222.667335651899,
+              "UploadBytesPerSecond": 24290.002928372058,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283141685,
+              "Sent": 992016289,
+              "Elapsed": 16.0101758,
+              "DownloadBytesPerSecond": 10640.324007137342,
+              "UploadBytesPerSecond": 30436.573835395928,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 9,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819825964,
+              "Sent": 643986968,
+              "Elapsed": 17.0242606,
+              "DownloadBytesPerSecond": 8180.967417147488,
+              "UploadBytesPerSecond": 32608.49199407136,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819825964,
+              "Sent": 643986968,
+              "Elapsed": 17.0242606,
+              "DownloadBytesPerSecond": 8180.967417147488,
+              "UploadBytesPerSecond": 32608.49199407136,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283155240,
+              "Sent": 992055907,
+              "Elapsed": 17.0242606,
+              "DownloadBytesPerSecond": 13367.103966386097,
+              "UploadBytesPerSecond": 39068.82515236329,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 10,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819834076,
+              "Sent": 643999207,
+              "Elapsed": 18.0446248,
+              "DownloadBytesPerSecond": 7949.992664485319,
+              "UploadBytesPerSecond": 11994.571033115855,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819834076,
+              "Sent": 643999207,
+              "Elapsed": 18.0446248,
+              "DownloadBytesPerSecond": 7949.992664485319,
+              "UploadBytesPerSecond": 11994.571033115855,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283167681,
+              "Sent": 992072384,
+              "Elapsed": 18.0446248,
+              "DownloadBytesPerSecond": 12192.295461038017,
+              "UploadBytesPerSecond": 16147.612917894332,
+              "Quality": "Fresh"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "IntervalMilliseconds": 2000,
+      "AutoIsObservedTunnel": true,
+      "CounterBracketsPass": true,
+      "AutoMatchesOneManualInterface": true,
+      "AddingTunnelAndPhysicalWouldDiffer": true,
+      "Totals": [
+        {
+          "Role": "Auto",
+          "Fresh": 10,
+          "Received": 821586,
+          "Sent": 185810,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual WARP",
+          "Fresh": 10,
+          "Received": 821586,
+          "Sent": 185810,
+          "ByteConservationPass": true
+        },
+        {
+          "Role": "Manual physical",
+          "Fresh": 10,
+          "Received": 945467,
+          "Sent": 292376,
+          "ByteConservationPass": true
+        }
+      ],
+      "Samples": [
+        {
+          "Sample": 0,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819834076,
+              "Sent": 643999207,
+              "Elapsed": 18.0590534,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819834076,
+              "Sent": 643999207,
+              "Elapsed": 18.0590534,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283167681,
+              "Sent": 992072384,
+              "Elapsed": 18.0590534,
+              "DownloadBytesPerSecond": 0,
+              "UploadBytesPerSecond": 0,
+              "Quality": "Sampling"
+            }
+          ]
+        },
+        {
+          "Sample": 1,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819883666,
+              "Sent": 644117449,
+              "Elapsed": 20.0734332,
+              "DownloadBytesPerSecond": 24618.0198245801,
+              "UploadBytesPerSecond": 58699.00988300061,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819883666,
+              "Sent": 644117449,
+              "Elapsed": 20.0734332,
+              "DownloadBytesPerSecond": 24618.0198245801,
+              "UploadBytesPerSecond": 58699.00988300061,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283232404,
+              "Sent": 992209820,
+              "Elapsed": 20.0734332,
+              "DownloadBytesPerSecond": 32130.604655355917,
+              "UploadBytesPerSecond": 68227.70547430583,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 2,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819886264,
+              "Sent": 644122289,
+              "Elapsed": 22.0880852,
+              "DownloadBytesPerSecond": 1289.5608658085844,
+              "UploadBytesPerSecond": 2402.4151618604883,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819886264,
+              "Sent": 644122289,
+              "Elapsed": 22.0880852,
+              "DownloadBytesPerSecond": 1289.5608658085844,
+              "UploadBytesPerSecond": 2402.4151618604883,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283237969,
+              "Sent": 992217926,
+              "Elapsed": 22.0880852,
+              "DownloadBytesPerSecond": 2762.276270513066,
+              "UploadBytesPerSecond": 4023.5420393133713,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 3,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819888124,
+              "Sent": 644126237,
+              "Elapsed": 24.1021479,
+              "DownloadBytesPerSecond": 923.4900416494008,
+              "UploadBytesPerSecond": 1960.1820884042122,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819888124,
+              "Sent": 644126237,
+              "Elapsed": 24.1021479,
+              "DownloadBytesPerSecond": 923.4900416494008,
+              "UploadBytesPerSecond": 1960.1820884042122,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283242707,
+              "Sent": 992224655,
+              "Elapsed": 24.1021479,
+              "DownloadBytesPerSecond": 2352.425982738615,
+              "UploadBytesPerSecond": 3340.9612574605617,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 4,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819952524,
+              "Sent": 644140406,
+              "Elapsed": 26.1169392,
+              "DownloadBytesPerSecond": 31964.15250077305,
+              "UploadBytesPerSecond": 7032.609887941821,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819952524,
+              "Sent": 644140406,
+              "Elapsed": 26.1169392,
+              "DownloadBytesPerSecond": 31964.15250077305,
+              "UploadBytesPerSecond": 7032.609887941821,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283319132,
+              "Sent": 992250491,
+              "Elapsed": 26.1169392,
+              "DownloadBytesPerSecond": 37932.469235737546,
+              "UploadBytesPerSecond": 12823.333662734907,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 5,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3819970342,
+              "Sent": 644144219,
+              "Elapsed": 28.1314774,
+              "DownloadBytesPerSecond": 8844.601132464357,
+              "UploadBytesPerSecond": 1892.7188302888424,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3819970342,
+              "Sent": 644144219,
+              "Elapsed": 28.1314774,
+              "DownloadBytesPerSecond": 8844.601132464357,
+              "UploadBytesPerSecond": 1892.7188302888424,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4283342912,
+              "Sent": 992260123,
+              "Elapsed": 28.1314774,
+              "DownloadBytesPerSecond": 11804.098623293636,
+              "UploadBytesPerSecond": 4781.205968863091,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 6,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3820632161,
+              "Sent": 644171389,
+              "Elapsed": 30.1456674,
+              "DownloadBytesPerSecond": 328577.8458899954,
+              "UploadBytesPerSecond": 13489.277389786595,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3820632161,
+              "Sent": 644171389,
+              "Elapsed": 30.1456674,
+              "DownloadBytesPerSecond": 328577.8458899954,
+              "UploadBytesPerSecond": 13489.277389786595,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4284069060,
+              "Sent": 992329135,
+              "Elapsed": 30.1456674,
+              "DownloadBytesPerSecond": 360514.38392556686,
+              "UploadBytesPerSecond": 34262.737986569155,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 7,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3820637356,
+              "Sent": 644172590,
+              "Elapsed": 32.1600099,
+              "DownloadBytesPerSecond": 2578.9973702169837,
+              "UploadBytesPerSecond": 596.222491170471,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3820637356,
+              "Sent": 644172590,
+              "Elapsed": 32.1600099,
+              "DownloadBytesPerSecond": 2578.9973702169837,
+              "UploadBytesPerSecond": 596.222491170471,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4284077457,
+              "Sent": 992333530,
+              "Elapsed": 32.1600099,
+              "DownloadBytesPerSecond": 4168.617060173295,
+              "UploadBytesPerSecond": 2181.8592329953112,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 8,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3820641306,
+              "Sent": 644174006,
+              "Elapsed": 34.1748434,
+              "DownloadBytesPerSecond": 1960.5381880825187,
+              "UploadBytesPerSecond": 702.8157150189485,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3820641306,
+              "Sent": 644174006,
+              "Elapsed": 34.1748434,
+              "DownloadBytesPerSecond": 1960.5381880825187,
+              "UploadBytesPerSecond": 702.8157150189485,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4284085740,
+              "Sent": 992339101,
+              "Elapsed": 34.1748434,
+              "DownloadBytesPerSecond": 4111.132503096006,
+              "UploadBytesPerSecond": 2765.075356120711,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 9,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3820647792,
+              "Sent": 644176971,
+              "Elapsed": 36.1895921,
+              "DownloadBytesPerSecond": 3219.21563012076,
+              "UploadBytesPerSecond": 1471.6272499704062,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3820647792,
+              "Sent": 644176971,
+              "Elapsed": 36.1895921,
+              "DownloadBytesPerSecond": 3219.21563012076,
+              "UploadBytesPerSecond": 1471.6272499704062,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4284097649,
+              "Sent": 992348704,
+              "Elapsed": 36.1895921,
+              "DownloadBytesPerSecond": 5910.8372364183015,
+              "UploadBytesPerSecond": 4766.291878522542,
+              "Quality": "Fresh"
+            }
+          ]
+        },
+        {
+          "Sample": 10,
+          "Readings": [
+            {
+              "Role": "Auto",
+              "Received": 3820655662,
+              "Sent": 644185017,
+              "Elapsed": 38.2059962,
+              "DownloadBytesPerSecond": 3902.950337858127,
+              "UploadBytesPerSecond": 3990.2335982727436,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual WARP",
+              "Received": 3820655662,
+              "Sent": 644185017,
+              "Elapsed": 38.2059962,
+              "DownloadBytesPerSecond": 3902.950337858127,
+              "UploadBytesPerSecond": 3990.2335982727436,
+              "Quality": "Fresh"
+            },
+            {
+              "Role": "Manual physical",
+              "Received": 4284113148,
+              "Sent": 992364760,
+              "Elapsed": 38.2059962,
+              "DownloadBytesPerSecond": 7686.402323327803,
+              "UploadBytesPerSecond": 7962.6347314892055,
+              "Quality": "Fresh"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Displays": [
+    {
+      "Left": 0,
+      "Top": 0,
+      "Width": 1920,
+      "Height": 1200,
+      "Primary": true
+    }
+  ],
+  "Scope": "Passive steady-state WARP/physical-interface comparison; independent native brackets. No adapter, route, VPN, display or shell settings changed. No payload-throughput or reconnect certification.",
+  "Untested": [
+    "Physical VPN reconnect",
+    "Physical second monitor and mixed DPI",
+    "Controlled LAN payload throughput",
+    "Other VPN products"
+  ]
+}
