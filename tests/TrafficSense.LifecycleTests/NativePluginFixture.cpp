@@ -103,7 +103,11 @@ struct Teardown {
     }
 };
 static Teardown teardown;
-extern "C" __declspec(dllexport) Plugin* TMPluginGetInstance() { return &plugin; }
+extern "C" __declspec(dllexport) Plugin* TMPluginGetInstance() {
+    wchar_t delay[16]{};
+    if(GetEnvironmentVariableW(L"TRAFFICSENSE_FIXTURE_STARTUP_DELAY",delay,16))Sleep((DWORD)_wtoi(delay));
+    return &plugin;
+}
 extern "C" __declspec(dllexport) unsigned ReadNicCounters(const GUID* id, unsigned long long* rx, unsigned long long* tx) {
     MIB_IF_ROW2 row{}; unsigned error = ConvertInterfaceGuidToLuid(id, &row.InterfaceLuid);
     if (error) return error;

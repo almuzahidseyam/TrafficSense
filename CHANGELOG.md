@@ -4,7 +4,11 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
-## [1.35.0] - 2026-10-13
+## [1.35.1] - 2026-10-13
+
+### Fixed
+
+- The first native plugin reply now has a bounded ten-second startup budget for process/runtime/DLL initialization. Subsequent sampling keeps its three-second deadline; explicit caller timeouts still take priority. This addresses the cold-start timeout reproduced during the unpublished 1.35.0 release build. Native fixtures verify slow startup, the subsequent hang deadline and explicit early cancellation.
 
 ### Added
 

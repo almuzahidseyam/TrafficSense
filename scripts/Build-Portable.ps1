@@ -102,14 +102,22 @@ $process = [Diagnostics.Process]::Start($start)
 try {
     $stdout = $process.StandardOutput.ReadToEndAsync()
     $stderr = $process.StandardError.ReadToEndAsync()
-    if (!$process.WaitForExit(60000)) {
+    # The complete suite starts many isolated workers and deliberately spends
+    # seven seconds testing cold startup/hang deadlines. Keep an aggregate
+    # watchdog with CI headroom; individual production request limits are unchanged.
+    $completed = $process.WaitForExit(120000)
+    if (!$completed) {
         $process.Kill()
-        throw 'Portable lifecycle verification timed out.'
+        $null = $process.WaitForExit(5000)
     }
+    # Preserve completed probe diagnostics on failure, without waiting forever
+    # for redirected streams if a descendant unexpectedly retained a pipe.
+    if (!$stdout.Wait(5000) -or !$stderr.Wait(5000)) { throw 'Portable lifecycle output did not close after termination.' }
     $output = $stdout.GetAwaiter().GetResult()
     $errors = $stderr.GetAwaiter().GetResult()
     if ($output) { Write-Host $output.TrimEnd() }
     if ($errors) { Write-Host $errors.TrimEnd() }
+    if (!$completed) { throw 'Portable lifecycle verification timed out after 120 seconds.' }
     if ($process.ExitCode -ne 0) { throw "Portable lifecycle verification failed ($($process.ExitCode))." }
 } finally { $process.Dispose() }
 
