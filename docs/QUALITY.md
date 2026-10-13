@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.32.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.33.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -48,3 +48,7 @@ Retention checks record ordinary collection snapshots and separately use the exi
 The reviewed implementation is ready for the documented Windows x64 feature scope after its release workflows pass. Hardware/OS matrix coverage and the compatibility gaps remain follow-up requirements; passing tests does not establish universal reliability or competitive popularity.
 
 - **Plugin history hover:** native WPF checks cover both plots, exact/nearest time mapping, unknown CPU/RAM independently, genuine zero, delayed/empty regions, plot boundaries, mouse-leave state, translation, reset and sessions over 24 hours.
+
+## Plugin history keyboard inspection (1.33.0)
+
+Tab focuses the graph at its latest recorded sample. Left/Right moves one recorded sample, Home/End selects the oldest/latest, Esc clears, and Tab leaves. Selected details appear below the graph and in its accessible name, with English/Bangla instructions. Live refresh preserves the timestamp; expiration clears rather than silently choosing another reading. Focus loss, Stop/Reload and close clear inspection. Navigation tests exercise gaps, boundaries, unknown values, translation, empty/reset/expired history and shortcut pass-through; a hidden real WPF bridge probe routes a key event and verifies visible detail text and live selection. No physical keyboard or screen-reader certification is claimed.

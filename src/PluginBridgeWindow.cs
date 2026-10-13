@@ -33,6 +33,7 @@ internal sealed class PluginBridgeWindow : Window
     private readonly PluginHealthHistory _healthHistory=new();
     private readonly PluginHealthGraph _healthGraph=new(){Height=180,MinWidth=180,Margin=new(0,4,0,0)};
     private readonly TextBlock _historyTitle=new(){TextWrapping=TextWrapping.Wrap,Margin=new(0,8,0,0)};
+    private readonly TextBlock _historyDetails=new(){TextWrapping=TextWrapping.Wrap,Margin=new(0,4,0,0)};
     private long _historyStart;
     private readonly StackPanel _items = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -57,6 +58,8 @@ internal sealed class PluginBridgeWindow : Window
         top.Children.Add(buttons);
         var health = new StackPanel();health.Children.Add(_healthState);health.Children.Add(_healthUsage);health.Children.Add(_healthAge);
         health.Children.Add(_historyTitle);health.Children.Add(_healthGraph);
+        health.Children.Add(_historyDetails);
+        _healthGraph.KeyboardDetailsChanged+=(_,_)=>_historyDetails.Text=_healthGraph.KeyboardDetails;
         top.Children.Add(new Border { Child=health,Padding=new(8),Margin=new(4),BorderThickness=new(1),BorderBrush=SystemColors.ControlDarkBrush });
         top.Children.Add(_status);top.Children.Add(_items);
         Content=new ScrollViewer { Content=top,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled };

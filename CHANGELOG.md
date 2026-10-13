@@ -4,6 +4,14 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.33.0] - 2026-10-13
+
+### Added
+
+- Keyboard inspection of plugin resource history: Tab focuses the graph and selects the latest reading; Left/Right moves through recorded samples, Home/End selects oldest/latest, and Esc clears inspection. Tab leaves normally and modified shortcuts remain available.
+- Selected elapsed time, CPU and RAM appear as wrapping text below the graph in English/Bangla, with an accessible graph name and a high-contrast focus outline. Live updates preserve the selected timestamp; expiration, Stop/Reload, focus loss and close clear it. Mouse movement does not replace active keyboard inspection.
+- Native graph navigation and routed WPF key-event checks cover edges, gaps, missing values, translation, stable live selection, expiration/reset, empty history and shortcut pass-through.
+
 ## [1.32.0] - 2026-10-13
 
 ### Added

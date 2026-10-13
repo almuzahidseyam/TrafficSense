@@ -14,25 +14,83 @@ internal sealed class PluginHealthGraph:FrameworkElement
     private UiLanguage _language=new();
     private readonly ToolTip _details=new();
     private PluginHealthPoint? _hover;
+    private TimeSpan? _selectedTime;
+    private string _current="";
+    internal event EventHandler? KeyboardDetailsChanged;
+    internal string KeyboardDetails=>_selectedTime!=null&&_hover is {} sample?FormatDetails(sample):_language[TextKey.PluginHistoryKeyboard];
     internal PluginHealthPoint? HoveredPoint=>_hover;
     internal string HoverText=>_details.Content as string??"";
     public PluginHealthGraph()
     {
+        Focusable=true;
+        KeyboardNavigation.SetIsTabStop(this,true);
         ToolTip=_details;
         ToolTipService.SetShowDuration(this,int.MaxValue);
-        Unloaded+=(_,_)=>Inspect(null);
+        Unloaded+=(_,_)=>ClearKeyboardSelection();
     }
     internal void Update(IEnumerable<PluginHealthPoint> points,UiLanguage language,string current)
     {
-        _points=points.ToArray();_language=language;
-        AutomationProperties.SetName(this,language[TextKey.PluginHistory]+". "+current);
-        AutomationProperties.SetHelpText(this,language[TextKey.PluginHistoryHint]);
+        _points=points.ToArray();_language=language;_current=current;
+        AutomationProperties.SetHelpText(this,language[TextKey.PluginHistoryHint]+" "+language[TextKey.PluginHistoryKeyboard]);
+        if(_selectedTime is {} selected)
+        {
+            int index=Array.FindIndex(_points,p=>p.Timestamp==selected);
+            if(index>=0){SelectKeyboardSample(index);return;}
+            _selectedTime=null;
+        }
         Inspect(IsMouseOver?Mouse.GetPosition(this):null);
+        PublishKeyboardDetails();
+    }
+    protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+    {
+        base.OnGotKeyboardFocus(e);Navigate(Key.End,ModifierKeys.None);InvalidateVisual();
+    }
+    protected override void OnLostKeyboardFocus(KeyboardFocusChangedEventArgs e)
+    {
+        base.OnLostKeyboardFocus(e);ClearKeyboardSelection();
+    }
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if(Navigate(e.Key,Keyboard.Modifiers))e.Handled=true;
+        base.OnKeyDown(e);
+    }
+    internal bool Navigate(Key key,ModifierKeys modifiers)
+    {
+        if(modifiers!=ModifierKeys.None)return false;
+        if(key==Key.Escape){ClearKeyboardSelection();return true;}
+        if(key is not (Key.Left or Key.Right or Key.Home or Key.End))return false;
+        if(_points.Length==0){ClearKeyboardSelection();return true;}
+        int index=_selectedTime is {} selected?Array.FindIndex(_points,p=>p.Timestamp==selected):-1;
+        int next=key switch
+        {
+            Key.Home=>0,
+            Key.End=>_points.Length-1,
+            Key.Left=>index<0?_points.Length-1:Math.Max(0,index-1),
+            _=>index<0?_points.Length-1:Math.Min(_points.Length-1,index+1)
+        };
+        SelectKeyboardSample(next);return true;
+    }
+    private void SelectKeyboardSample(int index)
+    {
+        _hover=_points[index];_selectedTime=_hover.Value.Timestamp;
+        _details.IsOpen=false;_details.Content=FormatDetails(_hover.Value);
+        PublishKeyboardDetails();InvalidateVisual();
+    }
+    internal void ClearKeyboardSelection()
+    {
+        _selectedTime=null;Inspect(null);PublishKeyboardDetails();
+    }
+    private void PublishKeyboardDetails()
+    {
+        AutomationProperties.SetName(this,_language[TextKey.PluginHistory]+". "+(_selectedTime!=null?KeyboardDetails:_current));
+        KeyboardDetailsChanged?.Invoke(this,EventArgs.Empty);
     }
     protected override void OnMouseMove(MouseEventArgs e){base.OnMouseMove(e);Inspect(e.GetPosition(this));}
     protected override void OnMouseLeave(MouseEventArgs e){base.OnMouseLeave(e);Inspect(null);}
     internal void Inspect(Point? position)
     {
+        // Keep keyboard inspection stable while the pointer rests over the graph.
+        if(_selectedTime!=null)return;
         _hover=null;
         double height=(ActualHeight-70)/2;
         if(position is {} p && ActualWidth>=180 && ActualHeight>=150 && _points.Length>0 &&
@@ -69,6 +127,7 @@ internal sealed class PluginHealthGraph:FrameworkElement
     {
         base.OnRender(context);
         if(ActualWidth<180 || ActualHeight<150)return;
+        if(IsKeyboardFocused)context.DrawRectangle(null,new Pen(SystemColors.WindowTextBrush,1){DashStyle=DashStyles.Dot},new Rect(1,1,ActualWidth-2,ActualHeight-2));
         double dpi=VisualTreeHelper.GetDpi(this).PixelsPerDip;
         var typeface=new Typeface("Segoe UI, Nirmala UI");
         void Label(string text,double x,double y)=>context.DrawText(new FormattedText(text,CultureInfo.CurrentCulture,FlowDirection.LeftToRight,typeface,11,SystemColors.WindowTextBrush,dpi),new(x,y));

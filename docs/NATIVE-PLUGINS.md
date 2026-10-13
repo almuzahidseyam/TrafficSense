@@ -42,3 +42,7 @@ Version 1.29.0 also checks their real Cancel/OK dialogs, modal Stop/reopen and i
 **Known TextReader 1.02 behavior:** repeated settings dialogs retain about seven GDI objects per opening after UI warmup. Stop/Reload reclaims that worker's resources, and the host's response resource guard limits prolonged growth. The pinned binary is unchanged. Its functional command results and sampling-only soak are separate from this repeated-dialog resource warning.
 
 Hover either resource plot for the nearest recorded CPU/RAM pair and elapsed time since plugin start (not wall-clock time). The cursor aligns both plots. Empty history and positions farther than 2.5 seconds from a sample show no reading; unavailable metrics stay unavailable. Hours continue beyond 24.
+
+## Plugin history keyboard inspection (1.33.0)
+
+Tab focuses the graph at its latest recorded sample. Left/Right moves one recorded sample, Home/End selects the oldest/latest, Esc clears, and Tab leaves. Selected details appear below the graph and in its accessible name, with English/Bangla instructions. Live refresh preserves the timestamp; expiration clears rather than silently choosing another reading. Focus loss, Stop/Reload and close clear inspection. Navigation tests exercise gaps, boundaries, unknown values, translation, empty/reset/expired history and shortcut pass-through; a hidden real WPF bridge probe routes a key event and verifies visible detail text and live selection. No physical keyboard or screen-reader certification is claimed.
