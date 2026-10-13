@@ -21,6 +21,7 @@ internal static class GraphQualityProbe
         if (lines[0].Geometry.Bounds.Height < 20)
             throw new InvalidOperationException("Invalid rate influenced the graph scale.");
         Console.WriteLine("PASS: real WPF graph breaks both rate paths over unavailable samples and excludes them from its scale.");
+        PluginHealthGraphProbe.Run();
         return 0;
     }
     private static IEnumerable<Drawing> Drawings(Drawing drawing)

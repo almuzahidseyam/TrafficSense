@@ -76,6 +76,12 @@ $build = Split-Path $package.ArchivePath -Parent
 if ($LASTEXITCODE -ne 0) { throw 'Plugin health resource check failed.' }
 ```
 
+## Plugin history in 1.31.0
+
+Twelve new pure cases cover the inclusive two-minute retention boundary, a 10,000-reading burst capped at 128 samples, nullable CPU/RAM independently, genuine zero, invalid values, duplicate/negative/backward time, clearing with a fresh session clock and expiration over a long gap. Native WPF geometry checks confirm independent traces/scales, unknown and delayed gaps, English/Bangla accessibility, 500 bounded render updates and clear/narrow layouts. Existing real-worker health UI tests verify samples reach history while settings remain open, failures record unknown values and Stop/Reload/close clear history without accepting delayed prior-worker results. These fixtures run in portable CI; they do not claim hours/days of graph operation or a new physical hardware comparison.
+
+Developer-only `--plugin-history-images <directory>` on the lifecycle test executable renders English/Bangla chart examples with explicitly synthetic values for visual inspection. It opens no user window and does not change system appearance or user data. Production has no screenshot test entry point.
+
 ## Available live hardware
 
 The available PC has a running Cloudflare WARP tunnel, physical Ethernet and one 1920×1200 monitor at 96 DPI. IPv4 route lookups for five public destinations selected the tunnel; these lookups do not send packets. Both the tunnel and its physical carrier advanced during the passive tests.

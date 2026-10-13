@@ -33,6 +33,7 @@ internal enum TextKey
     PluginBridge, PluginChoose, PluginHint, PluginOptions, PluginRun, PluginFailed, PluginReload, PluginResourceLimit,
     PluginHealth, PluginHealthIdle, PluginHealthStarting, PluginHealthResponding, PluginHealthWaiting, PluginHealthSettings, PluginHealthCommand,
     PluginHealthStopped, PluginHealthFailed, PluginHealthLimited, PluginHealthUnavailable, PluginHealthResponse, PluginHealthResponseUnknown, PluginHealthNoResponse, PluginHealthHint,
+    PluginHistory, PluginHistoryHint, PluginHistoryEmpty, PluginHistoryNow,
     EmbedTaskbar, EmbedHint,
     ConnectionGroup, AppearanceGroup, MetricsGroup, UsageGroup, PanelGroup, PreferencesGroup
 }
@@ -78,6 +79,11 @@ internal sealed class UiLanguage(string? code = "en")
             [TextKey.PluginRun] = ("Run command", "কমান্ড চালান"),
             [TextKey.PluginReload] = ("Reload plugin", "Plugin আবার চালু করুন"),
             [TextKey.PluginHealth] = ("Plugin health", "Plugin-এর অবস্থা"),
+            [TextKey.PluginHistory] = ("Recent CPU / RAM · last 2 minutes", "সাম্প্রতিক CPU / RAM · শেষ ২ মিনিট"),
+            [TextKey.PluginHistoryHint] = ("This worker's current session only. CPU uses a fixed 0–100% scale; resident RAM uses a separate scale in MiB. Gaps mean unavailable readings or delays over five seconds, not zero usage. Stop/Reload clears history. History is kept in memory only.",
+                "শুধু এই worker-এর বর্তমান session। CPU-এর স্কেল ০–১০০%; বর্তমানে ব্যবহৃত RAM-এর আলাদা স্কেল MiB-তে। ফাঁক মানে তথ্য পাওয়া যায়নি বা পাঁচ সেকেন্ডের বেশি দেরি হয়েছে; ব্যবহার শূন্য নয়। Stop/Reload-এ history পরিষ্কার হয়। History শুধু মেমরিতে থাকে।"),
+            [TextKey.PluginHistoryEmpty] = ("Waiting for health readings…", "ব্যবহারের তথ্যের অপেক্ষায়…"),
+            [TextKey.PluginHistoryNow] = ("Now", "এখন"),
             [TextKey.PluginHealthIdle] = ("No plugin loaded", "কোনো plugin চালু নেই"),
             [TextKey.PluginHealthStarting] = ("Starting…", "চালু হচ্ছে…"),
             [TextKey.PluginHealthResponding] = ("Responding", "সাড়া দিচ্ছে"),
