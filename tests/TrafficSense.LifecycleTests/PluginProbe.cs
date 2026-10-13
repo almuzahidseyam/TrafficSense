@@ -26,6 +26,7 @@ internal static class PluginProbe
             { using var bytes = new MemoryStream(Convert.FromBase64String(item.Png!)); using var bitmap = new System.Drawing.Bitmap(bytes); Check(bitmap.GetPixel(60,30).G > 100,"Plugin drawing was blank."); }
             Check(client.Request(request with { Operation = "options" }).GetAwaiter().GetResult().Name == sample.Name, "Plugin options failed.");
             Check(client.Request(request with { Operation = "command", Command = 2 }).GetAwaiter().GetResult().Items[0].Value == "verified", "Plugin command failed.");
+            Check(client.Request(request with { Dark = false }).GetAwaiter().GetResult().Items[0].Value == "verified", "Light-theme GDI state/host color failed.");
         }
         foreach (int command in new[] { 0, 1 })
         {
@@ -37,6 +38,9 @@ internal static class PluginProbe
         }
         using (var client = new PluginClient(executable, Path.Combine(Path.GetDirectoryName(dll)!, "missing.dll")))
         { try { client.Request(request).GetAwaiter().GetResult(); throw new InvalidOperationException("Missing DLL loaded."); } catch (Exception e) when (e is IOException or InvalidDataException) { } }
+        string teardownRoot=Path.Combine(Path.GetTempPath(),"TrafficSense.Teardown-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(teardownRoot);
+        using(var clean=new PluginClient(executable,dll,teardownRoot))clean.Request(request).GetAwaiter().GetResult();
+        Check(Directory.GetFiles(teardownRoot,"saved.txt",SearchOption.AllDirectories).Length==1,"Idle shutdown skipped native DLL settings teardown.");
         string report = Path.Combine(Path.GetTempPath(), "TrafficSense.worker." + Guid.NewGuid().ToString("N") + ".txt");
         var ownerStart = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute=false, CreateNoWindow=true };
         ownerStart.ArgumentList.Add("--plugin-job-owner"); ownerStart.ArgumentList.Add(dll); ownerStart.ArgumentList.Add(report);

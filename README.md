@@ -23,7 +23,7 @@
 
 ## Install or run portable
 
-Current version: **[1.27.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.27.0)**. For **64-bit Windows 10/11**.
+Current version: **[1.28.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.28.0)**. For **64-bit Windows 10/11**.
 
 1. Open [Releases](https://github.com/almuzahidseyam/TrafficSense/releases/latest).
 2. Download **TrafficSense-Setup.exe** for a per-user installation, or **TrafficSense.zip** for portable use.
@@ -72,6 +72,8 @@ Open **Usage and history** from the widget or tray. Choose all retained days, a 
 - Repeated launches: use the existing tray icon, or exit the old copy first. Missing speed: inspect the sample status and adapter menu; try the active physical adapter or your VPN deliberately. Missing system/temperature readings: check [compatibility](docs/COMPATIBILITY.md).
 
 Core sampling/history need no remote service. Manual update checks contact GitHub; the Sensor bridge contacts only `127.0.0.1`. Explicitly selected native plugins run with your permissions and may access networks/files according to their own behavior. No TrafficSense telemetry/upload service is implemented.
+
+Tested compatibility: four pinned community plugins, live Cloudflare WARP/physical-interface counter comparisons at every refresh interval, and native DPI/placement regressions. [Evidence, exact scope and reproduction](docs/COMPATIBILITY-TESTING.md). Physical multi-monitor transitions and other VPN products remain unverified.
 
 ## Build, test and contribute
 

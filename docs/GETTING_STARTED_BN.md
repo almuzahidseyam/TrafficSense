@@ -37,3 +37,5 @@ Temperature চাইলে আগে উপযুক্ত [LibreHardwareMonito
 **About** থেকে version, update check ও log folder পাওয়া যায়। সমস্যা জানাতে [bug-report ফর্ম](https://github.com/almuzahidseyam/TrafficSense/issues/new/choose) ব্যবহার করুন। Version, Windows build, adapter/VPN ও কীভাবে সমস্যা হচ্ছে লিখুন; শেয়ার করার আগে log-এর ব্যক্তিগত তথ্য দেখুন।
 
 [ফিচার ও সীমাবদ্ধতা](COMPATIBILITY.md) · [গতি মাপার পদ্ধতি](MEASUREMENT.md) · [মূল README](../README.md)
+
+v1.28-এ dark plugin preview, স্বাভাবিক বন্ধের সময় plugin settings সংরক্ষণ এবং monitor অনুযায়ী DPI scaling সংশোধন হয়েছে। চার community plugin ও সক্রিয় WARP-এর নির্দিষ্ট পরীক্ষা পাস করেছে। বাস্তব দ্বিতীয় monitor/mixed-DPI ও VPN reconnect এখনো পরীক্ষা হয়নি। [পরীক্ষার ফল ও পুনরায় চালানোর নির্দেশনা](COMPATIBILITY-TESTING.md)।

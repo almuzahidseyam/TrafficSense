@@ -13,6 +13,7 @@ internal sealed class PluginBridgeWindow : Window
     private readonly UiLanguage _language;
     private readonly Func<double[]> _metrics;
     private readonly Action<PluginSample?> _publish;
+    private readonly Func<bool> _dark;
     private PluginClient? _client;
     private readonly Button _open = new() { Style = null, Margin = new(4) }, _stop = new() { Style = null, Margin = new(4) }, _options = new() { Style = null, Margin = new(4) };
     private readonly ComboBox _commands = new() { MinWidth = 100, Margin = new(4) };
@@ -21,9 +22,9 @@ internal sealed class PluginBridgeWindow : Window
     private readonly StackPanel _items = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private bool _busy;
-    internal PluginBridgeWindow(UiLanguage language, Func<double[]> metrics, Action<PluginSample?> publish)
+    internal PluginBridgeWindow(UiLanguage language, Func<double[]> metrics, Action<PluginSample?> publish, Func<bool>? dark = null)
     {
-        _language = language; _metrics = metrics; _publish = publish;
+        _language = language; _metrics = metrics; _publish = publish; _dark = dark ?? (()=>true);
         Width = 620; Height = 400; MinWidth = 360; MinHeight = 250; FontSize = 14; FontFamily = new FontFamily("Segoe UI, Nirmala UI");
         Title = language[TextKey.PluginBridge]; Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
         var root = new DockPanel { Margin = new(12) }; var top = new StackPanel();
@@ -53,7 +54,7 @@ internal sealed class PluginBridgeWindow : Window
         var client = _client; _busy = true; Controls();
         try
         {
-            var sample = await client.Request(new(operation, _metrics(), _commands.SelectedIndex), operation == "sample" ? null : TimeSpan.FromMinutes(5));
+            var sample = await client.Request(new(operation, _metrics(), _commands.SelectedIndex, _dark()), operation == "sample" ? null : TimeSpan.FromMinutes(5));
             if (!ReferenceEquals(client, _client)) return;
             _publish(sample); _status.Text = sample.Name + " · API " + sample.Api + "\n" + sample.Tooltip;
             _items.Children.Clear();

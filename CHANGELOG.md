@@ -4,6 +4,22 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.28.0] - 2026-10-13
+
+### Fixed
+
+- Native plugin previews now initialize transparent GDI text backgrounds, theme-appropriate DC/extended colors and clipping, and restore DC state after drawing. KeyboardIndicator dark previews no longer have default opaque white text boxes. The bridge follows the widget's light/dark choice.
+- Idle plugin shutdown gives the worker up to 300 ms to unload normally and persist destructor-based settings, then enforces kernel-job cleanup. Busy, crashed and timed-out workers still terminate immediately. This fixes DateTime configuration persistence on normal Stop/close without allowing unbounded shutdown hangs.
+- Explicit Per-Monitor V2 apphost manifest, with Per-Monitor fallback on older Windows versions. The previous build was confirmed system-DPI-aware; the new native WPF probe confirms per-monitor awareness. This enables appropriate DPI notifications/scaling but does not certify physical mixed-DPI hardware.
+
+### Validation and tools
+
+- 299 pure regression cases, including four-interval VPN route/disconnect/reset traces and 1,120 placement invariants over varied work areas, negative coordinates and scaled widget sizes.
+- Version/hash-pinned DateTime 1.00, Battery 1.03, KeyboardIndicator 1.00 and TextReader 1.02 releases pass isolated startup, repeated samples, stable IDs and visible dark/light drawing where applicable. DateTime advances and saves its isolated configuration on idle shutdown; TextReader reads an owned sample file. Each plugin also passes 32 additional sampling/theme cycles within native handle budgets. This is finite feature-specific coverage, not all plugin dialogs or hardware certification.
+- Actual running Cloudflare WARP and physical Ethernet checked simultaneously at 250/500/1000/2000 ms against direct native counter brackets. Auto equals the same manually selected tunnel counter domain and does not sum the underlying interface. Exact byte conservation passes in the observed steady-state traces; physical reconnect and other VPN products remain untested.
+- Invisible native WPF placement tests cover simulated left/above monitors, removal, work-area shrink, scaled sizes and panel-monitor changes. No VPN, display, Explorer or running-user-widget settings were changed. Physical second-monitor/mixed-DPI transitions remain untested.
+- Added explicit opt-in compatibility scripts and anonymized evidence reports. No community plugin binaries, third-party drivers or automatic plugin downloads are included in application packages or default CI.
+
 ## [1.27.0] - 2026-10-13
 
 ### Added

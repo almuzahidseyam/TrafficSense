@@ -1,0 +1,141 @@
+{
+  "Format": "TrafficSense.DisplayTopology",
+  "Version": 1,
+  "TestedAt": "2026-10-13T06:08:13.0486148+00:00",
+  "Windows": "Microsoft Windows NT 10.0.26200.0",
+  "NativeDpiAwareness": 2,
+  "PerMonitorV2": true,
+  "ActualWindowDpi": 96,
+  "Cases": [
+    {
+      "SimulatedSizeScale": 1,
+      "Restored": {
+        "Left": -2000,
+        "Top": 100,
+        "Right": -1780,
+        "Bottom": 170
+      },
+      "AfterMonitorRemoval": {
+        "Left": 0,
+        "Top": 100,
+        "Right": 220,
+        "Bottom": 170
+      },
+      "AfterWorkAreaReduction": {
+        "Left": 64,
+        "Top": 100,
+        "Right": 284,
+        "Bottom": 170
+      },
+      "AbovePrimary": {
+        "Left": 200,
+        "Top": -1100,
+        "Right": 420,
+        "Bottom": -1030
+      }
+    },
+    {
+      "SimulatedSizeScale": 1.25,
+      "Restored": {
+        "Left": -2000,
+        "Top": 100,
+        "Right": -1725,
+        "Bottom": 188
+      },
+      "AfterMonitorRemoval": {
+        "Left": 0,
+        "Top": 100,
+        "Right": 275,
+        "Bottom": 188
+      },
+      "AfterWorkAreaReduction": {
+        "Left": 64,
+        "Top": 100,
+        "Right": 339,
+        "Bottom": 188
+      },
+      "AbovePrimary": {
+        "Left": 200,
+        "Top": -1100,
+        "Right": 475,
+        "Bottom": -1012
+      }
+    },
+    {
+      "SimulatedSizeScale": 1.5,
+      "Restored": {
+        "Left": -2000,
+        "Top": 100,
+        "Right": -1670,
+        "Bottom": 205
+      },
+      "AfterMonitorRemoval": {
+        "Left": 0,
+        "Top": 100,
+        "Right": 330,
+        "Bottom": 205
+      },
+      "AfterWorkAreaReduction": {
+        "Left": 64,
+        "Top": 100,
+        "Right": 394,
+        "Bottom": 205
+      },
+      "AbovePrimary": {
+        "Left": 200,
+        "Top": -1100,
+        "Right": 530,
+        "Bottom": -995
+      }
+    },
+    {
+      "SimulatedSizeScale": 2,
+      "Restored": {
+        "Left": -2000,
+        "Top": 100,
+        "Right": -1560,
+        "Bottom": 240
+      },
+      "AfterMonitorRemoval": {
+        "Left": 0,
+        "Top": 100,
+        "Right": 440,
+        "Bottom": 240
+      },
+      "AfterWorkAreaReduction": {
+        "Left": 64,
+        "Top": 100,
+        "Right": 504,
+        "Bottom": 240
+      },
+      "AbovePrimary": {
+        "Left": 200,
+        "Top": -1100,
+        "Right": 640,
+        "Bottom": -960
+      }
+    }
+  ],
+  "SimulatedPanelPositions": [
+    {
+      "Left": -2560,
+      "Top": 1150,
+      "Right": 0,
+      "Bottom": 1200
+    },
+    {
+      "Left": 0,
+      "Top": 1030,
+      "Right": 1920,
+      "Bottom": 1080
+    },
+    {
+      "Left": 0,
+      "Top": -1440,
+      "Right": 2560,
+      "Bottom": -1380
+    }
+  ],
+  "Scope": "Actual invisible WPF window/native coordinates with injected work areas and scaled window sizes; no physical monitor/DPI setting change or fake WM_DPICHANGED payload.",
+  "Untested": "Physical second monitor, cross-device mixed-DPI transitions and monitor hot-plug."
+}

@@ -6,7 +6,7 @@ namespace TrafficSense;
 
 internal static class NativeWindowPlacement
 {
-    public static void Restore(Window window, AppSettings settings)
+    public static void Restore(Window window, AppSettings settings, IReadOnlyList<DisplayWorkArea>? workAreas = null)
     {
         int? left = settings.ScreenLeft;
         int? top = settings.ScreenTop;
@@ -24,13 +24,13 @@ internal static class NativeWindowPlacement
             }
         }
 
-        Place(window, left, top);
+        Place(window, left, top,workAreas);
     }
 
-    public static void EnsureVisible(Window window)
+    public static void EnsureVisible(Window window, IReadOnlyList<DisplayWorkArea>? workAreas = null)
     {
         if (GetWindowRect(new WindowInteropHelper(window).Handle, out var rectangle))
-            Place(window, rectangle.Left, rectangle.Top);
+            Place(window, rectangle.Left, rectangle.Top,workAreas);
     }
 
     public static void Capture(Window window, AppSettings settings)
@@ -44,14 +44,15 @@ internal static class NativeWindowPlacement
         }
     }
 
-    private static void Place(Window window, int? left, int? top)
+    private static void Place(Window window, int? left, int? top,IReadOnlyList<DisplayWorkArea>? workAreas)
     {
         var handle = new WindowInteropHelper(window).Handle;
         if (!GetWindowRect(handle, out var rectangle))
             return;
 
         var displays = new List<DisplayWorkArea>();
-        EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, (IntPtr monitor, IntPtr dc, ref NativeRect bounds, IntPtr data) =>
+        if(workAreas!=null)displays.AddRange(workAreas);
+        else EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, (IntPtr monitor, IntPtr dc, ref NativeRect bounds, IntPtr data) =>
         {
             var info = new MonitorInfo { Size = Marshal.SizeOf<MonitorInfo>() };
             if (GetMonitorInfo(monitor, ref info) && info.Work.Right > info.Work.Left && info.Work.Bottom > info.Work.Top)
