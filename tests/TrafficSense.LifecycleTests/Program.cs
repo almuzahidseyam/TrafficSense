@@ -39,6 +39,7 @@ internal static class Program
         if (args.FirstOrDefault() == "--soak") return SoakProbe.Run(args[1..]);
         if (args.FirstOrDefault() == "--screenshots" && args.Length == 2) return ScreenshotProbe.Run(args[1]);
         if (args.FirstOrDefault() == "--graph-quality") return GraphQualityProbe.Run();
+        if (args.FirstOrDefault() == "--plugin-history-images" && args.Length==2) return PluginHealthGraphProbe.Run(args[1]);
         if (args.FirstOrDefault() == "--network-recovery") return NetworkRecoveryProbe.Run();
         if (args.FirstOrDefault() == "--system-metrics") return SystemMetricsProbe.Run();
         if (args.FirstOrDefault() == "--taskbar-panel") return TaskbarPanelProbe.Run();

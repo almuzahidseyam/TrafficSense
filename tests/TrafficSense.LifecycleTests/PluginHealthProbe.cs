@@ -46,13 +46,16 @@ internal static class PluginHealthProbe
                 Task Refresh()=>(Task)typeof(PluginBridgeWindow).GetMethod("RefreshHealth",Private)!.Invoke(bridge,null)!;
                 void Click(string name)=>Field<Button>(name).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 var state=Field<TextBlock>("_healthState");var usage=Field<TextBlock>("_healthUsage");
+                var history=Field<PluginHealthHistory>("_healthHistory");var graph=Field<PluginHealthGraph>("_healthGraph");
                 Check(state.Text.Contains(language[TextKey.PluginHealthIdle])&&usage.Text.Contains(language[TextKey.NotAvailable]),"Idle health is incorrect.");
                 Check(bridge.Content is ScrollViewer,"Bridge cannot scroll in a short window.");
                 Check(await bridge.Open(dll),"Health UI fixture did not open.");
                 Check(state.Text.Contains(language[TextKey.PluginHealthResponding])&&usage.Text.Contains("MiB"),"Live worker health missing.");
+                Check(history.Samples.Count>0&&history.Samples.Last().WorkingSetBytes>0,"Real worker readings did not reach history.");
                 Check(AutomationProperties.GetName(usage)==usage.Text&&AutomationProperties.GetLiveSetting(state)==AutomationLiveSetting.Polite,"Health accessibility lost its values/state.");
-                language.Select("bn");Check(state.Text.Contains(language[TextKey.PluginHealthResponding])&&usage.Text.Contains(language[TextKey.Memory]),"Live health language did not update.");language.Select("en");
+                language.Select("bn");Check(state.Text.Contains(language[TextKey.PluginHealthResponding])&&usage.Text.Contains(language[TextKey.Memory])&&AutomationProperties.GetName(graph).Contains(language[TextKey.PluginHistory]),"Live health/history language did not update.");language.Select("en");
                 fail=true;await Refresh();Check(state.Text.Contains(language[TextKey.PluginHealthUnavailable])&&usage.Text.Contains(language[TextKey.NotAvailable])&&Field<Button>("_stop").IsEnabled,"Failed health read stopped worker or showed stale metrics.");
+                Check(history.Samples.Last().CpuPercent==null&&history.Samples.Last().WorkingSetBytes==null,"Unavailable health became measured graph zero.");
                 fail=false;await Refresh();Check(state.Text.Contains(language[TextKey.PluginHealthResponding]),"Health did not recover after an unavailable read.");
                 Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_MODAL","2");
                 // Reload owns the environment inherited by its new worker.
@@ -60,8 +63,10 @@ internal static class PluginHealthProbe
                 Click("_options");Check(state.Text.Contains(language[TextKey.PluginHealthSettings]),"Settings busy state missing.");
                 int before=reads;await Wait(()=>reads>before&&!Field<bool>("_healthBusy"));
                 Check(Field<bool>("_busy")&&Field<PluginWorkerHealth>("_latestHealth").Uptime>TimeSpan.FromMilliseconds(500),"Health timer stopped during modal settings.");
+                Check(history.Samples.Count>=2,"History stopped during modal settings.");
                 Click("_stop");await Wait(()=>!Field<bool>("_busy"));
                 Check(state.Text.Contains(language[TextKey.PluginHealthStopped])&&!usage.Text.Contains("MiB")&&!Field<DispatcherTimer>("_healthTimer").IsEnabled,"Stop retained numbers or health timer.");
+                Check(history.Samples.Count==0,"Stop retained worker history.");
                 Environment.SetEnvironmentVariable("TRAFFICSENSE_FIXTURE_MODAL",null);
                 Check(await bridge.Open(dll),"Reload after modal Stop failed.");
                 delay=true;gate.Reset();var pending=Refresh();await Wait(()=>active==1);
@@ -69,8 +74,10 @@ internal static class PluginHealthProbe
                 Click("_stop");Check(await bridge.Open(dll),"Reload with old health read pending failed.");
                 Check(Field<PluginWorkerHealth?>("_latestHealth")==null,"New worker inherited old health metrics.");
                 gate.Set();await pending;Check(Field<PluginWorkerHealth?>("_latestHealth")==null,"Delayed old worker result published after Reload.");
+                Check(history.Samples.Count==0,"Delayed old worker result repopulated replacement history.");
                 delay=false;await Refresh();Check(state.Text.Contains(language[TextKey.PluginHealthResponding]),"New worker health did not recover.");
                 var timer=Field<DispatcherTimer>("_healthTimer");bridge.Close();bridge=null;Check(!timer.IsEnabled,"Close retained the health timer.");
+                Check(history.Samples.Count==0,"Close retained history.");
                 language.Select("bn");Check(state.Text.Contains(new UiLanguage("en")[TextKey.PluginHealthStopped]),"Closed window retained language subscription.");
                 Console.WriteLine("PASS: real worker CPU/RAM, unknown baseline, bilingual health UI, modal timer, unavailable-read recovery, coalescing, Stop/Reload stale-result exclusion and close cleanup.");result=0;
             }

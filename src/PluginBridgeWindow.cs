@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using System.Globalization;
 using System.Windows.Automation;
+using System.Diagnostics;
 
 namespace TrafficSense;
 
@@ -29,6 +30,10 @@ internal sealed class PluginBridgeWindow : Window
     private readonly TextBlock _healthState = new() { TextWrapping=TextWrapping.Wrap,FontWeight=FontWeights.SemiBold };
     private readonly TextBlock _healthUsage = new() { TextWrapping=TextWrapping.Wrap,Margin=new(0,4,0,0) };
     private readonly TextBlock _healthAge = new() { TextWrapping=TextWrapping.Wrap,Margin=new(0,4,0,0) };
+    private readonly PluginHealthHistory _healthHistory=new();
+    private readonly PluginHealthGraph _healthGraph=new(){Height=180,MinWidth=180,Margin=new(0,4,0,0)};
+    private readonly TextBlock _historyTitle=new(){TextWrapping=TextWrapping.Wrap,Margin=new(0,8,0,0)};
+    private long _historyStart;
     private readonly StackPanel _items = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly DispatcherTimer _healthTimer = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -44,13 +49,14 @@ internal sealed class PluginBridgeWindow : Window
         _language = language; _metrics = metrics; _publish = publish; _dark = dark ?? (()=>true);
         _createClient = createClient ?? (path=>new PluginClient(Environment.ProcessPath!,path));
         _readHealth = readHealth ?? (client=>client.ReadHealth());
-        Width = 620; Height = 460; MinWidth = 360; MinHeight = 250; FontSize = 14; FontFamily = new FontFamily("Segoe UI, Nirmala UI");
+        Width = 620; Height = 640; MinWidth = 360; MinHeight = 250; FontSize = 14; FontFamily = new FontFamily("Segoe UI, Nirmala UI");
         Title = language[TextKey.PluginBridge]; Background = SystemColors.WindowBrush; Foreground = SystemColors.WindowTextBrush;
         var top = new StackPanel { Margin=new(12) };
         top.Children.Add(_hint);
         var buttons = new WrapPanel(); foreach (var control in new Control[] { _open, _stop, _reload, _options, _commands, _run }) buttons.Children.Add(control);
         top.Children.Add(buttons);
         var health = new StackPanel();health.Children.Add(_healthState);health.Children.Add(_healthUsage);health.Children.Add(_healthAge);
+        health.Children.Add(_historyTitle);health.Children.Add(_healthGraph);
         top.Children.Add(new Border { Child=health,Padding=new(8),Margin=new(4),BorderThickness=new(1),BorderBrush=SystemColors.ControlDarkBrush });
         top.Children.Add(_status);top.Children.Add(_items);
         Content=new ScrollViewer { Content=top,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled };
@@ -65,13 +71,13 @@ internal sealed class PluginBridgeWindow : Window
     internal async Task<bool> Open(string path)
     {
         Stop(); _path = path;_failure=null;
-        try { _client = _createClient(path);_terminalHealth=TextKey.PluginHealthStarting;RenderHealth();_healthTimer.Start();await Poll("sample");if (_client != null) { _timer.Start();await RefreshHealth(); } return _client != null; }
+        try { _client = _createClient(path);_historyStart=Stopwatch.GetTimestamp();_terminalHealth=TextKey.PluginHealthStarting;RenderHealth();_healthTimer.Start();await Poll("sample");if (_client != null) { _timer.Start();await RefreshHealth(); } return _client != null; }
         catch (Exception e) when (e is InvalidDataException or IOException or System.ComponentModel.Win32Exception or InvalidOperationException or ArgumentException)
         { _failure=e;_status.Text = _language[TextKey.PluginFailed] + " " + e.Message; Stop(clearStatus: false,health:TextKey.PluginHealthFailed); return false; }
     }
     private void Controls() { _stop.IsEnabled = _client != null; _open.IsEnabled = !_busy; _reload.IsEnabled = _path != null && !_busy; _options.IsEnabled = _client != null && !_busy; _run.IsEnabled = _client != null && !_busy && _commands.SelectedIndex >= 0; }
     private void Stop(bool clearStatus = true,TextKey health=TextKey.PluginHealthStopped)
-    { _timer.Stop();_healthTimer.Stop();_client?.Dispose(); _client = null;_latestHealth=null;_healthReadFailed=false;_terminalHealth=health; _publish(null); _items.Children.Clear(); _commands.Items.Clear(); if (clearStatus) {_failure=null;_status.Text = _language[TextKey.BridgeStopped];} RenderHealth();Controls(); }
+    { _timer.Stop();_healthTimer.Stop();_client?.Dispose(); _client = null;_latestHealth=null;_healthHistory.Clear();_healthReadFailed=false;_terminalHealth=health; _publish(null); _items.Children.Clear(); _commands.Items.Clear(); if (clearStatus) {_failure=null;_status.Text = _language[TextKey.BridgeStopped];} RenderHealth();Controls(); }
     private async Task Poll(string operation)
     {
         if (_client == null || _busy) return;
@@ -107,10 +113,16 @@ internal sealed class PluginBridgeWindow : Window
         try
         {
             var health=await Task.Run(()=>_readHealth(client));
-            if(ReferenceEquals(client,_client)){_latestHealth=health;_healthReadFailed=false;RenderHealth();}
+            if(ReferenceEquals(client,_client))
+            {
+                _latestHealth=health;_healthReadFailed=false;
+                bool available=health.Availability==PluginWorkerAvailability.Available;
+                _healthHistory.Add(Stopwatch.GetElapsedTime(_historyStart),available?health.CpuPercent:null,available?health.WorkingSetBytes:null);
+                RenderHealth();
+            }
         }
         catch(Exception e) when(e is IOException or InvalidOperationException or System.ComponentModel.Win32Exception or NotSupportedException)
-        {if(ReferenceEquals(client,_client)){_latestHealth=null;_healthReadFailed=true;RenderHealth();}}
+        {if(ReferenceEquals(client,_client)){_latestHealth=null;_healthReadFailed=true;_healthHistory.Add(Stopwatch.GetElapsedTime(_historyStart),null,null);RenderHealth();}}
         finally{_healthBusy=false;}
     }
     private void RenderHealth()
@@ -133,6 +145,8 @@ internal sealed class PluginBridgeWindow : Window
         _healthUsage.ToolTip=string.Format(CultureInfo.InvariantCulture,_language[TextKey.PluginHealthHint],allocated,health?.Uptime.TotalSeconds.ToString("F0",CultureInfo.InvariantCulture)??unknown);
         AutomationProperties.SetName(_healthState,_healthState.Text);
         AutomationProperties.SetName(_healthUsage,_healthUsage.Text);
+        _historyTitle.Text=_language[TextKey.PluginHistory];
+        _healthGraph.Update(_healthHistory.Samples,_language,_healthUsage.Text);
     }
     private void LanguageChanged(object? sender,EventArgs args)
     {

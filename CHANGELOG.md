@@ -4,6 +4,14 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.31.0] - 2026-10-13
+
+### Added
+
+- Compact CPU/RAM history in the native plugin bridge, covering the last two minutes of the current worker session. CPU uses a fixed 0–100% scale; resident RAM has a separate scale in MiB. Solid/dashed traces and separate plots remain distinguishable in high contrast, with bilingual labels and accessible current values/scope.
+- Missing CPU and RAM readings break their own trace independently; gaps longer than five seconds are not bridged. Valid zero remains a measurement. History is bounded to 128 samples, stored only in memory, and cleared on Stop, fault, Reload and close. Results from a replaced worker cannot repopulate it.
+- Twelve history regression cases and native chart checks for independent scales/gaps, delayed samples, bilingual accessibility, 500 bounded render updates, clear and narrow layouts. Existing real-worker/modal health tests now verify history delivery, unavailable readings and lifecycle resets too.
+
 ## [1.30.0] - 2026-10-13
 
 ### Added

@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.30.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.31.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -22,7 +22,8 @@ Suggestions still open: validate physical shell/driver combinations, add optiona
 
 ## What is verified
 
-- **309 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files, LibreHardwareMonitor schema and plugin CPU interval arithmetic. Graph retention covers the full two minutes even at 250 ms.
+- **321 pure regression cases** at this release: exact bytes, timing, counter resets, adapter selection, preference migration/backup, range filters, daily series, clipboard/export formatting, threshold calendars, skins, sensor files, LibreHardwareMonitor schema, plugin CPU interval arithmetic and bounded resource history. Speed graph retention covers the full two minutes even at 250 ms; plugin history polls once per second.
+- **Plugin resource history:** native geometry tests verify separate fixed CPU/automatic RAM scales, independent unknown gaps, delayed observations, bilingual accessible labels, 500 bounded render updates, empty reset and narrow layout. Real-worker health/modal UI probes cover history delivery, failed reads, language changes and Stop/Reload/close, including an intentionally delayed prior-worker result. This is finite original-fixture coverage rather than hours/days of elapsed graph operation.
 - **Plugin health:** native CPU-work fixture and actual hidden WPF bridge verify first-observation unknowns, real worker CPU/RAM, bilingual status/accessibility, health reads during modal settings, unavailable-read recovery, request coalescing, stale-worker exclusion and observer/timer cleanup. See [scope and finite resource report](COMPATIBILITY-TESTING.md#plugin-health-in-1300).
 - **Synthetic timing characterization:** 4,096 samples at each of four intervals; known-rate relative error ≤10⁻¹², byte conservation beyond 4 GiB, tiny deltas at large lifetime values. See [methodology](MEASUREMENT.md).
 - **Real WPF/process probes:** bilingual live controls, history/chart/table selection, clipboard boundary, graph path gaps, appearance and restart, native counters, taskbar messages with a simulated shell, sensor bridge entry/cancellation, update errors, tray/duplicate activation and fatal/normal cleanup.
