@@ -26,9 +26,22 @@ internal static class PluginHealthGraphProbe
         Check(Math.Abs(lines[0].Geometry.Bounds.Height*2-lines[1].Geometry.Bounds.Height)<.01,"CPU fixed scale or independent RAM scale is incorrect.");
         var peer=UIElementAutomationPeer.CreatePeerForElement(graph)!;
         Check(peer.GetAutomationControlType()==AutomationControlType.Image&&peer.GetName().Contains(language[TextKey.PluginHistory])&&peer.GetHelpText().Contains("Gaps"),"History has no accessible name/scope.");
+        Point At(double second,double y=40)=>new(4+(second-11+120)/120*552,y);
+        graph.Inspect(At(2));
+        Check(graph.HoveredPoint?.Timestamp==TimeSpan.FromSeconds(2)&&graph.HoverText.Contains("00:00:02")&&graph.HoverText.Contains("Unavailable")&&graph.HoverText.Contains("25.0 MiB"),"Hover lost timestamp or independent missing CPU.");
+        graph.Inspect(At(3,120));
+        Check(graph.HoverText.Contains("30.0%")&&graph.HoverText.Contains("Unavailable"),"RAM plot hover lost independent missing RAM.");
+        graph.Inspect(At(1.4));Check(graph.HoveredPoint?.Timestamp==TimeSpan.FromSeconds(1),"Hover did not select the nearest actual reading.");
+        graph.Inspect(At(7));Check(graph.HoveredPoint==null&&graph.HoverText==language[TextKey.PluginHistoryNoSample],"Hover invented a reading inside a long delay.");
+        graph.Inspect(At(-1));Check(graph.HoveredPoint==null,"Hover extrapolated before history began.");
+        graph.Inspect(At(11));Check(graph.HoveredPoint?.Timestamp==TimeSpan.FromSeconds(11),"Right-edge reading is inaccessible.");
+        graph.Inspect(new Point(560,40));Check(graph.HoveredPoint==null,"Hover escaped the plot boundary.");
+        graph.Inspect(At(4,85));Check(graph.HoveredPoint==null,"Hover selected a reading between plots.");
+        graph.Inspect(At(4));graph.Inspect(null);Check(graph.HoveredPoint==null,"Mouse leave retained a hover marker.");
         if(output!=null){Directory.CreateDirectory(output);Save(bitmap,Path.Combine(output,"plugin-history-en.png"));}
         language.Select("bn");graph.Update(history.Samples,language,"CPU: ৫০% · RAM: ৫০ MiB");Render();
         Check(peer.GetName().Contains(language[TextKey.PluginHistory])&&peer.GetHelpText()==language[TextKey.PluginHistoryHint],"History accessibility did not translate.");
+        graph.Inspect(At(2));Check(graph.HoverText.Contains(language[TextKey.PluginHistorySessionTime])&&graph.HoverText.Contains(language[TextKey.NotAvailable]),"Hover did not translate.");
         if(output!=null)Save(bitmap,Path.Combine(output,"plugin-history-bn.png"));
         for(int i=12;i<512;i++)
         {
@@ -36,9 +49,13 @@ internal static class PluginHealthGraphProbe
         }
         Check(history.Samples.Count==121,"Rendered history did not expire old samples.");
         history.Clear();graph.Update(history.Samples,language,"");Render();
+        Check(graph.HoveredPoint==null&&!graph.HoverText.Contains("00:00:02"),"Clear retained stale hover details.");
         Check(!Drawings(VisualTreeHelper.GetDrawing(graph)).OfType<GeometryDrawing>().Any(d=>d.Pen?.Thickness==2),"Cleared history retained a worker trace.");
+        history.Add(TimeSpan.FromHours(25),0,0);graph.Update(history.Samples,language,"");graph.Inspect(new Point(556,40));
+        Check(graph.HoverText.Contains("25:00:00")&&graph.HoverText.Contains("0.0%")&&graph.HoverText.Contains("0.0 MiB"),"Hover wrapped session hours or hid genuine zero.");
+        history.Clear();graph.Update(history.Samples,language,"");
         graph.Measure(new Size(220,180));graph.Arrange(new Rect(0,0,220,180));Render();
-        Console.WriteLine("PASS: native CPU/RAM geometry, independent unknown gaps/scales, delayed gap, accessible bilingual labels, 500 bounded render updates, clear and narrow layout.");return 0;
+        Console.WriteLine("PASS: native CPU/RAM geometry, bilingual hover time/values, nearest sample, unknown/zero, gaps/bounds/reset, independent scales, 500 bounded render updates and narrow layout.");return 0;
     }
     private static void Save(BitmapSource bitmap,string path)
     {

@@ -33,7 +33,7 @@ internal enum TextKey
     PluginBridge, PluginChoose, PluginHint, PluginOptions, PluginRun, PluginFailed, PluginReload, PluginResourceLimit,
     PluginHealth, PluginHealthIdle, PluginHealthStarting, PluginHealthResponding, PluginHealthWaiting, PluginHealthSettings, PluginHealthCommand,
     PluginHealthStopped, PluginHealthFailed, PluginHealthLimited, PluginHealthUnavailable, PluginHealthResponse, PluginHealthResponseUnknown, PluginHealthNoResponse, PluginHealthHint,
-    PluginHistory, PluginHistoryHint, PluginHistoryEmpty, PluginHistoryNow,
+    PluginHistory, PluginHistoryHint, PluginHistoryEmpty, PluginHistoryNow, PluginHistorySessionTime, PluginHistoryNoSample,
     EmbedTaskbar, EmbedHint,
     ConnectionGroup, AppearanceGroup, MetricsGroup, UsageGroup, PanelGroup, PreferencesGroup
 }
@@ -84,6 +84,8 @@ internal sealed class UiLanguage(string? code = "en")
                 "শুধু এই worker-এর বর্তমান session। CPU-এর স্কেল ০–১০০%; বর্তমানে ব্যবহৃত RAM-এর আলাদা স্কেল MiB-তে। ফাঁক মানে তথ্য পাওয়া যায়নি বা পাঁচ সেকেন্ডের বেশি দেরি হয়েছে; ব্যবহার শূন্য নয়। Stop/Reload-এ history পরিষ্কার হয়। History শুধু মেমরিতে থাকে।"),
             [TextKey.PluginHistoryEmpty] = ("Waiting for health readings…", "ব্যবহারের তথ্যের অপেক্ষায়…"),
             [TextKey.PluginHistoryNow] = ("Now", "এখন"),
+            [TextKey.PluginHistorySessionTime] = ("Time since plugin start (hh:mm:ss)", "Plugin চালুর পর সময় (ঘণ্টা:মিনিট:সেকেন্ড)"),
+            [TextKey.PluginHistoryNoSample] = ("No reading at this time", "এই সময়ে কোনো তথ্য নেই"),
             [TextKey.PluginHealthIdle] = ("No plugin loaded", "কোনো plugin চালু নেই"),
             [TextKey.PluginHealthStarting] = ("Starting…", "চালু হচ্ছে…"),
             [TextKey.PluginHealthResponding] = ("Responding", "সাড়া দিচ্ছে"),

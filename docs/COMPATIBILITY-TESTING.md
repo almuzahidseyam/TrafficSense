@@ -106,3 +106,7 @@ The .NET 8 SDK plus Visual Studio C++ Build Tools/Windows SDK or MinGW-w64 are r
 Reports go to a fresh `.artifacts/compatibility/<id>` folder. A previously acquired local manifest may be passed with `-CommunityManifest`. A live interface disappearing or route changing mid-case fails that steady-state run rather than labelling incomplete observations passed. An environment with no WARP only exercises available interfaces; check the presence/role fields before interpreting it as a VPN result.
 
 For the remaining physical matrix, record Windows build, NIC/driver and VPN version, actual monitor count/scales, routing mode, refresh interval and enabled metrics. Repeat before/during/after reconnect and physical monitor removal in a suitable test environment. Controlled LAN payload tests need a separate endpoint. Keep those results distinct from simulations and passive counter agreement.
+
+## Plugin history hover in 1.32.0
+
+The native graph probe exercises the production hover selection path with positions on both plots, nearest readings, long gaps, empty earlier history, edges and label regions. It verifies independent unknown metrics, zero, English/Bangla details, clearing and 25-hour session timestamps. This is deterministic WPF coverage; it does not claim new physical multi-monitor or VPN testing.
