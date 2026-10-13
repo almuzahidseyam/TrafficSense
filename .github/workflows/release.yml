@@ -44,6 +44,13 @@ jobs:
         $source = (Get-ChildItem '.artifacts/portable/*/app/TrafficSense.exe' | Select-Object -First 1).DirectoryName
         ./scripts/Build-Installer.ps1 -SourceDirectory $source -VerifyInstall
 
+    - name: Build and verify Lite installer prerequisites
+      timeout-minutes: 10
+      shell: pwsh
+      run: |
+        $lite = (Get-ChildItem '.artifacts/lite/*/app/TrafficSense.exe' | Select-Object -First 1).DirectoryName
+        $full = (Get-ChildItem '.artifacts/portable/*/app/TrafficSense.exe' | Select-Object -First 1).DirectoryName
+        ./scripts/Build-Installer.ps1 -SourceDirectory $lite -Lite -VerifyInstall -AlternateSourceDirectory $full
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
@@ -56,5 +63,7 @@ jobs:
           .artifacts/lite/**/TrafficSense-Lite-win-x64.zip.sha256
           .artifacts/installer/**/TrafficSense-Setup.exe
           .artifacts/installer/**/TrafficSense-Setup.exe.sha256
+          .artifacts/installer-lite/**/TrafficSense-Lite-Setup.exe
+          .artifacts/installer-lite/**/TrafficSense-Lite-Setup.exe.sha256
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

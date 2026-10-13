@@ -11,6 +11,10 @@ TrafficSense Windows-এ download/upload গতি, CPU/RAM এবং ডেট�
 
 নতুন সংস্করণ চালুর আগে আগেরটির tray মেনু থেকে **প্রস্থান** করুন এবং Sensor bridge বন্ধ করুন। শুধু লুকালে অ্যাপ চালু থাকে; আবার খুললে আগের চলমান কপিটিই সামনে আসে।
 
+## .NET যাচাইসহ ছোট Installer
+
+[TrafficSense-Lite-Setup.exe](https://github.com/almuzahidseyam/TrafficSense/releases/latest/download/TrafficSense-Lite-Setup.exe) ইনস্টলের আগে .NET 8 Desktop Runtime x64 সত্যিই চালু হয় কি না যাচাই করে। না থাকলে অ্যাপের ফাইল না বদলিয়ে নির্দেশনা দেখায়। Installer-এর বোতাম দিয়ে Microsoft-এর ডাউনলোড পাতা খুলে runtime ইনস্টল করে আবার চেষ্টা করতে পারবেন; অথবা পূর্ণ Setup ব্যবহার করুন। স্বয়ংক্রিয়ভাবে .NET নামায় বা ইনস্টল করে না। Full/Lite installer একই ইনস্টলেশন, settings/history ও uninstaller ব্যবহার করে।
+
 ## ছোট Lite সংস্করণ
 
 আগে থেকেই **.NET 8 Desktop Runtime (x64)** থাকলে [TrafficSense-Lite-win-x64.zip](https://github.com/almuzahidseyam/TrafficSense/releases/latest/download/TrafficSense-Lite-win-x64.zip) নামাতে পারেন। ZIP সম্পূর্ণ extract করে TrafficSense.exe চালান। সব ফিচার একই থাকবে; runtime বাদ দেওয়ায় ডাউনলোড ছোট। CPU/RAM কম লাগার দাবি নয়। Settings ও history আগের মতোই থাকবে।
