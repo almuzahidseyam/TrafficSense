@@ -39,3 +39,7 @@ Temperature চাইলে আগে উপযুক্ত [LibreHardwareMonito
 [ফিচার ও সীমাবদ্ধতা](COMPATIBILITY.md) · [গতি মাপার পদ্ধতি](MEASUREMENT.md) · [মূল README](../README.md)
 
 v1.28-এ dark plugin preview, স্বাভাবিক বন্ধের সময় plugin settings সংরক্ষণ এবং monitor অনুযায়ী DPI scaling সংশোধন হয়েছে। চার community plugin ও সক্রিয় WARP-এর নির্দিষ্ট পরীক্ষা পাস করেছে। বাস্তব দ্বিতীয় monitor/mixed-DPI ও VPN reconnect এখনো পরীক্ষা হয়নি। [পরীক্ষার ফল ও পুনরায় চালানোর নির্দেশনা](COMPATIBILITY-TESTING.md)।
+
+v1.29.0-এ native plugin settings/command dialog চলাকালে একই request আবার ঢুকে worker বন্ধ হওয়ার সমস্যা সংশোধন হয়েছে। Settings থেকে Cancel/OK, Stop ও পুনরায় খোলা, এবং TextReader-এর সাতটি command বিচ্ছিন্ন test configuration-এ যাচাই হয়েছে।
+
+**Plugin আবার চালু করুন / Reload plugin** দিয়ে আগের DLL এক ক্লিকে পুনরায় চালাতে পারবেন। Resource সীমা পার হলে worker বন্ধ হবে ও বার্তা দেখাবে; Reload-এ সংরক্ষিত configuration নিয়ে ফিরবে। TextReader 1.02-এর settings বারবার খুললে কিছু GDI resource জমে—Stop/Reload-এ সেগুলো মুক্ত হয়। মূল DLL বদলানো হয়নি; plugin-এর চলতি অস্থায়ী state reset হতে পারে।

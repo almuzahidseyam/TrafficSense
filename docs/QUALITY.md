@@ -1,6 +1,6 @@
 # Quality evidence and review
 
-Scope: independent TrafficSense improvements from 1.22.0 through 1.28.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
+Scope: independent TrafficSense improvements from 1.22.0 through 1.29.0. Reviewed on 2026-10-13 for correctness, resource use, input boundaries, lifecycle cleanup and maintainability. This is a development record, not certification of every Windows/driver combination.
 
 ## Review summary
 
@@ -16,6 +16,7 @@ The network sampler now separates collection from rendering, carries actual nati
 | Unknown intervals appeared as measured zero in recent graphs | Medium | Explicit sample validity, broken paths, unavailable legend and native geometry checks |
 | Unchanged stale worker timestamp could leave history's latest legend fresh | Medium | Unknown point uses consumption time when delayed; deterministic stalled-delivery native test |
 | Provider outages/cached files could show stale sensor data | Medium | Bounded loopback HTTP, cancellation, numeric schema validation, atomic publication and reader/UI freshness checks |
+| Native modal loops re-entered a completed pending plugin request | High | Claim until callback returns; pumped native reproducer, real WPF buttons/heartbeat, four real private-desktop community dialogs and modal Stop/child ownership checks |
 
 Suggestions still open: validate physical shell/driver combinations, add optional-metric/panel long-duration measurements, plan runtime servicing and signed/ARM64 distribution. These are follow-up work, not hidden claims of completed parity.
 
@@ -27,6 +28,7 @@ Suggestions still open: validate physical shell/driver combinations, add optiona
 - **Native compatibility probes:** independently authored compiler-built DLL fixtures exercise retained host callbacks, legacy GDI and extended drawing, options/commands, startup failures, crash/hang deadlines and kernel-job cleanup after an abrupt owner exit. Actual WPF checks cover layout positions, PNG alpha, managed copies, compact layout, invalid/save rollback and backup/restore. Child attachment is exercised against an isolated owned native window; Explorer is only inspected read-only locally.
 - **Distribution checks:** self-contained ZIP extraction/content/runtime checks, per-user install/uninstall, version/changelog/tag alignment and SHA-256 files. Public release binaries are downloaded and checked against checksums/metadata before release completion is reported.
 - **Resource regression:** CI warms up for 20 seconds, then measures 60 seconds across shown/hidden states and performs 1,500 accelerated stress iterations. Reports include CPU, managed/private/working-set memory, native handles, ticks and UI delays. CPU is recorded rather than gated by a machine-specific percentage.
+- **Longer local evidence:** [15-minute widget/native sampling/drawing runs and scope](COMPATIBILITY-TESTING.md#settings-commands-and-longer-runs-in-1290) cover alternating themes, per-worker handle/private-memory budgets and reload cleanup. Repeated dialogs have separate traces and a known TextReader growth warning; the initial cold-UI baseline run is retained as failed. These finite same-machine runs complement the shorter CI check.
 - **Dependency advisory check:** the configured NuGet sources reported no vulnerable packages for the app's direct/transitive package graph at review time. This is not a complete security audit and must be rerun as advisories change.
 
 Retention checks record ordinary collection snapshots and separately use the existing aggressive test-only collection to reclaim unused managed regions; the production app never forces garbage collection. The same regression budgets apply. Accelerated stress is not equivalent to hours/days of elapsed use, and the default soak does not exercise every optional feature combination.
