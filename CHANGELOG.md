@@ -4,6 +4,13 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.35.0] - 2026-10-13
+
+### Added
+
+- **TrafficSense-Lite-Setup.exe**, a small per-user installer alongside Lite ZIP and the full packages. A bundled framework-dependent x64 checker verifies that .NET 8 Desktop Runtime actually starts before installing/upgrading. Missing or plain-runtime-only installations are blocked with instructions; the wizard links to Microsoft's runtime download page. No automatic runtime download or installation.
+- Lite/full installers share the same installation identity, settings/history and uninstaller. CI verifies missing-runtime and missing-Desktop rejection, accepted Desktop runtime, blocked upgrades preserving files, Lite/full/Lite switching, running-app protection and clean uninstallation.
+
 ## [1.34.0] - 2026-10-13
 
 ### Added

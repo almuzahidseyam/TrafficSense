@@ -23,7 +23,7 @@
 
 ## Install or run portable
 
-Current version: **[1.34.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.34.0)**. For **64-bit Windows 10/11**.
+Current version: **[1.35.0](https://github.com/almuzahidseyam/TrafficSense/releases/tag/v1.35.0)**. For **64-bit Windows 10/11**.
 
 1. Open [Releases](https://github.com/almuzahidseyam/TrafficSense/releases/latest).
 2. Choose a download from the table below.
@@ -32,11 +32,12 @@ Current version: **[1.34.0](https://github.com/almuzahidseyam/TrafficSense/relea
 
 | Download | Choose this when |
 | --- | --- |
+| [TrafficSense-Lite-Setup.exe](https://github.com/almuzahidseyam/TrafficSense/releases/latest/download/TrafficSense-Lite-Setup.exe) | Small per-user installer; verifies .NET 8 Desktop Runtime x64 before changing app files. |
 | [TrafficSense-Lite-win-x64.zip](https://github.com/almuzahidseyam/TrafficSense/releases/latest/download/TrafficSense-Lite-win-x64.zip) | You already have **.NET 8 Desktop Runtime x64**. Smaller download, all features. |
 | [TrafficSense.zip](https://github.com/almuzahidseyam/TrafficSense/releases/latest/download/TrafficSense.zip) | Portable use with .NET included. |
 | [TrafficSense-Setup.exe](https://github.com/almuzahidseyam/TrafficSense/releases/latest/download/TrafficSense-Setup.exe) | Install/uninstall support with .NET included. |
 
-Lite requires the **Desktop Runtime**, latest **8.0.x**, **x64** ([Microsoft download](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)). .NET Framework 4.x, the plain .NET Runtime, x86-only installations, or .NET 9/10 alone do not satisfy it. The Windows .NET 8 x64 SDK includes the required runtime. Check `dotnet --list-runtimes` for `Microsoft.WindowsDesktop.App 8.0.x`; if unsure, choose the full ZIP or Setup. All editions share features, settings and usage history. Lite reduces download/disk size; it does not promise lower CPU/RAM use.
+Lite requires the **Desktop Runtime**, latest **8.0.x**, **x64** ([Microsoft download](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)). .NET Framework 4.x, the plain .NET Runtime, x86-only installations, or .NET 9/10 alone do not satisfy it. The Windows .NET 8 x64 SDK includes the required runtime. Check `dotnet --list-runtimes` for `Microsoft.WindowsDesktop.App 8.0.x`; if unsure, choose the full ZIP or Setup. Lite Setup checks the actual x64 Desktop runtime before installing/upgrading. Its prerequisite page links to Microsoft; it never downloads or installs .NET automatically. Missing runtime blocks the install with instructions (including silent installs). Full and Lite Setup share one installation and uninstaller. All editions share features, settings and usage history. Lite reduces download/disk size; it does not promise lower CPU/RAM use.
 
 <img src="docs/images/layout-mint.png" width="280" alt="Original Mint bitmap layout: download, upload, CPU and RAM" />
 
