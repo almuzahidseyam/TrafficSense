@@ -3,11 +3,12 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Version>1.35.1</Version>
+    <Version>1.36.0</Version>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets/TrafficSense.ico</ApplicationIcon>
     <AssemblyTitle>TrafficSense</AssemblyTitle>
     <Company>Open Source</Company>
     <Product>TrafficSense</Product>
@@ -15,6 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Resource Include="Assets/TrafficSense.ico" />
+    <Resource Include="Assets/TrafficSense-128.png" />
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
     <PackageReference Include="WPF-UI" Version="3.0.4" />
   </ItemGroup>

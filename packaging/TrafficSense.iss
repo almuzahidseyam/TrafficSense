@@ -39,6 +39,7 @@ OutputBaseFilename={#OutputName}
 Compression=lzma2/fast
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile=..\src\Assets\TrafficSense.ico
 UninstallDisplayIcon={app}\TrafficSense.exe
 LicenseFile=..\LICENSE
 AppMutex={code:AppMutexName}
