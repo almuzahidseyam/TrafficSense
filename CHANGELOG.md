@@ -4,6 +4,14 @@ Published releases carry their publication date. Intermediate development milest
 
 ## [Unreleased]
 
+## [1.36.0] - 2026-10-15
+
+### Added
+
+- A dedicated TrafficSense logo across the executable, Windows shortcuts, tray, About window, widget About menu and both installers. The transparent ICO includes nine sizes from 16 to 256 pixels for desktop and DPI scaling.
+- A visible logo in About and the repository README, with a checked-in master and reproducible icon conversion script. Existing compact widget dimensions and custom skins are preserved.
+- Packaged lifecycle checks verify the embedded logo, tray colors and executable icon in both Full and Lite builds.
+
 ## [1.35.1] - 2026-10-13
 
 ### Fixed

@@ -1,6 +1,4 @@
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using Forms = System.Windows.Forms;
 
 namespace TrafficSense;
@@ -114,28 +112,11 @@ internal sealed class TrayController : IDisposable
 
     private static Icon CreateIcon()
     {
-        using var bitmap = new Bitmap(32, 32);
-        using (var graphics = Graphics.FromImage(bitmap))
-        {
-            graphics.Clear(Color.Transparent);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using var download = new Pen(Color.FromArgb(76, 175, 80), 4) { StartCap = LineCap.Round, EndCap = LineCap.Round };
-            using var upload = new Pen(Color.FromArgb(33, 150, 243), 4) { StartCap = LineCap.Round, EndCap = LineCap.Round };
-            graphics.DrawLine(download, 9, 5, 9, 26);
-            graphics.DrawLines(download, new Point[] { new(3, 20), new(9, 26), new(15, 20) });
-            graphics.DrawLine(upload, 23, 27, 23, 6);
-            graphics.DrawLines(upload, new Point[] { new(17, 12), new(23, 6), new(29, 12) });
-        }
-        IntPtr handle = bitmap.GetHicon();
-        try
-        {
-            using var borrowed = Icon.FromHandle(handle);
-            return (Icon)borrowed.Clone();
-        }
-        finally { DestroyIcon(handle); }
+        var resource = System.Windows.Application.GetResourceStream(
+            new Uri("pack://application:,,,/TrafficSense;component/Assets/TrafficSense.ico"))
+            ?? throw new InvalidOperationException("TrafficSense icon resource is missing.");
+        using var stream = resource.Stream;
+        using var source = new Icon(stream, Forms.SystemInformation.SmallIconSize);
+        return (Icon)source.Clone();
     }
-
-    [DllImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool DestroyIcon(IntPtr icon);
 }

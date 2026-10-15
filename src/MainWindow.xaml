@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
-        Title="TrafficSense" 
+        Title="TrafficSense" Icon="/TrafficSense;component/Assets/TrafficSense.ico"
         SizeToContent="WidthAndHeight"
         WindowStyle="None" AllowsTransparency="True" Background="#01000000"
         Topmost="True" ResizeMode="NoResize" ShowInTaskbar="False"
@@ -61,7 +61,9 @@
                     <MenuItem Header="Back up settings…" x:Name="MenuBackup" Click="MenuBackup_Click" />
                     <MenuItem Header="Restore settings…" x:Name="MenuRestore" Click="MenuRestore_Click" />
                 </MenuItem>
-                <MenuItem Header="About TrafficSense" x:Name="MenuAbout" Click="MenuAbout_Click" />
+                <MenuItem Header="About TrafficSense" x:Name="MenuAbout" Click="MenuAbout_Click">
+                    <MenuItem.Icon><Image Source="/TrafficSense;component/Assets/TrafficSense-128.png" Width="16" Height="16" /></MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Usage and history" x:Name="MenuHistory" Click="MenuHistory_Click" />
                 <MenuItem Header="Hide widget" x:Name="MenuHide" Click="MenuHide_Click" />
                 <MenuItem Header="Exit" x:Name="MenuExit" Click="MenuExit_Click" />

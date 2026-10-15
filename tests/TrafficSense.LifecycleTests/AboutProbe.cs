@@ -49,6 +49,18 @@ internal static class AboutProbe
                 typeof(MenuItem).GetMethod("OnClick", Private)!.Invoke(widgetAbout, null);
                 window.Dispatcher.Invoke(() => { }, DispatcherPriority.Loaded);
                 var about = app.Windows.OfType<AboutWindow>().Single();
+                Check(window.Icon != null && about.Icon != null &&
+                    ((Image)about.FindName("BrandLogo")).Source is System.Windows.Media.Imaging.BitmapSource { PixelWidth: 128 },
+                    "Application branding resources did not load.");
+                Check(notify.Icon != null, "Tray logo is missing.");
+                VerifyBrandColors(notify.Icon!);
+                string? packaged = Environment.GetEnvironmentVariable("TRAFFICSENSE_PACKAGE_EXE");
+                if (!string.IsNullOrEmpty(packaged))
+                {
+                    using var extracted = System.Drawing.Icon.ExtractAssociatedIcon(packaged);
+                    Check(extracted != null, "Published executable icon is missing.");
+                    VerifyBrandColors(extracted!);
+                }
                 Check(about.IsVisible && window.IsVisible && trayAbout.Text == "About TrafficSense", "Widget About did not open.");
                 string version = Text(about, "VersionValue");
                 Check(version == typeof(MainWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
@@ -127,6 +139,19 @@ internal static class AboutProbe
     }
 
     private static string Text(AboutWindow window, string name) => ((TextBox)window.FindName(name)).Text;
+    private static void VerifyBrandColors(System.Drawing.Icon icon)
+    {
+        using var bitmap = icon.ToBitmap();
+        int cyan = 0, mint = 0;
+        for (int y = 0; y < bitmap.Height; y++)
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                var pixel = bitmap.GetPixel(x, y);
+                if (pixel.A > 200 && pixel.R < 100 && pixel.G > 150 && pixel.B > 200) cyan++;
+                if (pixel.A > 200 && pixel.R < 130 && pixel.G > 180 && pixel.B is > 90 and < 200) mint++;
+            }
+        Check(cyan > 2 && mint > 2, "Expected download/upload logo colors are absent from the Windows icon.");
+    }
     internal static void Capture(AboutWindow window, string language)
     {
         string? directory = Environment.GetEnvironmentVariable("TRAFFICSENSE_ABOUT_SCREENSHOTS");
